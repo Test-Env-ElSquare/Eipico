@@ -1,0 +1,219 @@
+<div class="row">
+  <div class="col-xl-3 stretch-card grid-margin">
+    <!-- filter by factory name -->
+    <div class="card">
+      <div class="card-header">
+        <div class="col-md-3 py-3 w-100">
+          <div class="form-floating">
+            <ng-select
+              [items]="FactoriesDropDown"
+              [loading]="!FactoriesDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select Plant"
+              [(ngModel)]="selectedplant"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- filter by date -->
+        <div class="d-flex justify-content-center">
+          <!--  [(ngModel)]="selectedDate" (navigate)="date = $event.next"  (click)="resourceDownTimePlans(selectedDate,selectedplant)" -->
+          <ngb-datepicker
+            [(ngModel)]="selectedDate"
+            (navigate)="date = $event.next"
+            (click)="resourceDownTimePlans(selectedDate, +selectedplant)"
+            #dp
+          ></ngb-datepicker>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- table data -->
+  <div
+    class="col-xl-9 stretch-card grid-margin"
+    *ngIf="resourceDownTimePlansTable?.length !== 0"
+  >
+    <div class="card">
+      <div class="card-body table-responsive">
+        <table class="table table table-sm align-middle">
+          <thead class="align-middle">
+            <tr>
+              <th>Factory</th>
+              <th>Line</th>
+              <th>Reason</th>
+              <th>Sub Reason</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let item of resourceDownTimePlansTable
+                  | paginate
+                    : {
+                        itemsPerPage: tableSize,
+                        currentPage: page,
+                        totalItems: count
+                      }
+              "
+            >
+              <td>{{ item?.factoryName }}</td>
+              <td>{{ item?.lineName }}</td>
+              <td>{{ item?.reason }}</td>
+              <td>{{ item?.subReason }}</td>
+              <td>{{ item?.startTime | date : "medium" }}</td>
+              <td>{{ item?.endTime | date : "medium" }}</td>
+              <td class="d-flex">
+                <button
+                  (click)="openBasicModal(edit, item); getId(item.id)"
+                  type="button"
+                  class="btn btn-primary tw-bg-searchBtn mx-1"
+                >
+                  <i class="icon feather icon-edit"></i>
+                </button>
+                <button
+                  [disabled]="loadonDelete"
+                  (click)="delete(item)"
+                  type="button"
+                  class="btn btn-danger tw-bg-btnDelete mx-1"
+                >
+                  <i class="icon feather icon-delete"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <pagination-controls
+          previousLabel="Prev"
+          nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="resourceDownTimePlansTable?.length === 0"
+    class="col-xl-9 stretch-card grid-margin bg-white d-flex align-items-center justify-content-center"
+  >
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- models -->
+<div class="example">
+  <ng-template #edit let-modal>
+    <div class="modal-header">
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.close('by: close icon')"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="editDowntimePlanningForm" (ngSubmit)="OnEdit()">
+        <div class="row">
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select Plant</label>
+            <ng-select
+              [items]="FactoriesDropDown"
+              [loading]="!FactoriesDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select plant"
+              formControlName="factoryId"
+              [(ngModel)]="selectedplant1"
+              (change)="lineID(selectedplant1)"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select Line</label>
+            <ng-select
+              [items]="LineDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select line"
+              formControlName="lineId"
+              [(ngModel)]="selectedLine"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select Reasons</label>
+            <ng-select
+              [items]="stoppageReasons"
+              [loading]="!stoppageReasons"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select plant"
+              formControlName="reasonId"
+              [(ngModel)]="selectedResons"
+              (change)="GetAllSubReasons(selectedResons)"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select SubReasons</label>
+            <ng-select
+              [items]="getAllSubReasons"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select line"
+              formControlName="subReasonId"
+              [(ngModel)]="selectedSubResons"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select Start Time</label>
+            <input
+              formControlName="startTime"
+              class="form-control"
+              type="datetime-local"
+              [(ngModel)]="Starttime"
+            />
+          </div>
+          <div class="col-md-3 grid-margin">
+            <label class="form-label">Select End Time</label>
+            <input
+              formControlName="endTime"
+              class="form-control"
+              type="datetime-local"
+              [(ngModel)]="Endtime"
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary tw-bg-searchBtn">
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        (click)="modal.close('by: close button')"
+        class="btn btn-danger tw-bg-btnDelete"
+      >
+        Close
+      </button>
+    </div>
+  </ng-template>
+</div>

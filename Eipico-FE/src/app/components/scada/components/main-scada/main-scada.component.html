@@ -1,0 +1,224 @@
+<!-- filter -->
+<div class="container-fluid tw-m-0 tw-p-0">
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <form [formGroup]="FilterForm">
+        <div class="row g-3">
+          <div class="col-md-3" *ngIf="accessToFactories">
+            <!-- FactoriesDropDown -->
+            <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+              placeholder="Select Plant" formControlName="factoryId" [(ngModel)]="selectedFactory"
+              (change)="GetFactoryLines(selectedFactory)">
+            </ng-select>
+          </div>
+          <div class="col-md-3">
+            <!-- LineDropDown -->
+            <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+              placeholder="Select Line" formControlName="lineID" [(ngModel)]="selectedLine">
+            </ng-select>
+          </div>
+          <!-- (click)="filterBTN(shiftFilterid)" -->
+          <div class="col-md-3 d-flex justify-content-between">
+            <button type="button" (click)="GetScada()" [disabled]="FilterForm.invalid"
+              class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- WATER AND ENERGY CONSUM CONTAINER -->
+<!-- <div class="container-fluid tw-m-0 tw-p-0" *ngIf="scada">
+  <div class="row">
+    <div class="col-xl-6 grid-margin">
+      <div class="card">
+        <div class="card-body tw-flex tw-items-center">
+          <div>
+            <img src="assets/images/transformIMG.jpg" class="bg-white tw-w-40 tw-me-3">
+          </div>
+          <ul>
+            <li>
+              <p><strong>Energy Consumption</strong> </p>
+              <ul>
+                <li class="tw-ml-2">Consumption : </li>
+                <li class="tw-ml-2">PF : </li>
+                <li class="tw-ml-2">THDv : </li>
+                <li class="tw-ml-2">THDi : </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-6 grid-margin">
+      <div class="card">
+        <div class="card-body tw-flex tw-items-center">
+          <div>
+            <img src="assets/images/water-meterIMG.png" class="tw-bg-white tw-w-40 tw-me-6">
+          </div>
+          <ul>
+            <li>
+              <p><strong>Water Consumption : </strong> </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- scada with machines -->
+<div class="tw-pt-24 tw-relative" *ngIf="scada">
+  <div class="tw-flex tw-items-baseline tw-justify-center" *ngIf="scada?.machines">
+    <div class="tw-flex tw-flex-col tw-relative tw-h-44" *ngFor="let machine of scada.machines;let i = index">
+      <div class="tw-flex tw-justify-start tw-items-center tw-h-40">
+        <div class="tw-relative">
+          <div class="tw-h-4 tw-w-10 tw-bg-white tw-border-2 tw-border-r-0 tw-border-l-0  "
+            [ngClass]="machine.machine_State =='On' ? 'tw-border-green-500':'tw-border-red-500'"></div>
+          <ngb-progressbar
+            [type]="(machine.speed > machine.ratedSpeed* 0.8) ? 'success' : machine.speed ===0 ? 'danger' : 'warning' "
+            class="tw-w-8 tw-h-3 tw-absolute -tw-left-4 -tw-bottom-7" [max]="machine.ratedSpeed"
+            [value]="machine.speed"></ngb-progressbar>
+          <p class="tw-absolute -tw-bottom-16 text-nowrap tw-font-bold -tw-left-4 tw-text-xs">{{machine.speed | number:
+            "1.0-1"}} </p>
+          <p class="tw-absolute -tw-bottom-20 text-nowrap tw-font-bold -tw-left-4 tw-text-xs">PPH</p>
+        </div>
+        <div class="tw-flex tw-flex-col tw-items-center">
+          <div class="tw-relative tw-flex tw-flex-col tw-items-center">
+            <p class="tw-absolute tw-top-0 tw-left-1/4 -tw-translate-y-14 text-nowrap tw-font-bold">
+              {{machine.machineName}} </p>
+            <img src="assets/images/Machine1.jpg" class="tw-w-40 tw-border-2" alt=""
+              [ngClass]="machine.machine_State =='On' ? 'tw-border-green-500':'tw-border-red-500'">
+            <p class="tw-absolute tw-bottom-0 tw-left-1/4 tw-translate-y-14 text-nowrap tw-font-bold">Machine {{i+1}}
+            </p>
+          </div>
+        </div>
+        <div class="tw-h-4 tw-w-10 tw-bg-white tw-border-2 tw-border-l-0 tw-border-r-0"
+          [ngClass]="machine.machine_State =='On' ? 'tw-border-green-500':'tw-border-red-500'"></div>
+        <div class="tw-flex tw-flex-col tw-items-center">
+          <div class="tw-h-4 tw-w-40 tw-bg-white tw-relative tw-border-2 tw-border-l-0 tw-border-r-0"
+            [ngClass]="machine.machine_State =='On' ? 'tw-border-green-500':'tw-border-red-500'">
+            <img src="assets/images/output.png"
+              class="tw-absolute -tw-top-5 -tw-left-4 -tw-translate-y-4 tw-font-bold tw-w-6">
+            <p class="tw-absolute -tw-top-5 tw-left-2 -tw-translate-y-4 tw-font-bold">{{machine.count | number:
+              "1.0-1"}}</p>
+            <img src="assets/images/buffer.jpg"
+              class="tw-w-20 tw-p-1 tw-absolute tw-top-1/2 tw-bg-white tw-right-0 -tw-translate-y-1/2">
+            <p class="tw-absolute -tw-bottom-5 -tw-left-2 tw-translate-y-7 tw-font-bold">Conveyor </p>
+            <p class="tw-absolute -tw-bottom-5 -tw-right-0 -tw-translate-x-1/2 tw-translate-y-7 tw-font-bold">Buffer
+            </p>
+          </div>
+        </div>
+        <div class="tw-relative">
+          <div class="tw-h-4 tw-w-10 tw-bg-white tw-border-2 tw-border-l-0 tw-border-r-0"
+            [ngClass]="machine.machine_State =='On' ? 'tw-border-green-500':'tw-border-red-500'"></div>
+          <img src="assets/images/output.png"
+            class="tw-absolute -tw-top-5 -tw-left-2 -tw-translate-y-4 tw-font-bold tw-w-6">
+          <p class="tw-absolute -tw-top-5 tw-left-5 -tw-translate-y-4 tw-font-bold">{{machine.count | number: "1.0-1"}}
+          </p>
+        </div>
+      </div>
+      <div class="tw-mt-16 tw-w-2/4">
+        <table class="table  table-borderless">
+
+          <tbody class="tw-border-2 text-center">
+            <tr>
+              <th scope="col" class="tw-text-xs">SKUs</th>
+              <th scope="col"><span class="badge bg-white tw-text-black tw-text-xs">{{machine.skuCode? machine.skuCode :
+                  'N/A'}}</span></th>
+            </tr>
+            <tr>
+              <th scope="col" class="tw-text-xs">SKU Name</th>
+              <th scope="col"><span class="badge bg-white tw-text-black tw-text-xs">{{machine.skuName? machine.skuName :
+                  'N/A'}}</span></th>
+            </tr>
+            <tr>
+              <th scope="col" class="tw-text-xs">Reject Count</th>
+              <th scope="col"><span class="badge bg-white tw-text-black tw-text-xs">{{machine.fault? machine.fault :
+                  'N/A'}}</span></th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- section production per line -->
+<div class="row tw-mt-56" [hidden]="!scada">
+  <div class="col-12 col-xl-12 stretch-card">
+    <div class="row flex-grow-1">
+      <div class="col-xl-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">PERFORMANCE</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column">
+              <apx-chart [series]="radialChartOptions1?.series" [chart]="radialChartOptions1?.chart"
+                [plotOptions]="radialChartOptions1?.plotOptions" [labels]="radialChartOptions1?.labels"></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">AVAILABILITY</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column">
+              <apx-chart [series]="radialChartOptions2?.series" [chart]="radialChartOptions2?.chart"
+                [plotOptions]="radialChartOptions2?.plotOptions" [labels]="radialChartOptions2?.labels"></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">OEE</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column">
+              <apx-chart [series]="radialChartOptions3?.series" [chart]="radialChartOptions3?.chart"
+                [plotOptions]="radialChartOptions3?.plotOptions" [labels]="radialChartOptions3?.labels"></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">QUALITY</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column">
+              <apx-chart [series]="radialChartOptions4?.series" [chart]="radialChartOptions4?.chart"
+                [plotOptions]="radialChartOptions4?.plotOptions" [labels]="radialChartOptions4?.labels"></apx-chart>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">PRODUCTIVITY</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column tw-text-lg tw-font-bold" *ngIf="scada?.lines">
+              {{scada.lines[0]?.productivity | number: "1.0-1"}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

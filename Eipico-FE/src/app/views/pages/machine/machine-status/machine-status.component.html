@@ -1,0 +1,612 @@
+<div class="row" >
+  <div class="col-12 grid-margin">
+    <div class="card ">
+      <div class="card-header  d-flex justify-content-between">
+        Filter
+        <div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-2">
+            <!-- <label for="">Select Plant</label> -->
+            <ng-select [items]="FactoriesDropDown"
+            bindLabel="location"
+            bindValue="id"
+            [searchable]="false"
+            [(ngModel)]="selectedFactory" (click)="lineID(selectedFactory)"
+          >
+          </ng-select>
+                  </div>
+            <div class="col-2">
+    <!-- <label for="">Select Line</label> -->
+    <ng-select
+    [items]="LineDropDown"
+    bindLabel="name"
+    bindValue="id"
+    [searchable]="false"
+    [(ngModel)]="selectedLine">
+  </ng-select>
+          </div>
+          <!-- <div class="col-2">
+            <ng-select [items]="MachineFunctionality"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="false"
+            [(ngModel)]="selectedMachineFunctionality" >
+          </ng-select>
+          </div> -->
+          <div class="col-md-3">
+            <div class="example">
+              <form class="d-flex range-selection">
+                <div class="form-group hidden">
+                  <div class="input-group">
+                    <input name="datepicker"
+                           class="form-control"
+                           ngbDatepicker
+                           #datepicker="ngbDatepicker"
+                           [autoClose]="'outside'"
+                           (dateSelect)="onDateSelection($event)"
+                           [displayMonths]="2"
+                           [dayTemplate]="t"
+                           outsideDays="hidden"
+                           [startDate]="fromDate!">
+                    <ng-template #t let-date let-focused="focused">
+                      <span class="custom-day"
+                            [class.focused]="focused"
+                            [class.range]="isRange(date)"
+                            [class.faded]="isHovered(date) || isInside(date)"
+                            (mouseenter)="hoveredDate = date"
+                            (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="input-group" (click)="datepicker.toggle()">
+                    <input #dpFromDate
+                           class="form-control" placeholder="yyyy-mm-dd"
+                           name="dpFromDate"
+                           [value]="formatter.format(fromDate)"
+                           (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                    <button class="input-group-text" type="button">
+                      <i class="feather icon-calendar icon-md text-muted"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="ms-2">
+                  <div class="input-group" (click)="datepicker.toggle()">
+                    <input #dpToDate
+                           class="form-control" placeholder="yyyy-mm-dd"
+                           name="dpToDate"
+                           [value]="formatter.format(toDate)"
+                           (input)="toDate = validateInput(toDate, dpToDate.value)">
+                    <button class="input-group-text" type="button">
+                      <i class="feather icon-calendar icon-md text-muted"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+           <div class="col-2">
+            <button type="button" [disabled]="!selectedLine"  (click)="SerachBtn()" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+              <i class="btn-icon-prepend"  data-feather="filter" appFeatherIcon></i>
+              Search
+            </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="!Placeholder">
+  <div class="col-12">
+    <div class="card text-left">
+      <div class="card-body table-responsive">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Factory Name</th>
+              <th scope="col">Machine State</th>
+              <th scope="col">Beacon Status</th>
+              <th scope="col">Machine</th>
+              <th scope="col">Machineid</th>
+              <th scope="col">Functionality</th>
+              <th scope="col">Since</th>
+              <th rowspan="3" scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of MachineData">
+              <td>{{i.id}}</td>
+              <td>{{i.factory}}</td>
+              <td ><span class="badge text-uppercase "[ngClass]="{'bg-danger': i.machineState == 'off' ,'bg-success': i.machineState == 'on','bg-secondary': i.machineState == 'N/A'}" > {{i.machineState}}</span></td>
+              <td ><span class="badge text-uppercase "[ngClass]="{'bg-danger': i.beconState == 'OffLine' ,'bg-success': i.beconState == 'OnLine'}" > {{i.beconState}}</span></td>
+              <td>{{i.machine}}</td>
+              <td>{{i.machineid}}</td>
+              <td>{{i.functionality}}</td>
+              <td>{{i.timeStamp | date:'short'}}</td>
+              <td>
+               <button class="btn btn-outline-primary btn-sm" type="button" (click)="HistoryBasicModal(History,i.machineid,i.functionality,fromDate,toDate)">History</button>
+                <!-- History -->
+                <div class="example">
+                  <ng-template #History let-modal>
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" >
+                      <div id="HistoryChart" [hidden]="!ChartData.length"></div>
+                      <div class="ph-item" [hidden]="ChartData.length">
+                        <div class="ph-col-12">
+                          <div class="ph-picture"></div>
+                            <div class="ph-row">
+                                <div class="ph-col-6 big"></div>
+                                <div class="ph-col-4 empty big"></div>
+                                <div class="ph-col-2 big"></div>
+                                <div class="ph-col-4"></div>
+                                <div class="ph-col-8 empty"></div>
+                                <div class="ph-col-6"></div>
+                                <div class="ph-col-6 empty"></div>
+                                <div class="ph-col-12"></div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+                    </div>
+                  </ng-template>
+                  <!-- Close result -->
+                </div>
+              </td>
+              <td>
+               <button class="btn btn-outline-primary btn-sm" type="button"  (click)="IndicatorsBasicModal(Indicators,selectedFactory,selectedLine,i.machineid,fromDate,toDate)" >Indicators</button>
+                <div class="example">
+                  <ng-template #Indicators let-modal>
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" >
+                      <div class="row" *ngIf="!showdata">
+                        <div class="col-md-4 text-center ">
+                          <div class="text-center m-auto"
+                          role="progressbar"
+                          style="--value:{{ machineindicator?.oee != null ? machineindicator?.oee : 0 }}">
+                          <small>{{ (machineindicator?.oee)  ?? "N/A"}} %</small>
+                        </div>
+                        <h1 class="text-danger py-2">SLE</h1>
+                        </div>
+                        <div class="col-md-4 text-center ">
+                          <div class="text-center m-auto"
+                          role="progressbar"
+                          style="--value:{{ machineindicator?.avalability != null ? machineindicator?.avalability : 0 }}">
+                          <small>{{ (machineindicator?.avalability)  ?? "N/A"}} %</small>
+                        </div>
+                        <h1 class="text-danger py-2">Avalability</h1>
+
+                        </div>
+                        <div class="col-md-4 text-center ">
+                          <div class="text-center m-auto"
+                          role="progressbar"
+                          style="--value:{{ machineindicator?.beaconAvailability != null ? machineindicator?.beaconAvailability : 0 }}">
+                          <small>{{ (machineindicator?.beaconAvailability)  ?? "N/A"}} %</small>
+                        </div>
+                        <h1 class="text-danger py-2">Beacon Availability</h1>
+
+                        </div>
+                        <hr>
+                        <div class="col-md-12">
+                          <table class="table table-striped table-sm">
+                            <tbody class="text-center">
+                              <tr>
+                                <td>Actually</td>
+                                <td>{{machineindicator?.productionOutput ?? "N/A"}}</td>
+                              </tr>
+                              <tr>
+                                <td>Expected</td>
+                                <td>{{machineindicator?.expected ?? "N/A"}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-md-12" >
+                          <apx-chart  *ngIf="this.machineindicator.machinetimeline.length"
+                          [series]="TimeLineChartOptionsL?.series"
+                          [chart]="TimeLineChartOptionsL?.chart"
+                          [dataLabels]="TimeLineChartOptionsL?.dataLabels"
+                          [plotOptions]="TimeLineChartOptionsL?.plotOptions"
+                          [xaxis]="TimeLineChartOptionsL?.xaxis"
+                          [legend]="TimeLineChartOptionsL?.legend"
+                          [tooltip]="TimeLineChartOptionsL?.tooltip"
+                          [colors]="TimeLineChartOptionsL?.colors"
+                          [fill]="TimeLineChartOptionsL?.fill"
+                          ></apx-chart>
+
+                        </div>
+                      </div>
+                      <div class="ph-item" *ngIf="showdata">
+                        <div class="ph-col-12">
+                          <div class="ph-picture"></div>
+                            <div class="ph-row">
+                                <div class="ph-col-6 big"></div>
+                                <div class="ph-col-4 empty big"></div>
+                                <div class="ph-col-2 big"></div>
+                                <div class="ph-col-4"></div>
+                                <div class="ph-col-8 empty"></div>
+                                <div class="ph-col-6"></div>
+                                <div class="ph-col-6 empty"></div>
+                                <div class="ph-col-12"></div>
+                            </div>
+                        </div>
+                      </div>
+
+
+                     </div>
+
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                      <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button>
+                    </div>
+                  </ng-template>
+                </div>
+              </td>
+              <!--  -->
+              <td>
+                <button class="btn btn-outline-primary btn-sm" type="button" (click)="TagsBasicModal(Tags,i.machineid,fromDate,toDate)">Tags</button>
+                <div class="example">
+                  <ng-template #Tags let-modal>
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" *ngIf="!showdata">
+                      <div class="d-flex justify-content-center">
+                        <div class="btn-group m-auto" role="group" aria-label="Basic button group">
+                          <button *ngFor="let i of MachineTagPropertiesData" type="button" class="btn btn-primary" (click)="tagsChartBtn(i?.columnName,i.chartType)">{{i?.displayName}}</button>
+
+                        </div>
+                      </div>
+                      <div id="TagsSpeedChart"></div>
+                      <div class="ph-item" [hidden]="true">
+                        <div class="ph-col-12">
+                          <div class="ph-picture"></div>
+                            <div class="ph-row">
+                                <div class="ph-col-6 big"></div>
+                                <div class="ph-col-4 empty big"></div>
+                                <div class="ph-col-2 big"></div>
+                                <div class="ph-col-4"></div>
+                                <div class="ph-col-8 empty"></div>
+                                <div class="ph-col-6"></div>
+                                <div class="ph-col-6 empty"></div>
+                                <div class="ph-col-12"></div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ph-item" *ngIf="showdata">
+                      <div class="ph-col-12">
+                        <div class="ph-picture"></div>
+                          <div class="ph-row">
+                              <div class="ph-col-6 big"></div>
+                              <div class="ph-col-4 empty big"></div>
+                              <div class="ph-col-2 big"></div>
+                              <div class="ph-col-4"></div>
+                              <div class="ph-col-8 empty"></div>
+                              <div class="ph-col-6"></div>
+                              <div class="ph-col-6 empty"></div>
+                              <div class="ph-col-12"></div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                      <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button>
+                    </div>
+                  </ng-template>
+                </div>
+              </td>
+
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<!--
+  <div class="col-xl-4 grid-margin stretch-card" *ngFor="let i of MachineData">
+    <div class="card text-left">
+      <div class="card-header text-white  d-flex justify-content-between" [ngClass]="{'bg-danger': i.machineState == 'off' ,'bg-success': i.machineState == 'on','bg-secondary': i.machineState == 'N/A'}">
+          <span>Factory Name : {{selectedFactory}}</span>
+          <span>Machine State : {{i.machineState}}</span>
+      </div>
+      <img class="card-img-top" src="holder.js/100px180/" alt="">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xl-6" style="border-right: solid 1px ;">
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold">Becon Status </span>
+              <span class="badge  "[ngClass]="{'bg-danger': i.beconState == 'OffLine' ,'bg-success': i.beconState == 'OnLine'}" > {{i.beconState}}</span>
+            </div>
+            <div class="d-grid gap-2 py-2">
+              <button class="btn btn-outline-success btn-sm" type="button" [ngClass]="{'btn-outline-danger': i.machineState == 'off' ,'btn-outline-success': i.machineState == 'on','btn-outline-secondary': i.machineState == 'N/A'}"(click)="HistoryBasicModal(History,i.machineid,i.functionality,fromDate,toDate)">History</button>
+              <div class="example">
+                <ng-template #History let-modal>
+                  <div class="modal-header">
+                    <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" >
+                    <div id="HistoryChart" [hidden]="!ChartData.length"></div>
+                    <div class="ph-item" [hidden]="ChartData.length">
+                      <div class="ph-col-12">
+                        <div class="ph-picture"></div>
+                          <div class="ph-row">
+                              <div class="ph-col-6 big"></div>
+                              <div class="ph-col-4 empty big"></div>
+                              <div class="ph-col-2 big"></div>
+                              <div class="ph-col-4"></div>
+                              <div class="ph-col-8 empty"></div>
+                              <div class="ph-col-6"></div>
+                              <div class="ph-col-6 empty"></div>
+                              <div class="ph-col-12"></div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                     <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button>
+                  </div>
+                </ng-template>
+              </div>
+              <button class="btn btn-outline-success btn-sm" type="button" [ngClass]="{'btn-outline-danger': i.machineState == 'off' ,'btn-outline-success': i.machineState == 'on','btn-outline-secondary': i.machineState == 'N/A'}"(click)="TagsBasicModal(Tags,i.machineid,fromDate,toDate)">Tags</button>
+              <div class="example">
+                <ng-template #Tags let-modal>
+                  <div class="modal-header">
+                    <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" *ngIf="!showdata">
+                    <div class="d-flex justify-content-center">
+                      <div class="btn-group m-auto" role="group" aria-label="Basic button group">
+                        <button *ngFor="let i of MachineTagPropertiesData" type="button" class="btn btn-primary" (click)="tagsChartBtn(i?.columnName,i.chartType)">{{i?.displayName}}</button>
+
+                      </div>
+                    </div>
+                    <div id="TagsSpeedChart"></div>
+                    <div class="ph-item" [hidden]="true">
+                      <div class="ph-col-12">
+                        <div class="ph-picture"></div>
+                          <div class="ph-row">
+                              <div class="ph-col-6 big"></div>
+                              <div class="ph-col-4 empty big"></div>
+                              <div class="ph-col-2 big"></div>
+                              <div class="ph-col-4"></div>
+                              <div class="ph-col-8 empty"></div>
+                              <div class="ph-col-6"></div>
+                              <div class="ph-col-6 empty"></div>
+                              <div class="ph-col-12"></div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ph-item" *ngIf="showdata">
+                    <div class="ph-col-12">
+                      <div class="ph-picture"></div>
+                        <div class="ph-row">
+                            <div class="ph-col-6 big"></div>
+                            <div class="ph-col-4 empty big"></div>
+                            <div class="ph-col-2 big"></div>
+                            <div class="ph-col-4"></div>
+                            <div class="ph-col-8 empty"></div>
+                            <div class="ph-col-6"></div>
+                            <div class="ph-col-6 empty"></div>
+                            <div class="ph-col-12"></div>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                    <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button>
+                  </div>
+                </ng-template>
+              </div>
+              <button class="btn btn-outline-success btn-sm" type="button" [ngClass]="{'btn-outline-danger': i.machineState == 'off' ,'btn-outline-success': i.machineState == 'on','btn-outline-secondary': i.machineState == 'N/A'}" (click)="IndicatorsBasicModal(Indicators,selectedFactory,selectedLine,i.machineid,fromDate,toDate)" >Indicators</button>
+              <div class="example">
+                <ng-template #Indicators let-modal>
+                  <div class="modal-header">
+                    <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" >
+                    <div class="row" *ngIf="!showdata">
+                      <div class="col-md-4 text-center ">
+                        <div class="text-center m-auto"
+                        role="progressbar"
+                        style="--value:{{ machineindicator?.oee != null ? machineindicator?.oee : 0 }}">
+                        <small>{{ (machineindicator?.oee)  ?? "N/A"}} %</small>
+                      </div>
+                      <h1 class="text-danger py-2">SLE</h1>
+                      </div>
+                      <div class="col-md-4 text-center ">
+                        <div class="text-center m-auto"
+                        role="progressbar"
+                        style="--value:{{ machineindicator?.avalability != null ? machineindicator?.avalability : 0 }}">
+                        <small>{{ (machineindicator?.avalability)  ?? "N/A"}} %</small>
+                      </div>
+                      <h1 class="text-danger py-2">Avalability</h1>
+
+                      </div>
+                      <div class="col-md-4 text-center ">
+                        <div class="text-center m-auto"
+                        role="progressbar"
+                        style="--value:{{ machineindicator?.beaconAvailability != null ? machineindicator?.beaconAvailability : 0 }}">
+                        <small>{{ (machineindicator?.beaconAvailability)  ?? "N/A"}} %</small>
+                      </div>
+                      <h1 class="text-danger py-2">Beacon Availability</h1>
+
+                      </div>
+                      <hr>
+                      <div class="col-md-12">
+                        <table class="table table-striped table-sm">
+                          <tbody class="text-center">
+                            <tr>
+                              <td>Actually</td>
+                              <td>{{machineindicator?.productionOutput ?? "N/A"}}</td>
+                            </tr>
+                            <tr>
+                              <td>Expected</td>
+                              <td>{{machineindicator?.expected ?? "N/A"}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-md-12" >
+                        <apx-chart  *ngIf="this.machineindicator.machinetimeline.length"
+                        [series]="TimeLineChartOptionsL?.series"
+                        [chart]="TimeLineChartOptionsL?.chart"
+                        [dataLabels]="TimeLineChartOptionsL?.dataLabels"
+                        [plotOptions]="TimeLineChartOptionsL?.plotOptions"
+                        [xaxis]="TimeLineChartOptionsL?.xaxis"
+                        [legend]="TimeLineChartOptionsL?.legend"
+                        [tooltip]="TimeLineChartOptionsL?.tooltip"
+                        [colors]="TimeLineChartOptionsL?.colors"
+                        [fill]="TimeLineChartOptionsL?.fill"
+                        ></apx-chart>
+
+                      </div>
+                    </div>
+                    <div class="ph-item" *ngIf="showdata">
+                      <div class="ph-col-12">
+                        <div class="ph-picture"></div>
+                          <div class="ph-row">
+                              <div class="ph-col-6 big"></div>
+                              <div class="ph-col-4 empty big"></div>
+                              <div class="ph-col-2 big"></div>
+                              <div class="ph-col-4"></div>
+                              <div class="ph-col-8 empty"></div>
+                              <div class="ph-col-6"></div>
+                              <div class="ph-col-6 empty"></div>
+                              <div class="ph-col-12"></div>
+                          </div>
+                      </div>
+                    </div>
+
+
+                   </div>
+
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                    <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <p class="card-text"><span class="fw-bold">id</span> : {{i.id}}</p>
+            <p class="card-text"><span class="fw-bold">Machine</span> : {{i.machine}}</p>
+            <p class="card-text"><span class="fw-bold">Machineid</span> : {{i.machineid}}</p>
+            <p class="card-text"><span class="fw-bold">Functionality</span> : {{i.functionality}}</p>
+            <p class="card-text"><span class="fw-bold">Since</span> : {{i.timeStamp | date:'short'}}</p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>
+<section *ngIf="Placeholder">
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+

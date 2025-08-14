@@ -1,0 +1,111 @@
+<div class="container-fluid">
+  <div class="my-4" *ngIf="HasAccessToAddMaterial()">
+    <button class="btn btn-success" (click)="openAddForm(addForm)">
+      Add
+    </button>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <div class=" tw-flex  tw-justify-end ">
+          <input type="text" class=" tw-w-96 form-control tw-mr-1 tw-items-end " id="Search"
+            placeholder="ITEM CODE, NAME " [(ngModel)]="searchText">
+        </div>
+        <table class="table table table-sm ">
+          <thead class=" text-white">
+            <tr>
+              <th>Item Code</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let item of AllMaterials |search : searchText | paginate
+        : {
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count
+          } ">
+              <td>{{item.itemCode}}</td>
+              <td>{{item.name}}</td>
+
+              <td class="d-flex">
+                <!--  (click)="openBasicModal(edit,item);getId(item.id)" -->
+                <button *ngIf="HasAccessToEditMaterial()" type="button" (click)="openLg(content , item)"
+                  class="btn btn-primary tw-bg-searchBtn mx-1"><i class="icon feather icon-edit"></i></button>
+                <!--  [disabled]="loadonDelete"
+           (click)="delete(item)"
+          -->
+                <button type="button" *ngIf="HasAccessToDeleteMaterial()" class="btn btn-danger tw-bg-btnDelete mx-1"
+                  (click)="delete(item.id )"><i class="icon feather icon-delete"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header tw-flex tw-items-center tw-justify-between">
+    <h4 class="modal-title">{{updatedModalTitle}}</h4>
+    <button type="button" class="btn-close tw-flex tw-items-center tw-justify-center tw-text-2xl" aria-label="Close"
+      (click)="modal.dismiss('Cross click')">
+      <i data-feather="x" appFeatherIcon></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editedForm" class="d-flex justify-content-around">
+      <div class="col-md-4">
+        <label for="machineUid" class="form-label">Name</label>
+        <input type="text" class="form-control" formControlName="name" id="machineUid">
+      </div>
+      <div class="col-md-4">
+        <label for="machineUid" class="form-label">Item Code</label>
+        <input type="text" class="form-control" formControlName="itemCode" id="machineUid">
+      </div>
+
+    </form>
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light  tw-bg-searchBtn tw-text-white"
+      (click)="modal.close('Close click');onUpdate(editedForm.value)">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #addForm let-modal>
+  <div class="card">
+    <div class="modal-header tw-flex tw-items-center tw-justify-between">
+      <h4 class="modal-title">Add New Material</h4>
+      <button type="button" class="btn-close tw-flex tw-items-center tw-justify-center tw-text-2xl" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <i data-feather="x" appFeatherIcon></i>
+      </button>
+    </div>
+    <div class="card-body">
+      <form class="row g-3 tw-my-1" [formGroup]="AddMaterialForm">
+        <div class="col-md-4">
+          <label for="machineName" class="form-label">NAME</label>
+          <input type="text" class="form-control" formControlName="name" id="machineName">
+        </div>
+        <div class="col-md-4">
+          <label for="functionality" class="form-label">ITEM CODE</label>
+          <input type="text" class="form-control" formControlName="itemCode" id="functionality">
+        </div>
+
+
+        <div class="col-12 text-end">
+          <button type="submit" (click)="add();modal.close('Close click')" class="btn btn-dark tw-bg-black">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,126 @@
+<div class="card ">
+  <div class="card-body table-responsive">
+     <h1>Production</h1>
+    <!-- <h2> <button type="button" class="btn btn-lg btn-light " (click)="showAndHide()">  <h1 class="m-0 p-0">{{toggelToShow ? 'Hide' : 'Show'}} Production</h1>
+    </button></h2> -->
+    <!-- <mat-icon>{{toggelToShow ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon> -->
+    <div class="d-flex justify-content-end expand" (click)="toggelToShow = !toggelToShow">
+      {{toggelToShow ? 'Collapse' : 'Expand'}} Production
+      <mat-icon>{{!toggelToShow ? 'keyboard_arrow_left' : 'keyboard_arrow_down'}}</mat-icon>
+    </div>
+
+
+
+<!-- <i data-feather="arrow-down"></i> -->
+    <table class="table table-hover" *ngIf="toggelToShow">
+      <thead>
+        <tr>
+          <th scope="col">Machine Name</th>
+          <th scope="col">State</th>
+          <th scope="col">Last Active</th>
+          <!-- <th scope="col">Fault</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr  *ngFor="let machine of MachineProduction" >
+          <td scope="col">
+             {{machine.machineName}}
+          </td>
+
+          <td scope="col"><span class="badge text-uppercase "   [ngClass]="{'bg-danger':machine.beacon_Status == 'OffLine' ,'bg-success': machine.beacon_Status== 'OnLine','bg-secondary': machine.beacon_Status == 'N/A'}">
+             {{machine.beacon_Status}}
+          </span></td>
+          <td scope="col">
+            {{machine.timeStamp | date :'medium'}}
+          </td>
+          <!-- <td *ngIf="machine.fault == -1">
+            N/A
+          </td>
+          <td *ngIf="machine.fault == 0">
+            No Fault
+          </td>
+          <td *ngIf="machine.fault == 1">
+            Fault
+          </td> -->
+          <!-- <td>
+            <button class="btn btn-outline-primary btn-sm" (click)="TagsBasicModal(Tags,machine.machineName,fromDatey.value,toDatey.value,machine.machineName)" type="button">Tags</button>
+          </td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ##############  Utilities ############-->
+
+
+ <div class="card mt-2">
+  <div class="card-body table-responsive">
+     <h1>Utilities</h1>
+
+    <div class="d-flex justify-content-end expand" (click)="toggelToHide = !toggelToHide">
+      {{toggelToHide ? 'Collapse' : 'Expand'}} Utilities
+      <mat-icon>{{!toggelToHide ? 'keyboard_arrow_left' : 'keyboard_arrow_down'}}</mat-icon>
+    </div>
+
+    <table class="table table-hover"  *ngIf="toggelToHide">
+      <thead>
+        <tr>
+          <th scope="col">Machine Name</th>
+          <th scope="col">Energy State</th>
+          <th scope="col">Time Stamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  *ngFor="let machine of MachineUtilites" >
+          <td scope="col">
+             {{machine.name}}
+          </td>
+
+          <td scope="col"><span class="badge text-uppercase "   [ngClass]="{'bg-danger':machine.status == 'OFFLINE' ,'bg-success': machine.status== 'ONLINE','bg-secondary': machine.status == 'N/A'}">
+             {{machine.status}}
+          </span></td>
+          <td scope="col">
+            {{machine.timeStamp | date :'medium'}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ######################### -->
+
+
+<div class="row mt-2">
+<div class="col-xl-4 stretch-card grid-margin">
+  <div class="card">
+    <div class="card-header">
+      <h4>Total Becons</h4>
+    </div>
+    <div class="card-body">
+      <h1>{{totalBecons + totalBeconsU }}</h1>
+    </div>
+  </div>
+</div>
+<div class="col-xl-4 stretch-card grid-margin">
+  <div class="card">
+    <div class="card-header">
+      <h4>Total Active</h4>
+    </div>
+    <div class="card-body">
+      <h1>{{totalActive + totalActiveU}}</h1>
+    </div>
+  </div>
+</div>
+<div class="col-xl-4 stretch-card grid-margin">
+  <div class="card">
+    <div class="card-header">
+      <h4>Total Inactive</h4>
+    </div>
+    <div class="card-body">
+      <h1>{{totalInactive + totalInactiveU}}</h1>
+    </div>
+  </div>
+</div>
+</div>

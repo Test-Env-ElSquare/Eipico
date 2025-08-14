@@ -1,0 +1,199 @@
+<div class="row">
+  <div class="col-12 col-xl-12 stretch-card">
+    <div class="row flex-grow-1">
+      <!-- <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-baseline">
+              <h6 class="card-title mb-0">Growth</h6>
+              <div ngbDropdown class="mb-2">
+                <button ngbDropdownToggle class="btn p-0 no-dropdown-toggle-icon" type="button"
+                  id="dropdownMenuButton2">
+                  <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal" appFeatherIcon></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="eye"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">View</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="edit-2"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Edit</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="trash"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Delete</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="printer"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Print</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i
+                      data-feather="download" appFeatherIcon class="icon-sm me-2"></i> <span
+                      class="">Download</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 col-md-12 col-xl-5">
+                <h3 class="mb-2">89.87%</h3>
+                <div class="d-flex align-items-baseline">
+                  <p class="text-success">
+                    <span>+2.8%</span>
+                    <i data-feather="arrow-up" appFeatherIcon class="icon-sm mb-1"></i>
+                  </p>
+                </div>
+              </div>
+              <div class="col-6 col-md-12 col-xl-7">
+                <div class="mt-md-3 mt-xl-0">
+                  <apx-chart [series]="growthChartOptions.series" [chart]="growthChartOptions.chart"
+                    [colors]="growthChartOptions.colors" [xaxis]="growthChartOptions.xaxis"
+                    [stroke]="growthChartOptions.stroke" [markers]="growthChartOptions.markers"></apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-baseline">
+              <h6 class="card-title mb-0">Energy Consumption / Last 7 Days</h6>
+              <div ngbDropdown class="mb-2">
+                <button ngbDropdownToggle class="btn p-0 no-dropdown-toggle-icon" type="button" id="dropdownMenuButton">
+                  <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal" appFeatherIcon></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="eye"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">View</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="edit-2"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Edit</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="trash"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Delete</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="printer"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Print</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i
+                      data-feather="download" appFeatherIcon class="icon-sm me-2"></i> <span
+                      class="">Download</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 col-md-12 col-xl-5">
+                <h3 class="mb-2">{{totalEnergyConsumption | number: "1.0-1"}} (kWh)</h3>
+                <div class="d-flex align-items-baseline">
+                </div>
+              </div>
+              <div class="col-6 col-md-12 col-xl-7">
+                <div class="mt-md-3 mt-xl-0">
+                  <apx-chart [series]="EURChartOptions.series" [chart]="EURChartOptions.chart"
+                    [colors]="EURChartOptions.colors" [xaxis]="EURChartOptions.xaxis" [stroke]="EURChartOptions.stroke"
+                    [markers]="EURChartOptions.markers" [tooltip]="EURChartOptions.tooltip"></apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-baseline">
+              <h6 class="card-title mb-0">Water Consumption / Last 7 Days</h6>
+              <div ngbDropdown class="mb-2">
+                <button ngbDropdownToggle class="btn p-0 no-dropdown-toggle-icon" type="button"
+                  id="dropdownMenuButton1">
+                  <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal" appFeatherIcon></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownMenuButton1">
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="eye"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">View</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="edit-2"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Edit</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="trash"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Delete</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="printer"
+                      appFeatherIcon class="icon-sm me-2"></i> <span class="">Print</span></a>
+                  <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i
+                      data-feather="download" appFeatherIcon class="icon-sm me-2"></i> <span
+                      class="">Download</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 col-md-12 col-xl-5">
+                <h3 class="mb-2">{{totalWaterConsumption | number: "1.0-1"}} (m<sup>3</sup>)</h3>
+                <div class="d-flex align-items-baseline">
+                </div>
+              </div>
+              <div class="col-6 col-md-12 col-xl-7">
+                <div class="mt-md-3 mt-xl-0">
+                  <apx-chart [series]="WURordersChartOptions.series" [chart]="WURordersChartOptions.chart"
+                    [colors]="WURordersChartOptions.colors" [plotOptions]="WURordersChartOptions.plotOptions"
+                    [xaxis]="WURordersChartOptions.xaxis"  [tooltip]="WURordersChartOptions.tooltip"></apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--  -->
+<div class="row">
+  <!--  -->
+  <div class="col-xl-8 ">
+    <div class="card text-left">
+      <div class="card-body">
+        <div class="row align-items-start pb-5">
+          <div class="col-md-6 d-flex justify-content-md-start">
+            <!--  -->
+            <div>
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" autocomplete="off" checked="">
+                <label class="btn btn-outline-primary" for="btnRadio1" (click)='gitMainDashboard(1,ProductFilterid)'>Last Shift</label>
+
+                <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnRadio2" (click)='gitMainDashboard(2,ProductFilterid)'>Last 7 Days</label>
+
+                <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnRadio3" (click)='gitMainDashboard(0,ProductFilterid)'>Last 30
+                  Days</label>
+              </div>
+              <!-- <h2 class="card-title">{{factoryName}}</h2> -->
+
+            </div>
+            <!--  -->
+          </div>
+          <div class="col-md-6 d-flex justify-content-md-end">
+            <div>
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio4" autocomplete="off"  checked="" [(ngModel)]="ProductFilterid" value="0">
+                <label class="btn btn-outline-success" for="btnRadio4"  >Packets</label>
+
+                <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio5" autocomplete="off"  [(ngModel)]="ProductFilterid" value="1">
+                <label class="btn btn-outline-success" for="btnRadio5" >Bottles</label>
+
+                <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio6" autocomplete="off"  [(ngModel)]="ProductFilterid" value="2">
+                <label class="btn btn-outline-success" for="btnRadio6" >Pallets</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="DrilDownChart"></div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="col-xl-4 stretch-card ">
+    <div class="card text-left">
+      <div class="card-body">
+        <h6 class="card-title mb-0 text-center">SLE / Last 7 Days</h6>
+        <apx-chart
+        [series]="RadarChartOptions.series"
+        [chart]="RadarChartOptions.chart"
+        [colors]="RadarChartOptions.colors"
+        [grid]="RadarChartOptions.grid"
+        [legend]="RadarChartOptions.legend"
+        [labels]="RadarChartOptions.labels"
+        [xaxis]="RadarChartOptions.xaxis"
+        [yaxis]="RadarChartOptions.yaxis"
+      ></apx-chart>      </div>
+    </div>
+  </div>
+</div>

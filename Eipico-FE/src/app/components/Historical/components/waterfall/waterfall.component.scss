@@ -1,0 +1,92 @@
+
+#guageSpeed1,#guageSpeed2{
+  padding: 0;
+  max-width: 2000px;
+  height: 200px;
+}
+.bg-light{
+  background-color: #BBBBBB!important;
+}
+
+.bg-danger{
+  background-color: #e61d2b!important;
+}
+.bg-sucsses{
+
+  background-color: #a1ca70!important;
+
+}
+
+.text-danger{
+  color: #e61d2b!important;
+}
+
+.btn-outline-danger {
+  color: #e61d2b;
+  border-color: #e61d2b;
+}
+
+.btn-outline-danger:hover {
+  color: #fff;
+  background-color: #e61d2b;
+}
+
+.btn-danger {
+  background-color: #e61d2b!important;
+}
+
+.bg-red{
+  border: solid 3px #e61e2b;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+
+
+}
+.bg-green{
+  border: solid 3px #a1ca70;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.bg-Online{
+  background-color: #a1ca70;
+}
+.bg-Offline{
+  background-color:#e61e2b ;
+}
+.bg-Waiting{
+  background-color: #BBBBBB;
+}
+.bg-CIP{
+  background-color:#57769a ;
+}
+.badge{
+  width: 150px!important;
+    cursor: pointer;
+
+}
+.Number{
+  font-size: 1.5rem;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.card .card-title {
+  font-size: large!important;
+  color: #3B3936;
+}
+h1{
+  line-height: 0.4;
+  font-size: xx-large;
+}
+
+.card-title{
+  font-size: x-large;
+  color: #3B3936;
+
+}
+
+.text-primary
+{
+  color: #5a6f85!important;
+}

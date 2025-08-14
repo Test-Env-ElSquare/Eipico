@@ -1,0 +1,78 @@
+<div class="card grid-margin">
+  <div class="card-header">
+    <h3>Product Planning</h3>
+  </div>
+  <!-- add form -->
+  <div class="card-body">
+    <form [formGroup]="addProductPlanningForm" (ngSubmit)="submit()">
+      <div class="row">
+        <div class="col-md-3 grid-margin" *ngIf="accessToFactories">
+          <label class="form-label">Select Plant</label>
+          <ng-select
+            [items]="FactoriesDropDown"
+            [loading]="!FactoriesDropDown"
+            [searchable]="false"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Select Plant"
+            formControlName="factoryId"
+            [(ngModel)]="selectedplant"
+            (change)="lineID(selectedplant)"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3 grid-margin">
+          <label class="form-label">Select Line</label>
+          <ng-select
+            [items]="lineNum"
+            [searchable]="false"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Select line"
+            formControlName="lineId"
+            [(ngModel)]="selectedLine"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3 grid-margin">
+          <label class="form-label">Day</label>
+          <input
+            formControlName="day"
+            class="form-control"
+            type="date"
+            [(ngModel)]="selectedShift"
+          />
+        </div>
+        <div class="col-md-3 grid-margin">
+          <label class="form-label">Select SKU</label>
+          <ng-select
+            [items]="skus"
+            [searchable]="false"
+            bindLabel="name"
+            bindValue="sku"
+            placeholder="Select SKU"
+            formControlName="skuName"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3 grid-margin">
+          <label class="form-label">Quantity</label>
+          <input formControlName="target" class="form-control" type="number" />
+        </div>
+        <!-- <div class="col-md-3 grid-margin">
+          <label class="form-label">Select Start Time</label>
+          <input  formControlName="shiftStartTime" class="form-control" type="date" [(ngModel)]="Starttime"  />
+        </div> -->
+        <div class="col-md-3 d-flex align-items-end grid-margin">
+          <button
+            class="btn btn-primary tw-bg-searchBtn"
+            type="submit"
+            [disabled]="addProductPlanningForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,235 @@
+<section>
+
+  <!-- searchBar -->
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <form [formGroup]="FilterForm">
+        <div class="row g-3">
+          <div class="col-md-3" *ngIf="accessToFactories">
+            <!-- FactoriesDropDown -->
+            <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+              placeholder="Select Plant" [(ngModel)]="selectedFactory" formControlName="factoryId"
+              (change)="GetFactoryLines(selectedFactory)">
+            </ng-select>
+          </div>
+          <div class="col-md-3">
+            <!-- LineDropDown -->
+            <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+              placeholder="Select Line" formControlName="lineID" [(ngModel)]="selectedLine">
+            </ng-select>
+          </div>
+          <div class="col-md-3 d-flex justify-content-between">
+            <button type="submit" [disabled]="FilterForm.invalid" (click)="search()"
+              class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!FilterForm.invalid">
+    <div class="col-12 col-xl-12 stretch-card">
+      <div class="row flex-grow-1">
+        <div class="col-md-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body table-responsive">
+              <div class="w-100 d-flex justify-content-end">
+                <div class="w-50 row">
+                  <div class="col-sm-10">
+                    <input type="text" class="tw-mr-1 form-control" id="Search" placeholder="BATCH NAME"
+                      [(ngModel)]="searchText">
+                  </div>
+                  <button for="Search" class="btn btn-success   col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
+                    (click)="getBatches(searchText)">Search</button>
+                </div>
+              </div>
+
+              <nav ngbNav #nav="ngbNav" class="nav-tabs">
+                <ng-container ngbNavItem>
+                  <a ngbNavLink
+                    (click)="isPending=1; searchText===''?checked(isPending):getBatches(searchText) ">Pending</a>
+                  <ng-template ngbNavContent>
+                    <div class="tw-text-center" *ngIf="skusArr?.length ==0">
+                      <h3 class="text-danger">
+                        No Data
+                      </h3>
+                    </div>
+                    <table *ngIf="skusArr?.length !=0" class="table table-hover caption-top align-center">
+                      <thead class="align-center">
+                        <tr>
+                          <th scope="col">
+                            Sku Name
+                          </th>
+                          <th scope="col">
+                            Batch Number
+                          </th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody class="align-center">
+                        <tr *ngFor="let sku of skusArr">
+                          <td>{{ sku.skuName }}</td>
+                          <td>{{ sku.batchId }}</td>
+                          <td class="">
+                            <button (click)="activate(sku.batchId)" *ngIf="hasAccessToActivateBatch()"
+                              class="btn tw-bg-sky-500 btn-sm tw-text-white me-2  hover:tw-bg-sky-950 hover:tw-text-white">
+                              Activate
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
+                              (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem>
+                  <a ngbNavLink
+                    (click)="isPending=0;searchText===''?checked(isPending):getBatches(searchText) ">Activated</a>
+                  <ng-template ngbNavContent>
+                    <div class="tw-text-center" *ngIf="skusArr?.length ==0">
+                      <h3 class="text-danger">
+                        No Data
+                      </h3>
+                    </div>
+                    <table *ngIf="skusArr?.length !=0" class="table table-hover caption-top align-center">
+                      <thead class="align-center">
+                        <tr>
+                          <th scope="col">
+                            Sku Name
+                          </th>
+                          <th scope="col">
+                            Batch Number
+                          </th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody class="align-center">
+                        <tr *ngFor="let sku of skusArr">
+                          <td>{{ sku.skuName }}</td>
+                          <td>{{ sku.batchId }}</td>
+                          <td class="">
+                            <button (click)="Finished(sku.batchId)" *ngIf="hasAccessToFinisheBatch()"
+                              class="btn tw-bg-green-600 btn-sm tw-text-white me-2 hover:tw-bg-green-800 hover:tw-text-white">
+                              Finish
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
+                              (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem>
+                  <a ngbNavLink
+                    (click)="isPending=2;searchText===''?checked(isPending):getBatches(searchText)">Finished</a>
+                  <ng-template ngbNavContent>
+                    <div class="tw-text-center" *ngIf="skusArr?.length ==0">
+                      <h3 class="text-danger">
+                        No Data
+                      </h3>
+                    </div>
+                    <table *ngIf="skusArr?.length !=0" class="table table-hover caption-top align-center">
+                      <thead class="align-center">
+                        <tr>
+                          <th scope="col">
+                            Sku Name
+                          </th>
+                          <th scope="col">
+                            Batch Number
+                          </th>
+                          <th scope="col">
+                            Activation Date
+                          </th>
+                          <th scope="col">
+                            Finishing Date
+                          </th>
+                          <!-- <th scope="col">
+                            Count
+                          </th> -->
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody class="align-center">
+                        <tr *ngFor="
+                          let sku of skusArr">
+                          <td>{{ sku.skuName }}</td>
+                          <td>{{ sku.batchId }}</td>
+                          <td>{{ sku.activationDate? (sku.activationDate | date :'medium'):'N/A'}}</td>
+                          <td>{{ sku.finishingDate?(sku.finishingDate | date :'medium'):'N/A'}}</td>
+                          <!-- <td>{{ sku.count | number }}</td> -->
+                          <td>
+                            <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
+                              (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </ng-template>
+                </ng-container>
+              </nav>
+
+              <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="example">
+  <ng-template #MaterialYIELD let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body w-100">
+      <table class="table  ">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Scale</th>
+            <th>Scale Pair</th>
+            <th>Machine Pair</th>
+            <th>Activation Date</th>
+            <th>Finishing Date</th>
+            <th>Availability</th>
+            <th>Count</th>
+            <th>Quality</th>
+            <th>OEE</th>
+            <th>Performance</th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{JobOrderDetails?.room? (JobOrderDetails?.room) : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.scale? (JobOrderDetails?.scale) : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.scalePair? (JobOrderDetails?.scalePair | date : 'dd-MM-yyyy HH:mm a'): 'N/A'}}</td>
+            <td>{{JobOrderDetails?.machinePair | date : 'dd-MM-yyyy HH:mm a'}} </td>
+            <td>{{JobOrderDetails?.activationDate | date : 'dd-MM-yyyy HH:mm a'}}</td>
+            <td>{{JobOrderDetails?.finishingDate | date : 'dd-MM-yyyy HH:mm a'}}</td>
+            <td>{{JobOrderDetails?.availability? (JobOrderDetails.availability *100 )+' %' : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.count? (JobOrderDetails?.count) : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.quality? (JobOrderDetails.quality*100)+' %' : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.oee? (JobOrderDetails.oee*100)+' %' : 'N/A'}}</td>
+            <td>{{JobOrderDetails?.performance? (JobOrderDetails.performance *100) +' %' : 'N/A'}}</td>
+          </tr>
+          <tr style="border-bottom:solid 1px ;">
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger tw-bg-btnDelete"
+        (click)="modal.close('by: close button')">Close</button>
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>

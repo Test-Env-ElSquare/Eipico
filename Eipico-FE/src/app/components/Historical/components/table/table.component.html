@@ -1,0 +1,124 @@
+<div class="row" *ngIf="!loading">
+  <div class="col-xl-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body table-responsive">
+        <table class="table" *ngIf="filler?.filler_per_Hour === null">
+          <thead>
+            <tr>
+              <th scope="col">Day</th>
+              <th scope="col">Count</th>
+              <th scope="col">Pallets</th>
+              <th scope="col">EUR</th>
+              <th scope="col">Quality</th>
+              <th scope="col">Availability</th>
+              <th scope="col">PERFORMANCE</th>
+              <th scope="col">OEE</th>
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let data of filler?.filerperday">
+              <!-- <ng-container  > -->
+
+              <!-- <td *ngIf="duration === 0 || duration === 1 || duration === undefined">
+                  {{data?.day | date : 'shortTime'}}
+                </td> -->
+
+              <td>
+                {{filterObj.shiftFilterid === 0 || filterObj.shiftFilterid === 1 || filterObj.shiftFilterid ===
+                undefined ? ( data?.day | date : 'shortTime') : data?.day | date : 'mediumDate'}}
+              </td>
+
+              <td>
+                {{data?.parts}}
+              </td>
+              <td>
+                {{data?.pallets}}
+              </td>
+              <td>
+                {{data?.eur}}
+              </td>
+              <td>
+                {{(data?.quality! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.availability! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.performance! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.oee! * 100)!.toFixed(2)}} %
+              </td>
+              <!-- </ng-container> -->
+
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table" *ngIf="filler?.filerperday === null">
+          <thead>
+            <tr>
+              <th scope="col">Hour</th>
+              <th scope="col">Count</th>
+              <th scope="col">Qreject</th>
+              <th scope="col">Availability</th>
+              <th scope="col">Performance</th>
+              <th scope="col">Quality</th>
+              <th scope="col">OEE</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let data of filler?.filler_per_Hour">
+
+              <td>
+                {{ data?.hour! > 12 ? data?.hour+':00 PM' : data?.hour+':00 AM'}}
+              </td>
+
+              <td>
+                {{data?.count}}
+              </td>
+              <td>
+                {{data?.qreject}}
+              </td>
+              <td>
+                {{(data?.availability! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.performance! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.quality! * 100)!.toFixed(2)}} %
+              </td>
+              <td>
+                {{(data?.oee! * 100)!.toFixed(2)}} %
+              </td>
+              <!-- </ng-container> -->
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="tw-text-center tw-font-bold tw-text-xl" *ngIf="loading">
+  <mat-spinner class="tw-mx-auto"></mat-spinner>
+</div>
+
+
+<!--
+  <td *ngIf="duration === 0">
+                {{data?.day | date : 'shortTime'}}
+              </td>
+              <td *ngIf="duration === 1">
+                {{data?.day | date : 'shortTime'}}
+              </td>
+              <td *ngIf="duration">
+                {{data?.day | date : 'mediumDate'}}
+              </td>
+-->

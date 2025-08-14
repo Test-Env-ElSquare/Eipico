@@ -1,0 +1,71 @@
+<div class="container-fluid mt-3">
+  <div class="card shadow-sm p-4">
+
+    <div class="card-body">
+      <form class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label for="shiftSelect" class="form-label">Select Shift</label>
+          <ng-select inputId="shiftSelect" [items]="ShiftList" optionLabel="name" styleClass="w-100"></ng-select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="fromDate" class="form-label">From</label>
+          <p-calendar inputId="fromDate" (ngModel)="fromDate" [showTime]="true" hourFormat="12"
+            styleClass="w-100"></p-calendar>
+        </div>
+
+        <div class="col-md-3">
+          <label for="toDate" class="form-label">To</label>
+          <p-calendar inputId="toDate" (ngModel)="toDate" [showTime]="true" hourFormat="12"
+            styleClass="w-100"></p-calendar>
+        </div>
+
+        <div class="col-md-3">
+          <button class="btn btn-danger w-50">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card mt-3">
+    <div class="card-body table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="align-middle">
+          <tr>
+            <th scope="col">Shift</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Actions</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+
+
+
+
+            <td class="text-center p-2">
+
+              <button type="button" class="btn btn-sm text-white bg-delete-danger" title="Delete" [disabled]="false">
+                <i class="pi pi-trash"></i>
+              </button>
+              <button type="button" class="btn btn-sm text-white bg-edit-primary mx-2" title="Edit">
+                <i class="pi pi-pencil"></i>
+              </button>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+<!-- DASHBORAD FILTERS -->
+<div class="row grid-margin">
+  <div class="col-12">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><span class="text-danger fw-bold">Page</span> : Dashboard </li>
+        <li class="breadcrumb-item"><span class="text-danger fw-bold">Plant</span> : {{filter.plant || "Plant"}}</li>
+        <li class="breadcrumb-item"><span class="text-danger fw-bold">Line</span> : {{ filter.line === -1 ? 'All Line' : filter.line }}</li>
+        <li class="breadcrumb-item"><span class="text-danger fw-bold">Duration</span> : {{Duration || "Time"}}</li>
+      </ol>
+    </nav>
+  </div>
+  <!--  -->
+  <div class="col-md-3">
+    <!-- <label for="">Select Plant</label> -->
+    <ng-select [items]="FactoriesDropDown"
+    bindLabel="location"
+    bindValue="id"
+    [searchable]="false"
+    [(ngModel)]="selectedFactory" (click)="lineID(selectedFactory)"
+  >
+  </ng-select>
+  </div>
+  <!--  -->
+  <div class="col-md-3">
+    <!-- <label for="">Select Line</label> -->
+    <ng-select
+    [items]="LineDropDown"
+    bindLabel="name"
+    bindValue="lineNum"
+    [searchable]="false"
+    [(ngModel)]="selectedLine">
+  </ng-select>
+  </div>
+  <!--  -->
+  <div class="col-md-4 d-flex justify-content-between">
+      <button type="button" class="btn btn-outline-danger"  [disabled]="!selectedLine" (click)="gitDuration(0)">Last Shift</button>
+      <button type="button" class="btn btn-outline-danger" [disabled]="!selectedLine" (click)="gitDuration(1)">Last Day</button>
+      <button type="button" class="btn btn-outline-danger" [disabled]="!selectedLine" (click)="gitDuration(2)">Last 7 ADay</button>
+      <button type="button" class="btn btn-outline-danger" [disabled]="!selectedLine" (click)="gitDuration(3)">Last 30 ADay</button>
+    <!-- <label for="">Select Duration</label> -->
+    <!-- <ng-select [items]="DurationDropDown"
+    bindLabel="name"
+    bindValue="id"
+    [searchable]="false"
+    [(ngModel)]="selectedDuration" (click)="gitDuration(selectedDuration)">
+  </ng-select> -->
+  </div>
+  <!--  -->
+  <div class="col-md-3 d-flex align-items-end ">
+    <!-- <button [disabled]="!selectedLine" type="button" class="btn btn-danger px-5" (click)="SerachBtn()">Search <i class="icon feather icon-filter"></i></button> -->
+    <!-- <button type="button" class="btn btn-danger mx-3">Rest <i class="icon feather icon-zap"></i></button> -->
+  </div>
+  <!--  -->
+</div>
+
+<div class="row" *ngIf="Placeholder" >
+  <div class="col-md-3">
+    <div class="ph-item">
+      <div class="ph-col-12">
+        <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-3">
+    <div class="ph-item">
+      <div class="ph-col-12">
+        <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="ph-item">
+      <div class="ph-col-12">
+        <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="ph-item">
+      <div class="ph-col-12">
+        <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+   <div class="col-md-12">
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div *ngIf="!Placeholder">
+  <app-dashboard  [dashboardData]="dashboardData" ></app-dashboard>
+
+</div>

@@ -1,0 +1,68 @@
+<section>
+  <div class="tw-text-center tw-font-bold tw-text-xl" *ngIf="loading">
+    <!-- <p>loading....</p> -->
+    <mat-spinner class="tw-mx-auto"></mat-spinner>
+  </div>
+
+  <div class="row" *ngIf="!loading">
+    <!-- WUR -->
+    <div class="col-xl-3 stretch-card grid-margin">
+      <div class="card text-left">
+        <div class="card-header">
+          <h6 class="card-title mb-0"> Quality
+          </h6>
+        </div>
+        <div class="card-body">
+          <!-- WUR chart-->
+          <apx-chart [series]="radialChartOptions2.series" [chart]="radialChartOptions2.chart"
+            [plotOptions]="radialChartOptions2.plotOptions" [labels]="radialChartOptions2.labels"></apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- EUR -->
+    <div class="col-xl-3 stretch-card grid-margin">
+      <div class="card text-left">
+        <div class="card-header">
+          <h6 class="card-title mb-0"> Availability
+          </h6>
+        </div>
+        <div class="card-body">
+          <!-- EUR chart-->
+          <apx-chart [series]="radialChartOptions3.series" [chart]="radialChartOptions3.chart"
+            [plotOptions]="radialChartOptions3.plotOptions" [labels]="radialChartOptions3.labels"></apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE KPI (pptp) -->
+    <div class="col-xl-3 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0"> PERFORMANCE
+          </h6>
+        </div>
+        <div class="card-body">
+          <!-- PERFORMANCE KPI (pptp) chart -->
+          <apx-chart [series]="radialChartOptions1.series" [chart]="radialChartOptions1.chart"
+            [plotOptions]="radialChartOptions1.plotOptions" [labels]="radialChartOptions1.labels"></apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE KPI (SLE) -->
+    <div class="col-xl-3 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0"> OEE
+          </h6>
+        </div>
+        <div class="card-body">
+          <!-- PERFORMANCE KPI (SLE) chart -->
+          <apx-chart [series]="radialChartOptions.series" [chart]="radialChartOptions.chart"
+            [plotOptions]="radialChartOptions.plotOptions" [labels]="radialChartOptions.labels"></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

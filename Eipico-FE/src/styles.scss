@@ -1,0 +1,47 @@
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primeng/resources/themes/saga-blue/theme.css"; /* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+// Global icon font
+@import "./assets/fonts/feather/style.css";
+
+// // 3rd party plugins
+@import "~@mdi/font/css/materialdesignicons.min.css";
+@import "~perfect-scrollbar/css/perfect-scrollbar.css";
+@import "~highlight.js/styles/googlecode.css";
+@import "~ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css";
+@import "~ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css";
+@import "~animate.css/animate.min.css";
+@import "~@fullcalendar/common/main.min.css";
+@import "~@fullcalendar/daygrid/main.min.css";
+@import "~@fullcalendar/timegrid/main.min.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "~metismenujs/scss/metismenujs";
+@import "~dropzone/dist/min/dropzone.min.css";
+@import "~quill/dist/quill.snow.css";
+@import "~angular-archwizard/styles/archwizard.css";
+@import "~simple-datatables/dist/style.css";
+@import "~@swimlane/ngx-datatable/index.css";
+@import "~@swimlane/ngx-datatable/themes/bootstrap.css";
+@import "~@swimlane/ngx-datatable/assets/icons.css";
+@import "~/node_modules/placeholder-loading/src/scss/placeholder-loading";
+
+// NobleUI styles for LTR
+@import "./assets/scss/style";
+
+// NobleUI styles For RTL
+// @import "./assets/scss/style.rtl.css";
+/* width */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

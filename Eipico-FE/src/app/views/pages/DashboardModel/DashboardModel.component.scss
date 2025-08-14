@@ -1,0 +1,46 @@
+span{
+  font-size: x-large;
+}
+
+.bg-danger{
+  background-color: #e61d2b!important;
+}
+.btn-primary{
+background-color:   #6a94c6;
+border: #6a94c6;
+}
+.breadcrumb-item{
+  text-transform: uppercase;
+  font-size: 1rem;
+  
+}
+.pointer{
+cursor: pointer;
+}
+
+div[role="progressbar"] {
+  --size: 12rem;
+  --fg: #6a94c6;
+  --bg: #def;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 3s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+      closest-side,
+      white 80%,
+      transparent 0 99.9%,
+      white 0
+    ),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage var(--value);
+}

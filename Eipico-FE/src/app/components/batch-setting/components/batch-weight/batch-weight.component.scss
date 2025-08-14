@@ -1,0 +1,9 @@
+.sortimage {
+  @apply hover:tw-cursor-pointer tw-w-4 tw-h-4;
+}
+
+#sku {
+  span {
+    @apply tw-flex tw-items-center tw-justify-between;
+  }
+}

@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-md-12 stretch-card grid-margin">
+    <div class="card ">
+      <div class="card-header">
+        <h3> Downtime Planning </h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="addNewDowntimePlanningForm" (ngSubmit)="postform()">
+          <div class="row">
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select Plant</label>
+              <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false"
+                bindLabel="name" bindValue="id" placeholder="Select plant" formControlName="factoryId"
+                [(ngModel)]="selectedplant" (change)="lineID(selectedplant)">
+              </ng-select>
+            </div>
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select Line</label>
+              <ng-select [items]="LineDropDown" [searchable]="false" bindLabel="name" bindValue="id"
+                placeholder="Select line" formControlName="lineId" [(ngModel)]="selectedLine">
+              </ng-select>
+            </div>
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select Reasons</label>
+              <ng-select [items]="stoppageReasons" [loading]="!stoppageReasons" [searchable]="false" bindLabel="name"
+                bindValue="id" placeholder="Select Reesons" formControlName="reasonId" [(ngModel)]="selectedResons"
+                (change)="GetAllSubReasons(selectedResons)">
+              </ng-select>
+            </div>
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select SubReesons</label>
+              <ng-select [items]="getAllSubReasons" [searchable]="false" bindLabel="name" bindValue="id"
+                placeholder="Select SubReeson" formControlName="subReasonId" [(ngModel)]="selectedSubResons">
+              </ng-select>
+            </div>
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select Start Time</label>
+              <input formControlName="startTime" class="form-control" type="datetime-local" [(ngModel)]="Starttime" />
+            </div>
+            <div class="col-md-3 grid-margin">
+              <label class="form-label">Select End Time</label>
+              <input formControlName="endTime" class="form-control" type="datetime-local" [(ngModel)]="Endtime" />
+            </div>
+            <div class="col-md-12 grid-margin text-end">
+              <button class="btn btn-primary tw-bg-searchBtn" type="submit"
+                [disabled]="addNewDowntimePlanningForm.invalid">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

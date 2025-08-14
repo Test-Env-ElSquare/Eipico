@@ -1,0 +1,20 @@
+<div class="sticky-top">
+  <mat-progress-bar *ngIf="LoaderService.loader | async" mode="indeterminate"></mat-progress-bar>
+</div>
+<div class="main-wrapper">
+  <!-- partial:sidebar -->
+    <app-sidebar></app-sidebar>
+  <!-- partial -->
+
+  <div class="page-wrapper">
+    <!-- partial:navbar -->
+    <app-navbar></app-navbar>
+    <!-- partial -->
+    <div class="page-content ">
+     <div>
+    <router-outlet></router-outlet>
+    </div>
+
+</div>
+  </div>
+</div>

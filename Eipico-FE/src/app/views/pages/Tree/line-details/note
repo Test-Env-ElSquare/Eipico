@@ -1,0 +1,162 @@
+
+<div *ngIf="!Placeholder" class="row">
+  <div class="col-md-6 grid-margin">
+      <div class="card-header d-flex justify-content-between bg-red" [ngClass]="{'bg-green':currentShift == 1}">
+        <h2>Shift <Span class="Number" >1</Span></h2>
+        <h2>Current SKU {{skuShift1}}</h2>
+      </div>
+      <div class="card ">
+        <div class="card-body">
+          <div id="chart-line"></div>
+          <div id="chart-line2"></div>
+          <div class="d-flex justify-content-between">
+            <div class="chartC">
+              <apx-chart *ngIf="chartOptionscircle1.series"
+              [series]="chartOptionscircle1.series"
+              [chart]="chartOptionscircle1.chart"
+              [plotOptions]="chartOptionscircle1.plotOptions"
+              [labels]="chartOptionscircle1.labels"
+              [fill]="chartOptionscircle1.fill"
+              [colors]="chartOptionscircle1.colors"
+            ></apx-chart>
+            </div>
+            <!--  -->
+            <div class="chartC">
+            <apx-chart *ngIf="chartOptionscircle2.series"
+            [series]="chartOptionscircle2.series"
+            [chart]="chartOptionscircle2.chart"
+            [plotOptions]="chartOptionscircle2.plotOptions"
+            [labels]="chartOptionscircle2.labels"
+          ></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!--  -->
+  <div class="col-md-6 grid-margin" >
+    <div class="card-header d-flex justify-content-between bg-red" [ngClass]="{'bg-green':currentShift == 2}">
+      <h2>Shift  <Span class="Number">2</Span></h2>
+      <h2 *ngIf="currentShift == 2">Current SKU {{skuShift2}}</h2>
+      <h2 *ngIf="currentShift == 1">Shift 2 Not Started Yet</h2>
+    </div>
+    <div class="card " >
+      <div class="card-body" >
+        <div id="chart-line3"></div>
+        <div id="chart-line4"></div>
+        <div class="d-flex justify-content-between">
+          <div class="chartC">
+            <apx-chart *ngIf="chartOptionscircle3.series"
+            [series]="chartOptionscircle3.series"
+            [chart]="chartOptionscircle3.chart"
+            [plotOptions]="chartOptionscircle3.plotOptions"
+            [labels]="chartOptionscircle3.labels"
+            [fill]="chartOptionscircle3.fill"
+            [colors]="chartOptionscircle3.colors"
+        ></apx-chart>
+          </div>
+          <!--  -->
+          <div class="chartC">
+          <apx-chart  *ngIf="chartOptionscircle4.series"
+          [series]="chartOptionscircle4.series"
+          [chart]="chartOptionscircle4.chart"
+          [plotOptions]="chartOptionscircle4.plotOptions"
+          [labels]="chartOptionscircle4.labels"
+      ></apx-chart>
+          </div>
+        </div>
+
+      </div>
+    </div>
+</div>
+
+<!--  -->
+<div class="col-12 grid-margin">
+  <div class="card ">
+    <div class="card-header text-center d-flex justify-content-between">
+      <div>
+        TIME LINE CHART
+        <span (click)="StartCon()" class="badge bg-Online rounded-pill mx-2">Start Connection</span>
+        <span (click)="stopCon()" class="badge bg-Offline rounded-pill">Stop Connection</span>
+      </div>
+      <div>
+        <span class="badge bg-Online rounded-pill">Online</span>
+        <span class="badge bg-Offline rounded-pill">Offline</span>
+        <span class="badge bg-Waiting rounded-pill">Waiting</span>
+        <span class="badge bg-CIP rounded-pill">CIP</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <apx-chart  *ngIf="TimeLineChartOptionsL.series"
+      [series]="TimeLineChartOptionsL.series"
+      [chart]="TimeLineChartOptionsL.chart"
+      [dataLabels]="TimeLineChartOptionsL.dataLabels"
+      [plotOptions]="TimeLineChartOptionsL.plotOptions"
+      [xaxis]="TimeLineChartOptionsL.xaxis"
+      [legend]="TimeLineChartOptionsL.legend"
+      [tooltip]="TimeLineChartOptionsL.tooltip"
+      [colors]="TimeLineChartOptionsL.colors"
+      [fill]="TimeLineChartOptionsL.fill"
+      ></apx-chart>
+        </div>
+  </div>
+
+</div>
+
+
+</div>
+
+<div class="row" *ngIf="Placeholder">
+  <div class="col-md-6">
+    <div class="ph-item">
+      <div class="ph-col-12">
+        <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+          <div class="ph-row">
+              <div class="ph-col-6 big"></div>
+              <div class="ph-col-4 empty big"></div>
+              <div class="ph-col-2 big"></div>
+              <div class="ph-col-4"></div>
+              <div class="ph-col-8 empty"></div>
+              <div class="ph-col-6"></div>
+              <div class="ph-col-6 empty"></div>
+              <div class="ph-col-12"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+</div>

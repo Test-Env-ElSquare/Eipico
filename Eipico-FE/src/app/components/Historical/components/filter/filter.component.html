@@ -1,0 +1,87 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" style="border-bottom: solid 5px #6a94c6;">Dashboard </li>
+      <li class="breadcrumb-item">
+        {{factorybreadcrumb || "Plant"}}
+      </li>
+      <li class="breadcrumb-item">
+        {{ Linebreadcrumb === -1 ? 'All Line' : (Linebreadcrumb || "Line") }}
+      </li>
+      <li class="breadcrumb-item">
+        {{Durationbreadcrumb ? Durationbreadcrumb : "Duration"}}
+      </li>
+    </ol>
+  </nav>
+  <!-- filter by shift -->
+  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
+      [checked]="shiftFilterid==0" autocomplete="off" [value]="0" (change)="customBtnClicked = false"
+      (click)="this._historicalService.dashboardTime.emit(shiftFilterid)">
+
+    <label class="btn btn-outline-primary" for="btnRadio3">Current
+      Shift</label>
+
+    <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" [(ngModel)]="shiftFilterid"
+      autocomplete="off" [checked]="shiftFilterid == 1" (change)="customBtnClicked = false" [value]="1">
+    <label class="btn btn-outline-primary" for="btnRadio1">Last Shift</label>
+
+    <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio2"
+      (change)="customBtnClicked = false" [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
+    <label class="btn btn-outline-primary" for="btnRadio2">Last Two Shifts</label>
+
+    <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio5" [(ngModel)]="shiftFilterid"
+      (change)="customBtnClicked = false" autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
+    <label class="btn btn-outline-primary" for="btnRadio5">Last 7 Days</label>
+
+    <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio4" autocomplete="off"
+      (change)="customBtnClicked = false" [(ngModel)]="shiftFilterid" [checked]="shiftFilterid==4" [value]="4">
+    <label class="btn btn-outline-primary" for="btnRadio4">Last 30 Days</label>
+
+    <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio6" autocomplete="off"
+      [(ngModel)]="shiftFilterid" [checked]="shiftFilterid==5" (click)="searchByCustomDuration()" [value]="5">
+    <label class="btn btn-outline-primary" for="btnRadio6">Custom</label>
+
+    <div class="">
+      <div class="input-group d-flex align-items-baseline" *ngIf="customBtnClicked">
+        <input type="date" class="form-control" max="{{ today | date : 'yyyy-MM-dd'  }}" [ngModel]="lastDay"
+          (ngModelChange)="onFromDateChange($event)" />
+        <span>&nbsp; : &nbsp;</span>
+        <input type="date" class="form-control" [min]="lastDay" max="{{ today | date : 'yyyy-MM-dd' }}"
+          [ngModel]="toDate | date : 'yyyy-MM-dd'" (ngModelChange)="toDate = $event" />
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- searchBar -->
+<div class="row">
+  <div class="col-12 grid-margin">
+    <form [formGroup]="FilterForm">
+      <div class="row g-3">
+        <div class="col-md-3" *ngIf="accessToFactories">
+          <!-- FactoriesDropDown -->
+          <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+            placeholder="Select Plant" formControlName="factoryId" (change)="GetFactoryLines(selectedFactory)"
+            [(ngModel)]="selectedFactory">
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <!-- LineDropDown -->
+          <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+            placeholder="Select Line" formControlName="lineID" (change)="stopCon()" [(ngModel)]="selectedLine">
+          </ng-select>
+        </div>
+        <div class="col-md-3 d-flex justify-content-between">
+          <button type="button" (click)="filterBTN(selectedFactory,selectedLine,shiftFilterid,lastDay,toDate)"
+            [disabled]="FilterForm.invalid || disableSearchBtn"
+            class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

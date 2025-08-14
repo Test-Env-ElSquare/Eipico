@@ -1,0 +1,571 @@
+<section>
+  <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item" style="border-bottom: solid 5px #6a94c6;">Dashboard </li>
+        <li class="breadcrumb-item">{{factorybreadcrumb || "Plant"}}</li>
+        <li class="breadcrumb-item"> {{ Linebreadcrumb  === -1 ? 'All Line' : (Linebreadcrumb || "Line") }}</li>
+        <li class="breadcrumb-item">{{Durationbreadcrumb ? Durationbreadcrumb : "Duration"}}</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <form [formGroup]="FilterForm">
+      <div class="row">
+        <div class="col-md-3">
+          <ng-select [items]="FactoriesDropDown"
+          bindLabel="location"
+          bindValue="id"
+          [searchable]="false"
+          placeholder="Select Plant"
+          formControlName="factoryId"
+          [(ngModel)]="selectedFactory" (click)="lineID(selectedFactory)"
+        >
+        </ng-select>
+        </div>
+        <!--  -->
+        <div class="col-md-3">
+          <ng-select
+          [items]="LineDropDown"
+          bindLabel="name"
+          bindValue="lineNum"
+          [searchable]="false"
+          placeholder="Select Line"
+          formControlName="lineID"
+          [(ngModel)]="selectedLine">
+        </ng-select>
+        </div>
+        <!--  -->
+        <div class="col-md-3">
+          <ng-select
+          [items]="DurationDropDown"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="false"
+          placeholder="Select Duration"
+          formControlName="DurationID"
+          [(ngModel)]="selectedDuration">
+        </ng-select>
+        </div>
+        <!--  -->
+        <div class="col-md-3 d-flex justify-content-between">
+          <button type="button" [disabled]="FilterForm.invalid" (click)="filterBTN()" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend"  data-feather="filter" appFeatherIcon></i>
+            Search
+          </button>
+          <!-- <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="download-cloud" appFeatherIcon></i>
+            Download Report
+          </button> -->
+            </div>
+      </div>
+    </form>
+    </div>
+  </div>
+</section>
+<!--  -->
+<section *ngIf="!Placeholder">
+<!-- row -->
+  <div class="row" *ngIf="dashboard">
+    <div class="col-12 col-xl-12 stretch-card">
+      <div class="row flex-grow-1">
+        <!-- <div class="col-md-3 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-baseline">
+                <h6 class="card-title mb-0">New Customers</h6>
+                <div ngbDropdown class="mb-2">
+                  <button ngbDropdownToggle class="btn p-0 no-dropdown-toggle-icon" type="button" id="dropdownMenuButton">
+                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal" appFeatherIcon></i>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                    <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="eye" appFeatherIcon class="icon-sm me-2"></i> <span class="">View</span></a>
+                    <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="edit-2" appFeatherIcon class="icon-sm me-2"></i> <span class="">Edit</span></a>
+                    <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="trash" appFeatherIcon class="icon-sm me-2"></i> <span class="">Delete</span></a>
+                    <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="printer" appFeatherIcon class="icon-sm me-2"></i> <span class="">Print</span></a>
+                    <a ngbDropdownItem class="d-flex align-items-center" href="" (click)="false"><i data-feather="download" appFeatherIcon class="icon-sm me-2"></i> <span class="">Download</span></a>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 col-md-12 col-xl-5">
+                  <h3 class="mb-2">3,897</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-success">
+                      <span>+3.3%</span>
+                      <i data-feather="arrow-up" appFeatherIcon class="icon-sm mb-1"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-12 col-xl-7">
+                  <div class="mt-md-3 mt-xl-0">
+                    <apx-chart
+                      [series]="customersChartOptions.series"
+                      [chart]="customersChartOptions.chart"
+                      [colors]="customersChartOptions.colors"
+                      [xaxis]="customersChartOptions.xaxis"
+                      [stroke]="customersChartOptions.stroke"
+                      [markers]="customersChartOptions.markers"
+                    ></apx-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="col-xl-3 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0">TOTAL PRODUCTION</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-column">
+                <div class="d-flex align-items-center  py-2">
+                  <div class="w-100">
+                    <div class="d-flex justify-content-between">
+                      <h3 class="mb-2">Bottle </h3>
+                      <p class="text-muted tx-12 pointer"  (click)="openBasicModal(basicModal)">More Details</p>
+                    </div>
+                    <span>{{dashboard?.totalProduction?.bottle | number: "1.0-1"}}</span>
+                    <p class="text-danger tx-12 " *ngIf="fillerFlag" >One or More Filler was Down</p>
+                    <p class="text-success tx-12 " *ngIf="!fillerFlag" >Data is accurate</p>
+
+                  </div>
+                  <div class="example">
+                    <ng-template #basicModal let-modal>
+                      <div class="modal-header">
+                        <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table class="table" >
+                          <thead>
+                            <tr>
+                              <th>Product</th>
+                              <th>Size</th>
+                              <th>Line</th>
+                              <th>Bottle</th>
+                              <th>Date</th>
+
+                            </tr>
+
+
+                          </thead>
+                          <tbody  *ngFor="let item of dashboard?.total_Production" >
+                            <tr>
+                              <td>{{item?.productName }}</td>
+                              <td>{{item?.size | number: "1.0-1" }}</td>
+                              <td>{{item?.line | number: "1.0-1" }}</td>
+                              <td>{{item?.physicalCases | number: "1.0-1" }}</td>
+                              <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+
+                            </tr>
+                            <tr style="border-bottom:solid 1px ;">
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                        <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+                      </div>
+                    </ng-template>
+                    <!-- Close result -->
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="d-flex flex-column">
+                <div class="d-flex align-items-center  py-2">
+                  <div class="w-100">
+                    <div class="d-flex justify-content-between">
+                      <h3 class="mb-2">Litres </h3>
+                    </div>
+                    <span>{{dashboard?.totalProduction?.liters | number: "1.0-1"}}</span>
+                    <p class="text-danger tx-12 " *ngIf="palletizerFlag" >One or More Palletizers was Down</p>
+                    <p class="text-success tx-12 " *ngIf="!palletizerFlag" >Data is accurate</p>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+         <div class="col-xl-3 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0">  TOTAL PRODUCTION</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-column">
+                <div class="d-flex align-items-center  py-2">
+                  <div class="w-100">
+                    <div class="d-flex justify-content-between">
+                      <h3 class="mb-2">Physical Case</h3>
+                      <p class="text-muted tx-12 pointer" (click)="openBasicModal(Physical)">More Details</p>
+                    </div>
+                    <span>{{dashboard?.totalProduction?.physicalCase | number: "1.0-1"}}</span>
+                    <p class="text-danger tx-12 " *ngIf="palletizerFlag" >One or More Palletizers was Down</p>
+                    <p class="text-success tx-12 " *ngIf="!palletizerFlag" >Data is accurate</p>
+
+                  </div>
+                  <!-- Physical -->
+                  <div class="example">
+                    <ng-template #Physical let-modal>
+                      <div class="modal-header">
+                        <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table class="table" >
+                          <thead>
+                            <tr>
+                              <th>Product</th>
+                              <th>Size</th>
+                              <th>Line</th>
+                              <th>Physical Cases</th>
+                              <th>Date</th>
+                            </tr>
+
+
+                          </thead>
+                          <tbody  *ngFor="let item of dashboard?.total_Production" >
+                            <tr>
+                              <td>{{item?.productName}}</td>
+                              <td>{{item?.size | number: "1.0-1"}}</td>
+                              <td>{{item?.line | number: "1.0-1"}}</td>
+                              <td>{{item?.packet | number: "1.0-1"}}</td>
+                              <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+                            </tr>
+                            <tr style="border-bottom:solid 1px ;">
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                        <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+                      </div>
+                    </ng-template>
+                    <!-- Close result -->
+                  </div>
+                </div>
+              </div>
+                <hr>
+               <div class="d-flex flex-column">
+                <div class="d-flex align-items-center  py-2">
+                  <div class="w-100">
+                    <div class="d-flex justify-content-between">
+                      <h3 class="mb-2">Pallet</h3>
+                      <p class="text-muted tx-12 pointer" (click)="openBasicModal(Pallet)">More Details</p>
+                    </div>
+                    <span>{{dashboard?.totalProduction?.pallet | number: "1.0-1"}}</span>
+                    <p class="text-danger tx-12 " *ngIf="palletizerFlag" >One or More Palletizers was Down</p>
+                    <p class="text-success tx-12 " *ngIf="!palletizerFlag" >Data is accurate</p>
+
+                  </div>
+                  <!-- Pallet -->
+                <div class="example">
+                  <ng-template #Pallet let-modal>
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table" >
+                        <thead>
+                          <tr>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>Line</th>
+                            <th>Pallet</th>
+                            <th>Date</th>
+                          </tr>
+
+
+                        </thead>
+                        <tbody  *ngFor="let item of dashboard?.total_Production" >
+                          <tr>
+                            <td>{{item?.productName}}</td>
+                            <td>{{item?.size | number: "1.0-1"}}</td>
+                            <td>{{item?.line | number: "1.0-1"}}</td>
+                            <td>{{item?.pallet | number: "1.0-1"}}</td>
+                            <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+                          </tr>
+                          <tr style="border-bottom:solid 1px ;">
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+                    </div>
+                  </ng-template>
+                  <!-- Close result -->
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0"> USAGE RATIOS (Plant)</h6>
+            </div>
+            <div class="card-body">
+              <!-- <div class="d-flex justify-content-between align-items-baseline">
+                <h6 class="card-title mb-0">New Customers</h6>
+              </div> -->
+              <div class="row">
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between py-2">
+                  <h3 class="mb-2">EUR</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.usage?.energyLiterRatio == -1 ? "N/A" : dashboard?.usage?.energyLiterRatio}} </span>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h5 class="mb-2">Total energy Consumption</h5>
+                  <div class="d-flex align-items-baseline">
+                    <h3 class="text-dark">
+                    {{dashboard?.usage?.totalEnergyConsumption | number: "1.0-1"}} (KWh)
+                    </h3>
+                  </div>
+                </div>
+                <hr>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between py-2">
+                  <h3 class="mb-2">WUR</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.usage?.waterLiterRatio == -1 ? "N/A" : dashboard?.usage?.waterLiterRatio}} </span>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h5 class="mb-2">Total Water Consumption</h5>
+                  <div class="d-flex align-items-baseline">
+                    <h3 class="text-dark">
+                      {{dashboard?.usage?.total_Water_Consumption == -1 ?  "N/A" :  (dashboard?.usage?.total_Water_Consumption | number: "1.0-1") }} (m<sup>3</sup>)
+                    </h3>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0"> YIELD</h6>
+
+            </div>
+            <div class="card-body">
+              <!-- <div class="d-flex justify-content-between align-items-baseline">
+                <h6 class="card-title mb-0">New Customers</h6>
+              </div> -->
+              <div class="row">
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h3 class="mb-2"> Co2 Yield</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.yield?.co2Yield ?? "N/A"}}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h3 class="mb-2"> Syrup Yield</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.yield?.syrupYield ?? "N/A"}}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <hr>
+                </div>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h3 class="mb-2">  Preform Yield</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.yield?.preformYield ?? "N/A"}}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h3 class="mb-2">
+                    Cans Yield</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.yield?.cansYield ?? "N/A"}}</span>
+                    </p>
+                  </div>
+                </div>
+                    <div class="col-4 col-md-12 col-xl-12 d-flex justify-content-between">
+                  <h3 class="mb-2">
+                    NRB Yield	</h3>
+                  <div class="d-flex align-items-baseline">
+                    <p class="text-dark">
+                      <span>{{dashboard?.yield?.nrGlassYield ?? "N/A"}}</span>
+                    </p>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12 col-xl-9 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <apx-chart
+          [legend]="barChartOptions.legend"
+          [dataLabels]="barChartOptions.dataLabels"
+          [series]="barChartOptions.series"
+          [colors]="barChartOptions.colors"
+          [grid]="barChartOptions.grid"
+          [chart]="barChartOptions.chart"
+          [xaxis]="barChartOptions.xaxis"
+          [yaxis]="barChartOptions.yaxis"
+          [annotations]="barChartOptions.annotations"
+          [tooltip]="barChartOptions.tooltip"        ></apx-chart>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0">  PERFORMANCE KPI (SLE)
+          </h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center ">
+          <div
+          role="progressbar"
+          style="--value:{{ sle != null ? sle : 0 }}"          >
+          <small>{{ sle?? "N/A"}} %</small>
+        </div>
+          <!-- <h1 class="text-center my-2">SLE</h1> -->
+        </div>
+      </div>
+    </div>
+    <div class=" col-xl-12 grid-margin grid-margin-xl-0 stretch-card">
+      <div class="card">
+        <div class="card-body" >
+          <apx-chart
+          [series]="TimeLineChartOptionsL.series"
+          [chart]="TimeLineChartOptionsL.chart"
+          [dataLabels]="TimeLineChartOptionsL.dataLabels"
+          [plotOptions]="TimeLineChartOptionsL.plotOptions"
+          [xaxis]="TimeLineChartOptionsL.xaxis"
+          [legend]="TimeLineChartOptionsL.legend"
+          [tooltip]="TimeLineChartOptionsL.tooltip"
+          [colors]="TimeLineChartOptionsL.colors"
+          [fill]="TimeLineChartOptionsL.fill"
+           ></apx-chart>
+          <!-- <apx-chart [series]="TimeLineChartOptionsL.series" [chart]="TimeLineChartOptionsL.chart"
+          [plotOptions]="TimeLineChartOptionsL.plotOptions" [labels]="TimeLineChartOptionsL.labels"></apx-chart> -->
+            </div>
+      </div>
+    </div>
+  </div>
+  <div class="row w-100 bg-white" *ngIf="!dashboard">
+    <div class="col-md-12 text-center">
+      <img src="assets/images/75061-dashboard.gif" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+    </div>
+  </div>
+</section>
+<!--  -->
+<section *ngIf="Placeholder">
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+<form [formGroup]="form">
+
+  <div class="row">
+    <div class="col-md-4 my-2">
+      <label>Username</label>
+      <input formControlName="username" class="form-control" />
+      <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')">
+        Required
+      </p>
+      <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('pattern')">
+        Shouldn't have spaces
+      </p>
+    </div>
+
+    <div class="col-md-4 my-2">
+      <label>Email</label>
+      <input formControlName="email" class="form-control" type="email" />
+      <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+        Required
+      </p>
+      <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+        Please enter a valid email
+      </p>
+    </div>
+
+    <div class="col-md-4 my-2">
+      <label>Password</label>
+      <input formControlName="password" class="form-control" type="text" />
+      <p class="required" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+        Required
+      </p>
+      <div class="required" *ngIf="form.get('password')?.hasError('pattern')">
+        Password must be at least 8 characters long, and include an uppercase letter, a number, and a special character.
+      </div>
+    </div>
+
+    <div class="col-md-4 my-2">
+      <label>Roles</label>
+      <ng-select [items]="roles" bindLabel="name" bindValue="name" placeholder="Select Role" formControlName="roleName">
+      </ng-select>
+      <p class="required" *ngIf="form.get('roleName')?.touched && form.get('roleName')?.hasError('required')">
+        Required
+      </p>
+    </div>
+
+    <!-- <div class="col-md-4 my-2" *ngIf="isRoleAdmin">
+      <label>Factory</label>
+      <ng-select [items]="factoryList" placeholder="Select Factory" bindLabel="type" formControlName="claims">
+      </ng-select>
+    </div> -->
+
+    <div class="col-md-3 my-2">
+      <br>
+      <button class="btn btn-primary" [disabled]="form.invalid" (click)="addUser()">Add User</button>
+    </div>
+
+  </div>
+
+</form>

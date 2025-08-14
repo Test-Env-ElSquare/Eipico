@@ -1,0 +1,254 @@
+
+<div class="row">
+  <div class="col-md-12 stretch-card grid-margin">
+    <div class="card ">
+      <div class="card-header">
+        <h3> Downtime Planning </h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="addNewPostForm">
+          <div class="row">
+            <!-- plant -->
+            <div class="col-md-3 py-3">
+              <div class="form-floating">
+                <h3>Select Plant</h3>
+                <ng-select
+                [items]="FactoriesDropDown"
+                [loading]="!FactoriesDropDown"
+                 [searchable]="false"
+                 bindLabel="location"
+                 bindValue="id"
+                placeholder="Select plant"
+                formControlName="factoryId"
+              [(ngModel)]="selectedplant" (click)="lineID(selectedplant)">
+            </ng-select>
+
+              </div>
+            </div>
+            <!-- line -->
+            <div class="col-md-3 py-3">
+              <div class="form-floating">
+                <h3>Select Line</h3>
+
+                <ng-select
+                [items]="LineDropDown"
+                [searchable]="false"
+                bindLabel="name"
+                bindValue="id"
+               placeholder="Select line"
+               formControlName="lineId"
+               [(ngModel)]="selectedLine" (click)="GetMachine(selectedLine)">
+             </ng-select>
+              </div>
+            </div>
+            <!--machine  -->
+                <!--MainReason  -->
+            <div class="col-md-3 py-3">
+              <div class="form-floating">
+                <h3>Select Main Reason</h3>
+
+                <ng-select
+                [items]="MainReasonValue"
+                [searchable]="false"
+                bindLabel="stop_Name"
+                bindValue="id"
+                placeholder="Select Main Reason"
+                [(ngModel)]="selectedMainReason"
+                formControlName="mainReasonId"
+                (click)="GetAllMainReasons()"
+                >
+              </ng-select>
+              </div>
+            </div>
+                    <!--subReasonName  -->
+            <div class="col-md-3 py-3">
+              <div class="form-floating">
+                <h3>Select Sub Reason </h3>
+
+                <ng-select
+                [items]="subReasonDropDownValue"
+                [searchable]="false"
+                bindLabel="subReasonName"
+                   bindValue="id"
+                   formControlName="subReasonId"
+               placeholder="Select Sub Reason"
+                [(ngModel)]="SelectedsubReason"
+                (click)="GetAllsubReasons(selectedMainReason)"
+                >
+             </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 py-3">
+              <h3>Select Start Time</h3>
+
+              <input  formControlName="startTime" class="form-control" type="datetime-local" [(ngModel)]="Starttime"  />
+            </div>
+               <div class="col-md-3 py-3">
+                <h3>Select End Time</h3>
+
+                  <input formControlName="endTime"  class="form-control" type="datetime-local" [(ngModel)]="Endtime" />
+            </div>
+            <div class="col-md-12 py-3">
+              <button class="btn btn-primary" [disabled]="addNewPostForm.invalid"
+                (click)="postform()">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <!--  -->
+  <div class="col-xl-3 stretch-card grid-margin">
+    <div class="card">
+      <div class="card-header">
+        <h3>Select Day</h3>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-center">
+          <ngb-datepicker #dp [(ngModel)]="selectedDate" (navigate)="date = $event.next"  (click)="resourceDownTimePlans(selectedDate)"></ngb-datepicker>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="col-xl-9 stretch-card grid-margin" style="height: 500px; overflow: scroll;">
+    <div class="card">
+      <!-- <div class="card-header">
+        <h6>Line chart</h6>
+      </div> -->
+        <div class="card-body table-responsive">
+          <table class="table table table-sm  " >
+            <thead>
+              <tr>
+                <th>Factory</th>
+                <th>Line</th>
+                <th>Machine</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Main Reason</th>
+                <th>Sub Reason</th>
+                <th>action</th>
+              </tr>
+            </thead>
+            <tbody >
+
+              <tr *ngFor="let item of resourceDownTimePlansTable">
+
+                <td>{{item?.factory}}</td>
+                <td>{{item?.lineNumber}}</td>
+                <td>{{item?.machine}}</td>
+                <td>{{item?.startTime | date:"medium"}}</td>
+                <td>{{item?.endTime  |  date:"medium"}}</td>
+                <td>{{item?.mainReason}}</td>
+                <td>{{item?.subReason || "N/A"}}</td>
+                <td class="d-flex">
+                  <button type="button" class="btn btn-primary mx-1" (click)="openBasicModal(edit,item)"><i class="icon feather icon-edit"></i></button>
+                  <div class="example">
+                    <ng-template #edit let-modal>
+                      <div class="modal-header">
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form [formGroup]="addNewPostForm">
+                          <div class="row">
+                            <!-- plant -->
+                            <div class="col-md-3 py-3">
+                              <div class="form-floating">
+                                <h3>Select Plant</h3>
+                                <ng-select
+                                [items]="FactoriesDropDown"
+                                [loading]="!FactoriesDropDown"
+                                 [searchable]="false"
+                                 bindLabel="location"
+                                 bindValue="id"
+                                placeholder="Select plant"
+                                formControlName="factoryId"
+                              [(ngModel)]="selectedplant" (click)="lineID(selectedplant)">
+                            </ng-select>
+
+                              </div>
+                            </div>
+                            <!-- line -->
+                            <div class="col-md-3 py-3">
+                              <div class="form-floating">
+                                <h3>Select Line</h3>
+
+                                <ng-select
+                                [items]="LineDropDown"
+                                [searchable]="false"
+                                bindLabel="name"
+                                bindValue="id"
+                               placeholder="Select line"
+                               formControlName="lineId"
+                               [(ngModel)]="selectedLine" (click)="GetMachine(selectedLine)">
+                             </ng-select>
+                              </div>
+                            </div>
+
+                                <!--MainReason  -->
+                            <div class="col-md-3 py-3">
+                              <div class="form-floating">
+                                <h3>Select Main Reason</h3>
+                                <ng-select
+                                [items]="MainReasonValue"
+                                [searchable]="false"
+                                bindLabel="stop_Name"
+                                bindValue="id"
+                                placeholder="Select Main Reason"
+                                [(ngModel)]="selectedMainReason"
+                                formControlName="mainReasonId"
+                                (click)="GetAllMainReasons()"
+                                >
+                              </ng-select>
+                              </div>
+                            </div>
+                                    <!--subReasonName  -->
+                            <div class="col-md-3 py-3">
+                              <div class="form-floating">
+                                <h3>Select Sub Reason </h3>
+
+                                <ng-select
+                                [items]="subReasonDropDownValue"
+                                [searchable]="false"
+                                bindLabel="subReasonName"
+                                   bindValue="id"
+                                formControlName="subReasonId"
+                               placeholder="Select Sub Reason"
+                                [(ngModel)]="SelectedsubReason"
+                                (click)="GetAllsubReasons(selectedMainReason)"
+                                >
+                             </ng-select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 py-3">
+                              <h3>Select Start Time</h3>
+
+                              <input  formControlName="startTime" class="form-control" type="datetime-local" [(ngModel)]="Starttime"  />
+                            </div>
+                               <div class="col-md-3 py-3">
+                                <h3>Select End Time</h3>
+
+                                  <input formControlName="endTime"  class="form-control" type="datetime-local" [(ngModel)]="Endtime" />
+                            </div>
+
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                        <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')" >Save changes</button>
+                      </div>
+                    </ng-template>
+                    <!-- Close result -->
+                  </div>
+                  <button type="button" class="btn btn-danger mx-1"  [disabled]="loadonDelete" (click)="delete(item?.id,selectedDate)"><i class="icon feather icon-delete"></i></button>
+              </td>
+              </tr>
+
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+  </div>

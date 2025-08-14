@@ -1,0 +1,355 @@
+<section>
+<!--  -->
+<div class="row grid-margin">
+  <!-- TOTAL PRODUCTION AND DASHBORAD VALUES -->
+  <div class="col-md-6 col-xl-3 stretch-card  ">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between  ">
+        <h6 class="card-title">
+          <i class="icon feather icon-clipboard text-danger"></i> TOTAL PRODUCTION</h6>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td>
+                <h4 style="cursor: pointer;" (click)="openBasicModal(basicModal)"><i class="icon feather icon-more-vertical text-danger"></i>  Bottle</h4></td>
+                <td><h2 >{{dashboardData?.totalProduction?.bottle | number: "1.0-1"}}</h2></td>
+              </tr>
+            <tr>
+              <td><h4 style="cursor: pointer;" (click)="openBasicModal(Physical)"><i class="icon feather icon-more-vertical text-danger"></i>  Physical Case</h4></td>
+              <td><h2 >{{dashboardData?.totalProduction?.physicalCase | number: "1.0-1"}}</h2></td>
+            </tr>
+            <tr>
+              <td>
+                <h4 style="cursor: pointer;" (click)="openBasicModal(Pallet)"><i class="icon feather icon-more-vertical text-danger"></i>  Pallet</h4>
+              </td>
+              <td>
+                <h2 >{{dashboardData?.totalProduction?.pallet | number: "1.0-1"}}</h2>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- PERFORMANCE KPI -->
+  <div class="col-md-6 col-xl-3 stretch-card">
+    <div class="card" >
+      <div class="card-header  ">
+        <h6 class="card-title"><i class="icon feather icon-pie-chart text-danger"></i> PERFORMANCE KPI (SLE)</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center ">
+        <div
+        role="progressbar"
+        style="--value:{{ sle != null ? sle : 0 }}"          >
+        <small>{{ sle?? "N/A"}} %</small>
+      </div>
+      <!-- <h1 class="text-center my-2">SLE</h1> -->
+      </div>
+    </div>
+  </div>
+  <!-- USAGE RATIOS  -->
+  <div class="col-md-6 col-xl-3 stretch-card ">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between  ">
+        <h6 class="card-title">
+          <i class="icon feather icon-zap text-danger"></i> USAGE RATIOS
+        </h6>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td><h4 style="cursor: pointer;" (click)="openBasicModal(Energy)"> <i class="icon feather icon-more-vertical text-danger"></i> Energy </h4></td>
+              <td><h2> <span >{{dashboardData?.usage?.energyLiterRatio == -1 ? "N/A" : dashboardData?.usage?.energyLiterRatio}}  </span></h2></td>
+            </tr>
+            <tr>
+              <td><h4 style="cursor: pointer;" (click)="openBasicModal(Water)"> <i class="icon feather icon-more-vertical text-danger"></i> Water </h4></td>
+              <td><h2> <span >{{dashboardData?.usage?.waterLiterRatio == -1 ? "N/A" : dashboardData?.usage?.waterLiterRatio}}  </span></h2></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- YIELD  -->
+  <div class="col-md-6 col-xl-3 stretch-card">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between  ">
+        <h6 class="card-title">
+          <i class="icon feather icon-clipboard text-danger"></i> YIELD</h6>
+          <div class="example">
+            <ng-template #Perform let-modal>
+              <div class="modal-header">
+                          <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-sm">
+                  <tbody>
+
+                    <tr>
+                      <td>Cans Yield</td>
+                      <td>{{dashboardData?.yield?.cansYield ?? "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>NRB Yield</td>
+                      <td>{{dashboardData?.yield?.nrGlassYield ?? "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>Crowns Yield</td>
+                      <td>{{dashboardData?.yield?.crownsYield ?? "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>Closures</td>
+                      <td>N/A</td>
+                    </tr>
+                  </tbody>
+                </table>
+               </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+                <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+              </div>
+            </ng-template>
+            <!-- Close result -->
+          </div>
+      </div>
+
+      <div class="card-body">
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td><h4 style="cursor: pointer;" > <i class="icon feather icon-more-vertical text-danger"></i> Co2 Yield </h4></td>
+              <td><h2 >{{dashboardData?.yield?.co2Yield ?? "N/A"}}</h2></td>
+            </tr>
+              <tr>
+              <td><h4 style="cursor: pointer;" > <i class="icon feather icon-more-vertical text-danger"></i> Syrup Yield </h4></td>
+              <td><h2 >{{dashboardData?.yield?.syrupYield ?? "N/A"}}</h2></td>
+            </tr>
+            <tr>
+              <td><h4 style="cursor: pointer;" (click)="openBasicModal(Perform)"> <i class="icon feather icon-more-vertical text-danger"></i> Perform Yield </h4></td>
+              <td><h2 >{{dashboardData?.yield?.preformYield ?? "N/A"}}</h2></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- charts -->
+<div class="row ">
+  <div class="col-12 grid-margin ">
+    <div class="card">
+      <div class="card-header text-center d-flex justify-content-between ">
+        <h6 class="card-title">
+          loss Tree Water Fall
+        </h6>
+      </div>
+      <div class="card-body">
+        <apx-chart
+        [legend]="barChartOptions.legend"
+        [dataLabels]="barChartOptions.dataLabels"
+        [series]="barChartOptions.series"
+        [colors]="barChartOptions.colors"
+        [grid]="barChartOptions.grid"
+        [chart]="barChartOptions.chart"
+        [xaxis]="barChartOptions.xaxis"
+        [yaxis]="barChartOptions.yaxis"
+        [annotations]="barChartOptions.annotations"
+        [tooltip]="barChartOptions.tooltip"        ></apx-chart>
+
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="col-12 grid-margin" >
+    <div class="card">
+      <div class="card-header text-center d-flex justify-content-between">
+        <h6 class="card-title">
+          TIME LINE CHART
+        </h6>
+        <div>
+          <span class="badge bg-Online rounded-pill">Online</span>
+          <span class="badge bg-Offline rounded-pill">Offline</span>
+          <span class="badge bg-CIP rounded-pill">CIP</span>
+        </div>
+      </div>
+    <div class="card-body" >
+      <apx-chart
+      [series]="TimeLineChartOptionsL.series"
+      [chart]="TimeLineChartOptionsL.chart"
+      [dataLabels]="TimeLineChartOptionsL.dataLabels"
+      [plotOptions]="TimeLineChartOptionsL.plotOptions"
+      [xaxis]="TimeLineChartOptionsL.xaxis"
+      [legend]="TimeLineChartOptionsL.legend"
+      [tooltip]="TimeLineChartOptionsL.tooltip"
+      [colors]="TimeLineChartOptionsL.colors"
+      [fill]="TimeLineChartOptionsL.fill"
+
+       ></apx-chart>
+      <!-- <apx-chart [series]="TimeLineChartOptionsL.series" [chart]="TimeLineChartOptionsL.chart"
+      [plotOptions]="TimeLineChartOptionsL.plotOptions" [labels]="TimeLineChartOptionsL.labels"></apx-chart> -->
+        </div>
+    </div>
+
+  </div>
+</div>
+<!-- bootstrap module popup -->
+<!-- TOTAL PRODUCTION -->
+<div class="example">
+  <ng-template #basicModal let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <table class="table" >
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Line</th>
+            <th>Bottle</th>
+            <th>Date</th>
+
+          </tr>
+
+
+        </thead>
+        <tbody  *ngFor="let item of dashboardData?.total_Production" >
+          <tr>
+            <td>{{item?.productName }}</td>
+            <td>{{item?.size | number: "1.0-1" }}</td>
+            <td>{{item?.line | number: "1.0-1" }}</td>
+            <td>{{item?.physicalCases | number: "1.0-1" }}</td>
+            <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+
+          </tr>
+          <tr style="border-bottom:solid 1px ;">
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>
+<!-- Physical -->
+<div class="example">
+  <ng-template #Physical let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <table class="table" >
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Line</th>
+            <th>Physical Cases</th>
+            <th>Date</th>
+          </tr>
+
+
+        </thead>
+        <tbody  *ngFor="let item of dashboardData?.total_Production" >
+          <tr>
+            <td>{{item?.productName}}</td>
+            <td>{{item?.size | number: "1.0-1"}}</td>
+            <td>{{item?.line | number: "1.0-1"}}</td>
+            <td>{{item?.packet | number: "1.0-1"}}</td>
+            <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+          </tr>
+          <tr style="border-bottom:solid 1px ;">
+          </tr>
+        </tbody>
+      </table>
+     </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>
+<!-- Pallet -->
+<div class="example">
+  <ng-template #Pallet let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <table class="table" >
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Line</th>
+            <th>Pallet</th>
+            <th>Date</th>
+          </tr>
+
+
+        </thead>
+        <tbody  *ngFor="let item of dashboardData?.total_Production" >
+          <tr>
+            <td>{{item?.productName}}</td>
+            <td>{{item?.size | number: "1.0-1"}}</td>
+            <td>{{item?.line | number: "1.0-1"}}</td>
+            <td>{{item?.pallet | number: "1.0-1"}}</td>
+            <td>{{item?.shiftStartTime | date: "short"}}</td>
+
+          </tr>
+          <tr style="border-bottom:solid 1px ;">
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>
+<!-- Energy -->
+<div class="example">
+  <ng-template #Energy let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <p>Total energy Consumption : {{dashboardData?.usage?.totalEnergyConsumption}} (kWh)</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>
+<!-- Water -->
+<div class="example">
+  <ng-template #Water let-modal>
+    <div class="modal-header">
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <p>Total Water Consumption : {{dashboardData?.usage?.total_Water_Consumption | number: "1.0-1"}}</p>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('by: close button')">Close</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save changes</button> -->
+    </div>
+  </ng-template>
+  <!-- Close result -->
+</div>
+</section>

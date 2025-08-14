@@ -1,0 +1,181 @@
+<!-- searchBar -->
+<div class="row">
+  <form [formGroup]="form">
+    <div class="col-12 grid-margin">
+      <div class="row g-3">
+
+        <div class="col-md-3" *ngIf="accessToFactories">
+          <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+            placeholder="Select Plant" formControlName="factoryId" (change)="getTransformersPerFatory($event.id)"
+            [(ngModel)]="selectedFactory">
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <ng-select [items]="transformers" bindLabel="transformerName" bindValue="transformerName" [searchable]="false"
+            placeholder="Select Transformer" [(ngModel)]="selectedtransformer" [ngModelOptions]="{ standalone: true }">
+          </ng-select>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="col-md-4">
+            <button style="margin-right: 1rem" [disabled]="form.invalid" class="btn btn-danger" (click)="liveData()">
+              Live
+            </button>
+            <button (click)="customDate()" class="btn btn-secondary">
+              Custom
+            </button>
+          </div>
+
+          <div class="col-md-8">
+            <div class="input-group d-flex align-items-baseline" *ngIf="customBtnClicked">
+              <input type="date" class="form-control" max="{{ lastDay }}" [ngModel]="lastDay"
+                (ngModelChange)="onFromDateChange($event)" formControlName="from" />
+              <span>&nbsp; : &nbsp;</span>
+              <input type="date" class="form-control" [min]="lastDay" max="{{ nextDay | date : 'yyyy-MM-dd' }}"
+                [ngModel]="toDate | date : 'yyyy-MM-dd'" (ngModelChange)="toDate = $event" formControlName="to" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3 d-flex justify-content-between" *ngIf="customBtnClicked">
+          <button type="button" (click)="getTransformerReads()" [disabled]="form.invalid"
+            class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+            Search
+          </button>
+        </div>
+      </div>
+      <div class="row my-3">
+        <div class="col-md-5 d-flex align-items-center" *ngIf="tranformerRead?.length != 0">
+          <p class="fw-bold">
+            Total Energy Consumption: {{ totalEnergyConsumption }} kWh
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="col-xl-12 stretch-card grid-margin" *ngIf="tranformerRead?.length != 0">
+  <div class="card">
+    <div class="card-body table-responsive">
+      <p-table [value]="tranformerRead" [paginator]="true" [rows]="30" [totalRecords]="totalCount" [lazy]="true"
+        (onLazyLoad)="loadLazy($event)" styleClass="p-datatable-striped table table-sm">
+        <ng-template pTemplate="caption">
+          <div class="flex">
+            <button type="button" pButton pRipple (click)="exportExcel()" class="mr-2 bg-success rounded-3 p-2"
+              pTooltip="XLS" tooltipPosition="bottom">
+              <i class="pi pi-file-excel text-white"></i>
+            </button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Start Day</th>
+            <th>Min V1</th>
+            <th>Max V1</th>
+            <th>Avg V1</th>
+            <th>Min V2</th>
+            <th>Max V2</th>
+            <th>Avg V2</th>
+            <th>Min V3</th>
+            <th>Max V3</th>
+            <th>Avg V3</th>
+            <th>Min I1</th>
+            <th>Max I1</th>
+            <th>Avg I1</th>
+            <th>Min I2</th>
+            <th>Max I2</th>
+            <th>Avg I2</th>
+            <th>Min I3</th>
+            <th>Max I3</th>
+            <th>Avg I3</th>
+            <th>Min pF1</th>
+            <th>Max pF1</th>
+            <th>Avg pF1</th>
+            <th>Min pF2</th>
+            <th>Max pF2</th>
+            <th>Avg pF2</th>
+            <th>Min pF3</th>
+            <th>Max pF3</th>
+            <th>Avg pF3</th>
+            <th>Min papp1</th>
+            <th>Max papp1</th>
+            <th>Avg papp1</th>
+            <th>Min papp2</th>
+            <th>Max papp2</th>
+            <th>Avg papp2</th>
+            <th>Min papp3</th>
+            <th>Max papp3</th>
+            <th>Avg papp3</th>
+            <th>Min pact1</th>
+            <th>Max pact1</th>
+            <th>Avg pact1</th>
+            <th>Min pact2</th>
+            <th>Max pact2</th>
+            <th>Avg pact2</th>
+            <th>Min pact3</th>
+            <th>Max pact3</th>
+            <th>Avg pact3</th>
+            <th>
+              Total Energy<br />
+              Consumption<span class="text-capitalize">(kWh)</span>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item?.startDay | date : "dd-MM-yyyy" }}</td>
+            <td>{{ item?.minV1 }}</td>
+            <td>{{ item?.maxV1 }}</td>
+            <td>{{ item?.avgV1 }}</td>
+            <td>{{ item?.minV2 }}</td>
+            <td>{{ item?.maxV2 }}</td>
+            <td>{{ item?.avgV2 }}</td>
+            <td>{{ item?.minV3 }}</td>
+            <td>{{ item?.maxV3 }}</td>
+            <td>{{ item?.avgV3 }}</td>
+            <td>{{ item?.minI1 }}</td>
+            <td>{{ item?.maxI1 }}</td>
+            <td>{{ item?.avgI1 }}</td>
+            <td>{{ item?.minI2 }}</td>
+            <td>{{ item?.maxI2 }}</td>
+            <td>{{ item?.avgI2 }}</td>
+            <td>{{ item?.minI3 }}</td>
+            <td>{{ item?.maxI3 }}</td>
+            <td>{{ item?.avgI3 }}</td>
+            <td>{{ item?.minPf1 }}</td>
+            <td>{{ item?.maxPf1 }}</td>
+            <td>{{ item?.avgPf1 }}</td>
+            <td>{{ item?.minPf2 }}</td>
+            <td>{{ item?.maxPf2 }}</td>
+            <td>{{ item?.avgPf2 }}</td>
+            <td>{{ item?.minPf3 }}</td>
+            <td>{{ item?.maxPf3 }}</td>
+            <td>{{ item?.avgPf3 }}</td>
+            <td>{{ item?.minPapp1 }}</td>
+            <td>{{ item?.maxPapp1 }}</td>
+            <td>{{ item?.avgPapp1 }}</td>
+            <td>{{ item?.minPapp2 }}</td>
+            <td>{{ item?.maxPapp2 }}</td>
+            <td>{{ item?.avgPapp2 }}</td>
+            <td>{{ item?.minPapp3 }}</td>
+            <td>{{ item?.maxPapp3 }}</td>
+            <td>{{ item?.avgPapp3 }}</td>
+            <td>{{ item?.minPact1 }}</td>
+            <td>{{ item?.maxPact1 }}</td>
+            <td>{{ item?.avgPact1 }}</td>
+            <td>{{ item?.minPact2 }}</td>
+            <td>{{ item?.maxPact2 }}</td>
+            <td>{{ item?.avgPact2 }}</td>
+            <td>{{ item?.minPact3 }}</td>
+            <td>{{ item?.maxPact3 }}</td>
+            <td>{{ item?.avgPact3 }}</td>
+            <td>{{ item?.totalEnergyConsumption }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

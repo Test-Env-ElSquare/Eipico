@@ -1,0 +1,25 @@
+<!-- filter component to call api and pass it's response as output to historical component -->
+
+<app-filter (filterValues)="getFilterValues($event)" (parts)="parts($event)"></app-filter>
+
+
+<!-- check if filter returned-->
+<!-- then pass it to the children -->
+<ng-container *ngIf="filterObj">
+  <!-- skus todo -->
+  <app-total-production [filterObj]="filterObj"></app-total-production>
+  <app-waterfall [filterObj]="filterObj"></app-waterfall>
+
+  <app-timeline [filterObj]="filterObj"></app-timeline>
+  <app-table [filterObj]="filterObj"></app-table>
+</ng-container>
+
+<!-- show the loader if the dashboard Data not returned-->
+
+<ng-container *ngIf="!filterObj">
+  <div class="row">
+    <div class="col-lg-12 bg-white">
+      <img class="d-block mx-auto" style="object-fit: contain;" src="./assets/images/75061-dashboard.gif" />
+    </div>
+  </div>
+</ng-container>

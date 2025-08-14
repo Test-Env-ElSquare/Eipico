@@ -1,0 +1,25 @@
+::ng-deep{
+  .ngx-pagination .current {
+    background: #000 !important;
+}
+}
+.hoveringState{
+  @apply hover:tw-bg-gray-300 hover:tw-ease-in-out;
+}
+
+.imagess{
+  width: 34px;
+  height: 34px;
+}
+
+.sortimage{
+  @apply hover:tw-cursor-pointer tw-w-4 tw-h-4;
+}
+
+
+
+#sku{
+  span{
+    @apply tw-flex tw-items-center tw-justify-between;
+  }
+}

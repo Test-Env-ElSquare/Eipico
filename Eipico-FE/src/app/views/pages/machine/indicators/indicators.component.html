@@ -1,0 +1,141 @@
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card ">
+      <div class="card-header   d-flex justify-content-between">
+        Machine Indicators
+             <div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="radioInline" id="inlineRadioDefault">
+            <label class="form-check-label" for="inlineRadioDefault">Default radio</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="radioInline" id="inlineRadioChecked" checked="">
+            <label class="form-check-label" for="inlineRadioChecked">Default checked radio</label>
+          </div>
+
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-2">
+            <select class="form-select form-select-sm grid-margin" aria-label="Small select">
+              <option selected="">Alex</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+
+          </div>
+            <div class="col-2">
+            <select class="form-select form-select-sm grid-margin" aria-label="Small select">
+              <option selected="">Alex</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+
+          </div>
+          <div class="col-2">
+            <select class="form-select form-select-sm grid-margin" aria-label="Small select">
+              <option selected="">Alex</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+
+          </div>
+           <div class="col-1">
+            <button type="button" class="btn btn-primary btn-sm">Search</button>
+          </div>
+          <div class="col-5">
+            <input class="form-control form-control-sm grid-margin" type="text" placeholder="Find machine" aria-label=".form-control-sm">
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-header bg-dark text-white">Becon Status<span class="badge bg-success mx-3">{{MachineIndicator?.status}}</span>  Machine  <span class="badge bg-success mx-3">{{MachineIndicator?.machine}}</span> </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <apx-chart
+              [series]="SleChartOptions?.series"
+              [chart]="SleChartOptions?.chart"
+              [colors]="SleChartOptions?.colors"
+              [grid]="SleChartOptions?.grid"
+              [xaxis]="SleChartOptions?.xaxis"
+              [yaxis]="SleChartOptions?.yaxis"
+              [markers]="SleChartOptions?.markers"
+              [legend]="SleChartOptions?.legend"
+              [stroke]="SleChartOptions?.stroke"
+            ></apx-chart>
+            </div>
+            <!--  -->
+             <div class="col-md-4">
+              <apx-chart
+              [series]="AvailabilityChartOptions?.series"
+              [chart]="AvailabilityChartOptions?.chart"
+              [colors]="AvailabilityChartOptions?.colors"
+              [grid]="AvailabilityChartOptions?.grid"
+              [xaxis]="AvailabilityChartOptions?.xaxis"
+              [yaxis]="AvailabilityChartOptions?.yaxis"
+              [markers]="AvailabilityChartOptions?.markers"
+              [legend]="AvailabilityChartOptions?.legend"
+              [stroke]="AvailabilityChartOptions?.stroke"
+            ></apx-chart>
+            </div>
+            <!--  -->
+            <div class="col-md-4">
+              <apx-chart
+              [series]="AvailabilityChartOptions?.series"
+              [chart]="AvailabilityChartOptions?.chart"
+              [colors]="AvailabilityChartOptions?.colors"
+              [grid]="AvailabilityChartOptions?.grid"
+              [xaxis]="AvailabilityChartOptions?.xaxis"
+              [yaxis]="AvailabilityChartOptions?.yaxis"
+              [markers]="AvailabilityChartOptions?.markers"
+              [legend]="AvailabilityChartOptions?.legend"
+              [stroke]="AvailabilityChartOptions?.stroke"
+            ></apx-chart>
+            </div>
+            <!--  -->
+            <hr>
+            <div class="col-md-12">
+              <table class="table table-striped table-sm">
+                <tbody class="text-center">
+                  <tr>
+                    <td>Actually</td>
+                    <td>2,592,000 Bottle</td>
+                  </tr>
+                  <tr>
+                    <td>Expected</td>
+                    <td>{{this.MachineIndicator.machineindicator[0]?.expected}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--  -->
+            <div class="col-md-12">
+              <apx-chart
+              [series]="TimelineChartOptions?.series"
+               [chart]="TimelineChartOptions?.chart"
+               [fill]="TimelineChartOptions?.fill"
+                [grid]="TimelineChartOptions?.grid"
+               [plotOptions]="TimelineChartOptions?.plotOptions"
+               [yaxis]="TimelineChartOptions?.yaxis"
+                [tooltip]="TimelineChartOptions?.tooltip"
+               [tooltip]="TimelineChartOptions?.tooltip"
+               [legend]="TimelineChartOptions?.legend"
+               [title]="TimelineChartOptions?.title"
+              ></apx-chart>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>

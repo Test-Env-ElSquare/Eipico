@@ -1,0 +1,221 @@
+
+
+
+<div class="row" *ngIf="!Placeholder">
+<div class="col-xl-12 grid-margin" *ngFor="let item of lineContainer">
+  <div class="card my-2">
+    <div class="card-header d-flex justify-content-between align-items-center" >
+      <div>
+        <h4> <span style="border-bottom: solid 5px #6a94c6;" class="card-title">{{item.factory}}</span> <span class="card-title" style="border-bottom: solid 5px #6a94c6;"> / Line {{item?.line}} </span> <span class="card-title" > - Current Shift </span> <small class="text-danger" *ngIf="item?.sle == null">Line is down </small></h4>
+      </div>
+      <button  class="btn-Cip btn" [disabled]="item?.sle == null" (click)="gotoLine(item?.factory,item?.line)" >Go Live</button>
+    </div>
+    <div class="card-body" >
+          <div class="row">
+            <div class="col-md-3 grid-margin stretch-card" >
+              <div class="card">
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex justify-content-between">
+                  <h4 class="card-title">SLE</h4>
+
+             <div
+              role="progressbar"
+              style="--value:{{ item?.sle !== null ? (item?.sle  | number: '1.0-0') : 0 }}">
+              <small>{{ (item?.sle | number: "1.0-0")  ?? "N/A"}} %</small>
+            </div>
+             </div>
+           </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Performance</h4>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <p class="card-text">{{item?.sle != null ? (item?.performance | number: "1.0-1") + "%" : "N/A" }}  </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Pallets</h4>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <p class="card-text"> {{item?.sle != null ? (item?.pallets | number: "1.0-1") : "N/A"}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Cases</h4>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <p class="card-text"> {{item?.sle != null ? (item?.packets | number: "1.0-1") : "N/A"}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Bottles</h4>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <p class="card-text"> {{item?.sle != null ? (item?.bottles | number: "1.0-1") : "N/A"}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Energy Consumption</h4>
+                  <span> (kWh)</span>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <!-- <p class="card-text">{{item?.energy_Consumption | number: "1.0-1" ?? "N/A"}}</p> -->
+                      <h3 class="">To Be Configured</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Water Consumption</h4>
+                  <span>(Litres)</span>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <!-- <p class="card-text">{{item?.waterConsumption | number: "1.0-1" ?? "N/A"}}</p> -->
+                      <h3 class="">To Be Configured</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+             <div class="col-md-3 grid-margin stretch-card">
+              <div class="card ">
+                <div class="card-header pt-4" style="background-color: rgb(247, 247, 247);">
+                  <h4 class="card-title">Product Produced</h4>
+                  <span>(Litres)</span>
+                </div>
+                <div style="background-color: rgb(247, 247, 247);"  class="card-body d-flex align-items-end justify-content-end ">
+                  <div>
+                    <div>
+                      <p class="card-text">{{item?.litres | number: "1.0-1" ?? "N/A"}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<section *ngIf="Placeholder">
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>  <div class="col-md-12">
+      <div class="ph-item">
+        <div class="ph-col-12">
+          <div class="ph-picture"></div>
+            <div class="ph-row">
+                <div class="ph-col-6 big"></div>
+                <div class="ph-col-4 empty big"></div>
+                <div class="ph-col-2 big"></div>
+                <div class="ph-col-4"></div>
+                <div class="ph-col-8 empty"></div>
+                <div class="ph-col-6"></div>
+                <div class="ph-col-6 empty"></div>
+                <div class="ph-col-12"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

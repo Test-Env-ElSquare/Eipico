@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-xl-12 stretch-card grid-margin py-3">
+    <div class="card">
+      <div class="card-header bg-dark text-white">Machine ID </div>
+      <div class="card-body">
+        <div class="btn-group btn-group-sm py-3" role="group" aria-label="Small button group">
+          <button type="button" class="btn btn-primary">Speed</button>
+          <button type="button" class="btn btn-primary">State</button>
+          <button type="button" class="btn btn-primary">Count</button>
+        </div>
+        <hr>
+        <apx-chart
+         [series]="SetLineChartOptions.series"
+        [chart]="SetLineChartOptions.chart"
+        [markers]="SetLineChartOptions.markers"
+        [stroke]="SetLineChartOptions.stroke"
+        [dataLabels]="SetLineChartOptions.dataLabels"
+        [title]="SetLineChartOptions.title"
+      >
+    </apx-chart>
+  </div>
+    </div>
+  </div>
+
+  <div class="col-xl-12 stretch-card grid-margin ">
+    <div class="card">
+      <div class="card-header bg-dark text-white">Machine ID </div>
+      <div class="card-body">
+       <table class="table table-sm ">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td colspan="2">Larry the Bird</td>
+          <td>@twitter</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+</div>

@@ -1,0 +1,363 @@
+<section>
+  <div class="row">
+    <div class="col-12 col-xl-12 stretch-card">
+      <div class="row flex-grow-1">
+        <div class="col-md-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body table-responsive">
+              <div class="tw-flex tw-items-center tw-justify-between">
+                <p class="tw-font-bold">Total Number Of Batchs : {{ totalCount }}</p>
+                <div class="col-lg-4 tw-flex tw-justify-around ">
+                  <div class="col-sm-10">
+                    <input type="text" class="tw-mr-1 form-control" id="Search"
+                      placeholder="BATCH NAME, SKU CODE, SKU NAME, JOB ORDER" [(ngModel)]="searchText">
+                  </div>
+                  <button for="Search" class="btn btn-success   col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
+                    (click)="search(searchText)">Search</button>
+                </div>
+              </div>
+              <div class="tw-text-center" *ngIf="batchArr?.length ==0">
+                <h3 class="text-danger">
+                  No Data Matches Your Search Word
+                </h3>
+              </div>
+              <table *ngIf="batchArr?.length !=0" class="table table-hover caption-top align-center" id="sku">
+                <thead class="align-center">
+                  <tr>
+                    <th scope="col" sortable="batchname">
+                      <span>
+                        <p>Batch Name</p>
+                        <img (click)="
+                        onSort({ column: 'batchname', direction: directions });
+                        rotates()
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      </span>
+                    </th>
+                    <th scope="col" sortable="skucode">
+                      <span>
+                        <p>Sku Code</p>
+                        <img (click)="
+                        onSort({ column: 'skucode', direction: directions });
+                        rotates()
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      </span>
+                    </th>
+                    <th scope="col" sortable="skuname">
+                      <span>
+                        <p>Sku Name</p>
+                        <img (click)="
+                        onSort({ column: 'skuname', direction: directions });
+                        rotates()
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      </span>
+                    </th>
+                    <th scope="col" sortable="joborder">
+                      <span>
+                        <p>Job Order</p>
+                        <img (click)="
+                        onSort({ column: 'joborder', direction: directions });
+                        rotates()
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      </span>
+                    </th>
+                    <th scope="col" sortable="timestamp">
+                      <span>
+                        <p>Time Stamp</p>
+                        <img (click)="
+                        onSort({ column: 'timestamp', direction: directions });
+                        rotates()
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      </span>
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody class="align-center">
+                  <tr *ngFor="
+                      let batch of batchArr
+                        | paginate
+                          : {
+                              itemsPerPage: pagesize,
+                              currentPage: page,
+                              totalItems: totalCount
+                            }
+                    ">
+                    <td>{{ batch.batchname }}</td>
+                    <td>{{ batch.skucode }}</td>
+                    <td>{{ batch.skuname }}</td>
+                    <td>{{ batch.joborder }}</td>
+                    <td>{{ batch.timestamp | date : "medium" }}</td>
+                    <td class="tw-flex tw-items-center tw-justify-between">
+                      <button (click)="openLg(content, batch.batchname)"
+                        class="btn tw-bg-sky-500 tw-text-white hover:tw-bg-sky-950 hover:tw-text-white">
+                        <i data-feather="eye" appFeatherIcon></i>
+                      </button>
+                      <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
+                        class="btn tw-bg-green-600 tw-text-white hover:tw-bg-green-800 hover:tw-text-white">
+                        <i data-feather="printer" appFeatherIcon></i>
+                      </button>
+                      <button *ngIf="hasAccessToDeleteBatch()"
+                        class="btn tw-bg-red-700 tw-text-white hover:tw-bg-red-800 hover:tw-text-white">
+                        <i data-feather="delete" appFeatherIcon></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="tw-text-right tw-my-3" *ngIf="batchArr?.length !=0">
+                <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ batchName }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body table-responsive">
+    <table class="table caption-top">
+      <thead class="align-center">
+        <tr>
+          <th scope="col">UID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Item Code</th>
+          <th scope="col">Machine Pair Status</th>
+          <th scope="col">Scale Pair Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="align-center">
+        <tr *ngFor="let batchMatarial of batchMatarialsArr">
+          <td>{{ batchMatarial.uid }}</td>
+          <td>{{ batchMatarial.name }}</td>
+          <td>{{ batchMatarial.itemcode }}</td>
+          <td>
+            <div class="tw-flex tw-items-center">
+              <div class="tw-relative">
+                <img src="assets/images/manufacturing.png" class="tw-border-2" [ngClass]="[
+                    batchMatarial.machinepairstatus == 1 ? 'tw-mr-3' : 'tw-mr-0'
+                  ]" />
+                <i *ngIf="batchMatarial.machinepairstatus == 0" data-feather="x-circle"
+                  class="tw-absolute tw-rounded-full -tw-bottom-2 tw-bg-red-700 tw-text-white tw-left-4"
+                  appFeatherIcon></i>
+                <i *ngIf="batchMatarial.machinepairstatus == 1" data-feather="check-circle"
+                  class="tw-absolute tw-rounded-full -tw-bottom-2 tw-bg-green-600 tw-text-white tw-left-4"
+                  appFeatherIcon></i>
+              </div>
+              <p *ngIf="batchMatarial.machinepairstatus == 1" class="hover:tw-cursor-pointer hover:tw-text-green-700"
+                (click)="
+                  GetMachineLoadDetails(
+                    GetMachineLoadDetail,
+                    batchMatarial.uid,
+                    batchMatarial.name
+                  )
+                ">
+                view details
+              </p>
+            </div>
+          </td>
+          <td>
+            <div class="tw-flex tw-items-center">
+              <div class="tw-relative">
+                <img src="assets/images/weighing-machine.png" class="tw-border-2" [ngClass]="[
+                    batchMatarial.scalepairingstatus == 1
+                      ? 'tw-mr-3'
+                      : 'tw-mr-0'
+                  ]" />
+                <i *ngIf="batchMatarial.scalepairingstatus == 0" data-feather="x-circle"
+                  class="tw-absolute tw-rounded-full -tw-bottom-2 tw-bg-red-700 tw-text-white tw-left-4"
+                  appFeatherIcon></i>
+                <i *ngIf="batchMatarial.scalepairingstatus == 1" data-feather="check-circle"
+                  class="tw-absolute tw-rounded-full -tw-bottom-2 tw-bg-green-600 tw-text-white tw-left-4"
+                  appFeatherIcon></i>
+              </div>
+              <p *ngIf="batchMatarial.scalepairingstatus == 1" class="hover:tw-cursor-pointer hover:tw-text-green-700"
+                (click)="
+                  GetScaleDetails(
+                    scaleDetail,
+                    batchMatarial.uid,
+                    batchMatarial.name,
+                    batchMatarial.isSpilted
+                  )
+                ">
+                view details
+              </p>
+            </div>
+          </td>
+          <td class="tw-flex tw-items-center tw-justify-between">
+            <button (click)="printMaterial(batchMatarial.uid)" *ngIf="hasAccessToPrintBatch()"
+              class="btn tw-bg-green-600 tw-text-white hover:tw-bg-green-800 hover:tw-text-white">
+              <i data-feather="printer" appFeatherIcon></i>
+            </button>
+            <button *ngIf="hasAccessToDeleteBatch()"
+              class="btn tw-bg-red-700 tw-text-white hover:tw-bg-red-800 hover:tw-text-white">
+              <i data-feather="delete" appFeatherIcon></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
+      Close
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #GetMachineLoadDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ materialName }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body row g-3">
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState hover:tw-bg-gray-300 hover:tw-ease-in-out" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">SKU Name</h5>
+          <p class="card-text">{{ machineLoadDetails.skuname }}</p>
+          <img src="assets/images/pills.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Machine Name</h5>
+          <p class="card-text">{{ machineLoadDetails.machinename }}</p>
+          <img src="assets/images/manufacturing.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Shift Time</h5>
+          <p class="card-text">
+            {{ machineLoadDetails.shiftstarttime | date : "medium" }}
+          </p>
+          <img src="assets/images/clock.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Pairing Time</h5>
+          <p class="card-text">
+            {{ machineLoadDetails.timestamp | date : "medium" }}
+          </p>
+          <img src="assets/images/clock.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
+      Close
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #scaleDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ materialName }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div *ngIf="splited==1" class="modal-body row g-3">
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Weight</h5>
+          <p class="card-text">{{ scaleDetails.weightTotal }} KG</p>
+          <img src="assets/images/weighing-machine.png"
+            class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Pairing Time</h5>
+          <p class="card-text">
+            {{ scaleDetails.pairingTime? (scaleDetails.pairingTime| date : "medium") :'N/A'}}
+          </p>
+          <img src="assets/images/clock.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Details Split</h5>
+          <div class="" *ngFor="let item of scaleDetails.detilsSplit">
+            <p class="card-text">{{ item.count }} Units OF {{item.weight}} KG</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Number Of Units</h5>
+          <p class="card-text">
+            {{ scaleDetails.numperOfUnits}}
+          </p>
+          <!-- <img src="assets/images/clock.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" /> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div *ngIf="splited==0" class="modal-body row g-3">
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState hover:tw-bg-gray-300 hover:tw-ease-in-out" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Scale Name</h5>
+          <p class="card-text">{{ scaleDetails.scaleName }}</p>
+          <img src="assets/images/weighing-machine.png"
+            class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Pairing Time</h5>
+          <p class="card-text">
+            {{ scaleDetails.timestamp | date : "medium" }}
+          </p>
+          <img src="assets/images/clock.png" class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 tw-flex tw-flex-col tw-items-center">
+      <div class="card hoveringState" style="width: 18rem">
+        <div class="card-body tw-relative">
+          <h5 class="card-title">Weight</h5>
+          <p class="card-text">{{ scaleDetails.weight }} G</p>
+          <img src="assets/images/weighing-machine.png"
+            class="imagess tw-absolute tw-bottom-1 tw-right-1 tw-opacity-75" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
+      Close
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <!-- FactoriesDropDown -->
+        <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+          placeholder="Select Plant" [(ngModel)]="selectedFactory" (change)="rooms=[];getAllRoomsById(selectedFactory)">
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-2">
+  <div class="col-xl-4 stretch-card grid-margin tw-mt-8" *ngFor="let room of rooms">
+    <div class="tw-w-full tw-max-w-sm tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow tw-mx-auto">
+      <div class="tw-flex tw-flex-col tw-items-center tw-pb-10 tw-relative">
+        <img src="assets/images/open-door.png" class="tw-w-16 tw-absolute -tw-top-8 tw-bg-white"
+          alt="open-door image" />
+      </div>
+      <a class="tw-my-3 tw-text-center tw-block tw-font-bold tw-text-2xl tw-text-gray-900 tw-mx-auto"
+        [routerLink]="['/Scale/roomDetails',room.value ,selectedFactory ]">
+        {{room.name}}
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-12 col-xl-12 stretch-card">
+    <div class="row flex-grow-1">
+      <!-- chart that shows Energy Consumption / Last 7 Days -->
+      <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-baseline">
+              <h6 class="card-title mb-0">Parts / Last 7 Days</h6>
+            </div>
+            <div class="row">
+              <div class="col-6 col-md-12 col-xl-5">
+                <h3 class="mb-2">
+                  {{ totalFillersCount| number: "1.0-1"}} (units)
+                </h3>
+                <div class="d-flex align-items-baseline">
+                </div>
+              </div>
+              <div class="col-6 col-md-12 col-xl-7">
+                <div class="mt-md-3 mt-xl-0">
+                  <apx-chart [series]="EURChartOptions.series" [chart]="EURChartOptions.chart"
+                    [colors]="EURChartOptions.colors" [xaxis]="EURChartOptions.xaxis" [stroke]="EURChartOptions.stroke"
+                    [markers]="EURChartOptions.markers" [tooltip]="EURChartOptions.tooltip">
+                  </apx-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- card to show Eur-->
+      <div class="col-xl-4 stretch-card grid-margin">
+        <div class="card">
+          <div class="card-header tw-flex tw-items-center tw-justify-between">
+            <h4>EUR
+              <!-- &nbsp; (kWh/unit) -->
+            </h4>
+            <h4>(kWh/unit)</h4>
+          </div>
+          <div class="card-body">
+            <div class="col-lg-12 tw-flex tw-items-center tw-justify-between" *ngFor="let factory of eurValue">
+              <h1>{{factory.name}}</h1>
+              <h1>{{factory.eur? (factory.eur | number):'N/A'}}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

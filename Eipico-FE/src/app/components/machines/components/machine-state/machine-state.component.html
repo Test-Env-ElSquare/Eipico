@@ -1,0 +1,111 @@
+<!-- searchBar -->
+<div class="row">
+  <div class="col-12 grid-margin">
+    <form [formGroup]="FilterForm">
+      <div class="row g-3">
+        <div class="col-md-3" *ngIf="accessToFactories">
+          <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+            placeholder="Select Plant" formControlName="factoryId" (change)="GetAllLines(selectedMachine)"
+            [(ngModel)]="selectedMachine">
+          </ng-select>
+
+
+        </div>
+        <div class="col-md-3">
+          <!-- LineDropDown -->
+          <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+            placeholder="Select Line" formControlName="lineID" [(ngModel)]="selectedLine">
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group d-flex align-items-baseline">
+            <input type="datetime-local" class="form-control" formControlName="form"
+              max="{{today | date : 'yyyy-MM-ddTHH:mm'}}" [ngModel]="fromDate | date :'yyyy-MM-ddTHH:mm'"
+              (ngModelChange)="onFromDateChange($event)" #fromDatey>
+            <span>&nbsp; : &nbsp;</span>
+            <input type="datetime-local" class="form-control" [min]="lastDay"
+              max="{{nextDay | date : 'yyyy-MM-ddTHH:mm'}}" [ngModel]="toDate | date : 'yyyy-MM-ddTHH:mm'"
+              (ngModelChange)="toDate" formControlName="to" #toDatey>
+          </div>
+        </div>
+        <div class="col-md-3 d-flex justify-content-between">
+          <button type="button" (click)="filterBtn()" [disabled]="FilterForm.invalid"
+            class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card ">
+  <div class="card-body table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Machine Name</th>
+          <th scope="col">Machine State</th>
+          <th scope="col">Becon State</th>
+          <th scope="col">Since</th>
+          <!-- <th scope="col">Fault</th> -->
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let machine of MachineStatus">
+          <td scope="col">{{machine.machineName}}</td>
+          <td><span class="badge text-uppercase "
+              [ngClass]="{'bg-danger':machine.machine_State == 'Off' ,'bg-success': machine.machine_State== 'On','bg-secondary': machine.machine_State == 'N/A'}">
+              {{machine.machine_State}}</span></td>
+          <td><span class="badge text-uppercase "
+              [ngClass]="{'bg-danger':machine.beacon_Status == 'OffLine' ,'bg-success': machine.beacon_Status== 'OnLine','bg-secondary': machine.beacon_Status == 'N/A'}">
+              {{machine.beacon_Status}}</span></td>
+          <td scope="col">{{machine.timeStamp | date : 'medium' }}</td>
+          <!-- <td *ngIf="machine.fault == -1">
+            N/A
+          </td>
+          <td *ngIf="machine.fault == 0">
+            No Fault
+          </td>
+          <td *ngIf="machine.fault == 1">
+            Fault
+          </td> -->
+          <td>
+            <button class="btn btn-outline-primary tw-bg-searchBtn btn-sm tw-text-white"
+              (click)="TagsBasicModal(Tags,machine.machineName,machine.machineName)" type="button">Tags</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<div class="example">
+  <ng-template #Tags let-modal>
+    <div class="modal-header">
+      <h4 class="fw-bold">{{machineName}}</h4>
+      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="d-flex justify-content-center">
+        <div class="btn-group m-auto" role="group" aria-label="Basic button group">
+          <button *ngFor="let i of MachineTagPropertiesData" type="button" class="btn btn-primary tw-bg-searchBtn"
+            (click)="tagsChartBtn(i?.columnName,i.chartType,i.displayName,fromDatey.value,toDatey.value)">{{i?.displayName}}</button>
+        </div>
+      </div>
+      <!-- <h4 class="text-center mt-3 tw-font-bold" *ngIf="columName =='Count'">
+         Total Count : {{count | number}}
+        </h4> -->
+
+      <div id="TagsSpeedChart"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger tw-bg-btnDelete"
+        (click)="modal.close('by: close button')">Close</button>
+    </div>
+  </ng-template>
+</div>

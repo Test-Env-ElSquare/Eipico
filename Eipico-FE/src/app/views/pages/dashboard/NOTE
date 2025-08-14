@@ -1,0 +1,509 @@
+<section *ngIf="VW_SignalStops.length">
+  <!-- 1st Section -->
+  <div class="row ">
+    <!--  TOTAL PRODUCTION -->
+    <div class=" col-xl-6  col-lg-6 col-md-12 grid-margin  stretch-card">
+      <div class="card" style="width: 18rem">
+        <div class="card-header bg-primary bg-opacity-25 text-uppercase fw-bold">
+          TOTAL PRODUCTION
+        </div>
+        <div class="card-body ">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+              <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="hash" appFeatherIcon></i>
+                  <h6 class="px-3">Picks</h6>
+                </div>
+                <div>
+                  <h6>
+                    <span class="badge bg-primary p-2 ms-1">
+                      {{
+                      (VW_SignalState?.productionCount | number: "1.0-1") +
+                      " #" || "N/A"
+                      }}</span>
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="cpu" appFeatherIcon></i>
+                  <h6 class="px-3">total production hours </h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.orderDuration).toFixed(2) + " h" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">Orders</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.avgSpeed).toFixed(2) + " rpm" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">Stops</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.avgSpeed).toFixed(2) + " rpm" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+              <!--  -->
+              <div class="col-12 py-3">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <i data-feather="clock" appFeatherIcon></i>
+                    <h6 class="px-3">Avg Speed</h6>
+                  </div>
+                  <div>
+                    <h6>
+                      {{ (VW_SignalState?.avgSpeed).toFixed(2) + " rpm" || "N/A" }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="cpu" appFeatherIcon></i>
+                  <h6 class="px-3">Avg Stop Duration</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.orderDuration).toFixed(2) + " h" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">Start Time</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.avgSpeed).toFixed(2) + " rpm" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">End Time</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.avgSpeed).toFixed(2) + " rpm" || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  PERFORMANCE KPI -->
+    <div class=" col-xl-3 col-lg-6 col-md-12 grid-margin stretch-card">
+      <div class="card" style="width: 18rem" >
+        <div class="card-header bg-success bg-opacity-25 text-uppercase fw-bold">
+          PERFORMANCE KPI
+        </div>
+        <div class="card-body d-flex align-items-center" >
+          <div class="row">
+            <div class="col-xl-4 py-3">
+              <div class="d-flex align-items-center justify-content-center">
+                <div>
+                  <div role="progressbar" style="--value:{{ VW_SignalState?.performance * 100 ?? 0 }}">
+                    <small>{{
+                      VW_SignalState?.performance * 100 | number: "1.0-0" ?? "N/A"
+                      }}
+                      %</small>
+                  </div>
+                                <!--  -->
+                <div class="text-center py-3">
+                  <small>PERFORMANCE</small>
+                </div>
+
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-xl-4 py-3 ">
+              <div class="d-flex align-items-center justify-content-center">
+                <div>
+                  <div role="progressbar" style="--value:{{ VW_SignalState?.upTime * 100 ?? 0 }}">
+                    <small>{{
+                      VW_SignalState?.upTime * 100 | number: "1.0-0" ?? "N/A"
+                      }}
+                      %</small>
+                  </div>
+                                <!--  -->
+                <div class="text-center py-3">
+                  <small> AVAILABILITY</small>
+                </div>
+
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-xl-4 py-3 ">
+              <div class="d-flex align-items-center justify-content-center">
+                <div>
+                  <div role="progressbar" style="--value:{{ VW_SignalState?.upTime * 100 ?? 0 }}">
+                    <small>{{
+                      VW_SignalState?.upTime * 100 | number: "1.0-0" ?? "N/A"
+                      }}
+                      %</small>
+                  </div>
+                                <!--  -->
+                <div class="text-center py-3">
+                  <small>EFFECTIVENESS</small>
+                </div>
+
+                </div>
+              </div>
+            </div>
+            <!--  -->
+          </div>
+          <!--  -->
+         </div>
+
+      </div>
+    </div>
+    <!--  Order -->
+    <!-- <div class=" col-xl-4 col-lg-6 col-md-12 grid-margin stretch-card">
+      <div class="card" style="width: 18rem">
+        <div class="card-header bg-danger bg-opacity-25  d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <h6 class="px-3">Order </h6>
+          </div>
+        </div>
+        <div class="card-body d-flex align-items-center">
+          <div class="row ">
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="hash" appFeatherIcon></i>
+                  <h6 class="px-3">Number <span class=" p-2 ms-1"> {{VW_SignalState?.order || "N/A"}}</span>
+                  </h6>
+                </div>
+                <div>
+                  <div class="example">
+                    <button class="btn btn-link" (click)="openXlModal(xlModal)">details</button>
+                    <ng-template #xlModal let-modal>
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Image Details </h5>
+                        <button type="button" class="btn-close" (click)="modal.close('by: close icon')"
+                          aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <img *ngIf="image"  [src]=myBase64 class="img-fluid"  alt="" srcset="">
+                            <img *ngIf="!image" src="https://picturesofmaidenhead.files.wordpress.com/2019/01/image-not-found.jpg" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+                          </div>
+                          <div class="col-md-6">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">First</th>
+                                  <th scope="col">Last</th>
+                                  <th scope="col">Handle</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>Mark</td>
+                                  <td>Otto</td>
+                                  <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">2</th>
+                                  <td>Jacob</td>
+                                  <td>Thornton</td>
+                                  <td>@fat</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">3</th>
+                                  <td colspan="2">Larry the Bird</td>
+                                  <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">4</th>
+                                  <td colspan="2">Larry the Bird</td>
+                                  <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">5</th>
+                                  <td colspan="2">Larry the Bird</td>
+                                  <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">6</th>
+                                  <td colspan="2">Larry the Bird</td>
+                                  <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">7</th>
+                                  <td colspan="2">Larry the Bird</td>
+                                  <td>@twitter</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                          (click)="modal.close('by: close button')">Close</button>
+                        <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">Save
+                          changes</button>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">Start</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.startTime | date: "short") || "No Date" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="clock" appFeatherIcon></i>
+                  <h6 class="px-3">End</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ (VW_SignalState?.endTime | date: "short") ?? "No Date" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!--  vW_Power -->
+    <div class=" col-xl-3 col-lg-6 col-md-12 grid-margin stretch-card">
+      <div class="card" style="width: 18rem">
+        <div class="card-header bg-warning bg-opacity-25 text-uppercase fw-bold">
+          Power
+        </div>
+        <div class="card-body ">
+          <div class="row ">
+            <!--  -->
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="zap" appFeatherIcon></i>
+                  <h6 class="px-3">Energy Consumption</h6>
+                </div>
+                <div>
+                  <h6>{{ VW_Power?.energyConsumption || "N/A" }}</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="zap" appFeatherIcon></i>
+                  <h6 class="px-3">Max Power Factory</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ VW_Power?.maxPowerFactor || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="cpu" appFeatherIcon></i>
+                  <h6 class="px-3"> THDi</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ VW_Power?.thDi || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <i data-feather="cpu" appFeatherIcon></i>
+                  <h6 class="px-3"> THDv</h6>
+                </div>
+                <div>
+                  <h6>
+                    {{ VW_Power?.thDv || "N/A" }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 2nd Section -->
+  <!-- <div class="row">
+        <div class="col-xl-6 py-3 stretch-card" *ngFor="let i of VW_SignalStops">
+            <div class="card">
+                <div class="card-header bg-dark text-white text-uppercase fw-bold d-flex align-items-center">
+                    signalId : <span [ngClass]="
+          i.direction.includes('Left') ? 'bg-primary' : 'bg-danger'" class="badge  p-2  ms-1">{{i.signalId}}</span>
+                    <span class="px-3"></span> direction :
+                    <span [ngClass]="i.direction.includes('Left') ? 'bg-danger' : 'bg-primary'" class="badge bg-primary p-2 ms-1">{{ i.direction }}</span>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Stop</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Avg</th>
+                                <th scope="col">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">S1</th>
+                                <td>{{ i?.s1_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.avg_s1_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.s1_Count || "N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">S2</th>
+                                <td>{{ i?.s2_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.avg_s2_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.s2_Count || "N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">S3</th>
+                                <td>{{ i?.s2_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.avg_s3_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.s3_Count || "N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">S4</th>
+                                <td>{{ i?.s4_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.avg_s4_StopDuration || "N/A" }}</td>
+                                <td>{{ i?.s4_Count || "N/A" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> -->
+  <!-- 3rd Section -->
+  <div class="row">
+    <!-- STOPS CHART -->
+    <div class="col-xl-6 stretch-card grid-margin">
+      <div class="card">
+        <div class="card-header bg-dark text-white">STOPS CHART</div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <apx-chart [series]="pieChartOptions.series"
+           [chart]="pieChartOptions.chart"
+           [colors]="pieChartOptions.colors"
+            [stroke]="pieChartOptions.stroke"
+             [legend]="pieChartOptions.legend"
+            [dataLabels]="pieChartOptions.dataLabels"
+            [labels]="pieChartOptions.labels"
+            [plotOptions]="pieChartOptions.plotOptions"
+
+            ></apx-chart>
+        </div>
+      </div>
+    </div>
+    <!--TIME LINE CHART -->
+    <div class="col-xl-6 stretch-card grid-margin ">
+      <div class="card ">
+        <div class="card-header bg-dark text-white text-uppercase fw-bold ">
+          <span>TIME LINE CHART</span>
+          <span class="ps-3"></span>
+          <span class="badge  p-2  ms-1 bg-success">On</span>
+          <span class="px-1"></span>
+          <span class="badge  p-2  ms-1 bg-danger">Off</span>
+        </div>
+        <div class="card-body">
+          <apx-chart [series]="TimeLineChartOptionsL.series" [chart]="TimeLineChartOptionsL.chart"
+            [fill]="TimeLineChartOptionsL.fill" [grid]="TimeLineChartOptionsL.grid"
+            [plotOptions]="TimeLineChartOptionsL.plotOptions" [xaxis]="TimeLineChartOptionsL.xaxis"
+            [yaxis]="TimeLineChartOptionsL.yaxis" [tooltip]="pieChartOptions.tooltip"
+            [tooltip]="TimeLineChartOptionsL?.tooltip" [legend]="TimeLineChartOptionsL?.legend"
+            [title]="TimeLineChartOptionsL?.title" [responsive]="TimeLineChartOptionsL?.responsive"></apx-chart>
+        </div>
+      </div>
+    </div>
+    <!-- -->
+    <div class="col-xl-6 stretch-card grid-margin py-3 " >
+      <div id="chart-pie"></div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- if data not found or server down -->
+<section *ngIf="!VW_SignalStops.length">
+  <div class="page-content d-flex align-items-center justify-content-center">
+    <div class="row w-100 mx-0 auth-page">
+      <div class="col-md-8 col-xl-6 mx-auto d-flex flex-column align-items-center">
+        <img src="assets/images/others/404.svg" class="img-fluid mb-2" alt="404">
+        <h1 class="fw-bolder mb-22 mt-2 tx-80 text-muted">Opps</h1>
+        <h4 class="mb-2">{{newErr}}</h4>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,68 @@
+<div class="container-fluid">
+  <div class="row mt-2">
+    <div class="col-xl-6 stretch-card grid-margin tw-mt-8" *ngFor="let room of scaleRoom">
+      <div
+        class="card tw-relative tw-my-3 tw-mx-auto hover:tw-bg-gray-200 hover:tw-cursor-pointer hover:tw-ease-in-out">
+        <div class="tw-flex tw-flex-col tw-items-center tw-pb-10 tw-relative">
+          <img class="tw-w-16 -tw-top-8 tw-absolute tw-bg-white tw-p-1" src="assets/images/weighing-machine.png"
+            alt="" />
+        </div>
+        <a (click)="openXl(content , room.scalename)"
+          class="tw-my-3 tw-text-center tw-block tw-font-bold tw-text-2xl tw-text-gray-900 tw-mx-auto">
+          {{room.scalename}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ################### -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Modal title</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <!-- table data -->
+    <div class="col-xl-12 stretch-card grid-margin">
+      <div class="card">
+        <div class="card-body table-responsive">
+          <table class="table table table-sm ">
+            <thead class=" text-white">
+              <tr>
+                <th>matarial name</th>
+                <th>batch</th>
+                <th>uid</th>
+                <th>timestamp</th>
+                <th>weight</th>
+              </tr>
+            </thead>
+            <!--  -->
+            <tbody>
+              <tr *ngFor="let item of scaleReads | paginate
+              : {
+                  itemsPerPage: tableSize,
+                  currentPage: page,
+                  totalItems: count
+                }">
+                <td>{{item?.matarialname}}</td>
+                <td>{{item?.batch}}</td>
+                <td>{{item?.uid }}</td>
+                <td>{{item?.timestamp | date :'medium'}}</td>
+                <td>{{item?.weight | number: "1.0-1"}}g</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark tw-bg-black" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>

@@ -1,0 +1,79 @@
+<div class="row w-100 ">
+  <div class="col-md-3  vh-100   d-flex align-items-center">
+    <div class="row">
+      <div class="col-md-6 m-auto">
+        <div class="animate__animated animate__fadeIn shadow animate__delay-1s p-2 bg-  bg-opacity-25" (click)="robot()"
+          placement="end" ngbPopover="Welcome to Genie Sphere MES System. how"
+          style="border-radius: 50%; border: solid 5px #6571ff;position: relative; z-index: 9999; cursor: pointer;">
+          <img height="150" src="assets/images/73234-robot-assistant-online-manager.gif"
+            class="img-fluid rounded-circle  ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}"
+            alt="" />
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="auth-form-wrapper px-4 py-5">
+          <a routerLink="." class="nobleui-logo d-block mb-2">MES <span>Genie Sphere</span></a>
+          <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
+          <form class="forms-sample" [formGroup]="loginForm" (ngSubmit)="onLoggedin(loginForm)">
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="email"
+                formControlName="email">
+
+              <!--  -->
+              <div *ngIf="loginForm.get('email')?.errors !=null && loginForm.get('email')?.touched"
+                class="alert alert-danger my-2" role="alert">
+                <strong *ngIf="loginForm.get('email')?.errors?.required">email is required</strong>
+                <strong *ngIf="loginForm.get('email')?.errors?.email">email invalid</strong>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="font-weight-bolder" for="exampleInputPassword1 ">Password</label>
+              <div class="input-group">
+                <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="exampleInputPassword1"
+                  autocomplete="current-password" placeholder="Password" formControlName="password" />
+                <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                  <i *ngIf="showPassword" data-feather="eye-slash" appFeatherIcon></i>
+                  <i *ngIf="!showPassword" data-feather="eye" appFeatherIcon></i>
+                </button>
+              </div>
+              <!-- password err -->
+              <div *ngIf="loginForm.get('password')?.errors !=null && loginForm.get('password')?.touched"
+                class="alert alert-danger my-2" role="alert">
+                <strong *ngIf="loginForm.get('password')?.errors?.required">password is required</strong>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="authCheck">
+              <label class="form-check-label" for="authCheck">
+                Remember me
+              </label>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary tw-bg-searchBtn px-5 me-2 mb-2 mb-md-0"
+                (click)="onLoggedin($event)">Login</button>
+              <!-- <button type="button" class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
+                  <i class="feather icon-twitter btn-icon-prepend"></i>
+                  Login with twitter
+                </button> -->
+            </div>
+            <!-- <a routerLink="/auth/register" class="d-block mt-3 text-muted">Not a user? Sign up</a> -->
+          </form>
+
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+  <div class="col-md-9 vh-100 layout">
+    <div class="imgBack py-5">
+      <div id="particles-js"></div>
+      <div class=" my-4" *ngIf="isloading">
+        <app-loading></app-loading>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,236 @@
+
+.bg-danger{
+  background-color: #e61d2b!important;
+  opacity: 0.8;
+}
+.lds-spinner {
+  color: official;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+}
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #3B3936;
+}
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+
+
+@keyframes growProgressBar {
+  0%,
+  33% {
+    --pgPercentage: 0;
+  }
+  100% {
+    --pgPercentage: var(--value);
+  }
+}
+
+@property --pgPercentage {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 5;
+}
+
+div[role="progressbar"] {
+  --size: 5rem;
+  --fg: #6a94c6;
+  --bg: #def;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 3s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+      closest-side,
+      white 80%,
+      transparent 0 99.9%,
+      white 0
+    ),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage var(--value);
+}
+.borderBottom {
+  border-bottom: solid 1px;
+}
+
+.btn-outline-red {
+  border-color: #e61d2b !important;
+  color: white;
+  background-color: #e61d2b;
+}
+
+i {
+  color: #e61d2b;
+}
+
+.Perform span {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.Yields span {
+  font-size: 0.8rem;
+  color: #e61d2b;
+  font-weight: bolder;
+}
+.Yields small {
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.chartBox {
+  padding: 20px;
+  border-radius: 10px;
+  border: solid 1px #e61d2b;
+  background: white;
+}
+
+.time-line-full {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 0px 10px;
+
+  .time-line-full-title {
+    line-height: 35px;
+    border-bottom: 1px solid rgb(220, 220, 220);
+    background-color: #fff;
+
+    svg {
+      margin: 0px 7px;
+    }
+  }
+  .line-name {
+    color: #2c3e50;
+    font-size: 0.75rem;
+    font-weight: bold;
+    position: relative;
+    top: -5px;
+  }
+  .progress {
+    height: 10px;
+  }
+  .time-line-full-body {
+    width: 100%;
+    height: calc(100% - 38px);
+
+    .time-line-position {
+      margin-top: 12px;
+    }
+    .time-line-full-title1 {
+      position: relative;
+      top: 38px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    // .shift-top{
+    //   height: 60px !important;
+    // }
+  }
+
+
+}
+
+.card-title{
+  font-size: large;
+  color: #3B3936;
+}
+.card-text{
+  font-size: 3rem;
+  color: #3B3936;
+
+}
+.card-header{
+  background-color: #fff;
+  color: #3B3936;
+  cursor: pointer;
+}
+
+.btn-Cip {
+  color: #fff;
+  background-color: #6a94c6;
+  border-color: #6a94c6;
+}
+
+h4{
+  color: #3B3936;
+}

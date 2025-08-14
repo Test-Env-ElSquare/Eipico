@@ -1,0 +1,74 @@
+:host {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imgBack {
+  background-color: rgba(0, 0, 0, 0.8);
+  height: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.layout {
+  overflow: hidden;
+  position: relative;
+  padding: 0px;
+  z-index: 100;
+  height: inherit;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("https://img.freepik.com/free-photo/paper-analysis_1098-15678.jpg?w=1060&t=st=1665329171~exp=1665329771~hmac=22e30c7b51dae6139d4db10850782db193d6ae47a73a4953984fa02596ec858f");
+}
+
+.SideCard {
+  position: relative;
+  left: 9%;
+  transition: all 1s;
+  cursor: pointer;
+}
+
+/* ---- reset ---- */
+canvas {
+  display: block;
+  vertical-align: bottom;
+} /* ---- particles.js container ---- */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+} /* ---- stats.js ---- */
+.count-particles {
+  background: #000022;
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 80px;
+  color: #13e8e9;
+  font-size: 0.8em;
+  text-align: left;
+  text-indent: 4px;
+  line-height: 14px;
+  padding-bottom: 2px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+.js-count-particles {
+  font-size: 1.1em;
+}
+#stats,
+
+#stats {
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+}
+.count-particles {
+  border-radius: 0 0 3px 3px;
+}

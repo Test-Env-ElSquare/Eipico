@@ -1,0 +1,22 @@
+::ng-deep {
+  .ngx-pagination .current {
+    background: #000 !important;
+  }
+  .p-paginator-page,
+  .p-paginator-next,
+  .p-paginator-last,
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-current {
+    padding: 0 1rem;
+  }
+  .table > :not(:first-child) {
+    border-top: none;
+  }
+}
+
+p-table td,
+th {
+  padding: 10px;
+  text-align: center;
+}

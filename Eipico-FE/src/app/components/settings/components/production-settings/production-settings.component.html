@@ -1,0 +1,368 @@
+<!-- searchBar -->
+
+<div class="row">
+  <div class="col-12 grid-margin">
+    <form [formGroup]="FilterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <ng-select
+            [items]="FactoriesDropDown"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="false"
+            formControlName="factoryId"
+            placeholder="Select Plant"
+            [(ngModel)]="selectedFactory"
+            (change)="getLines(selectedFactory)"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <ng-select
+            [items]="LineDropDown"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="false"
+            formControlName="lineID"
+            placeholder="Select Line"
+            [(ngModel)]="selectedLine"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3 d-flex justify-content-between">
+          <button
+            type="button"
+            (click)="filterBTN()"
+            [disabled]="FilterForm.invalid"
+            class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0"
+          >
+            <i
+              class="btn-icon-prepend"
+              data-feather="filter"
+              appFeatherIcon
+            ></i>
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- form -->
+
+<div class="card">
+  <div class="card-body">
+    <form class="row g-3">
+      <div class="col-md-6">
+        <label for="NumberOfShifts" class="form-label fw-bold"
+          >Number Of Shifts</label
+        >
+        <input
+          type="number"
+          (keyup)="numOfShifts = num.value"
+          #num
+          class="form-control"
+          id="NumberOfShifts"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="menPower" class="form-label fw-bold"
+          >Men Power (Persons)</label
+        >
+        <input type="number" class="form-control" id="menPower" />
+      </div>
+      <!-- <div class="col-md-4">
+        <label for="recepieId" class="form-label fw-bold">Recepie Id</label>
+        <input type="number" class="form-control"  id="recepieId" >
+      </div> -->
+      <ng-container *ngIf="numOfShifts === '1'">
+        <div class="col-md-4">
+          <label for="Shift_1starttime" class="form-label fw-bold"
+            >Shift_1 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_1starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1endtime" class="form-label fw-bold"
+            >Shift_1 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_1endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1Breaktime" class="form-label fw-bold"
+            >Shift_1 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_1Breaktime" />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="numOfShifts === '2'">
+        <div class="col-md-4">
+          <label for="Shift_1starttime" class="form-label fw-bold"
+            >Shift_1 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_1starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1endtime" class="form-label fw-bold"
+            >Shift_1 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_1endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1Breaktime" class="form-label fw-bold"
+            >Shift_1 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_1Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2starttime" class="form-label fw-bold"
+            >Shift_2 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_2starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2endtime" class="form-label fw-bold"
+            >Shift_2 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_2endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2Breaktime" class="form-label fw-bold"
+            >Shift_2 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_2Breaktime" />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="numOfShifts === '3'">
+        <div class="col-md-4">
+          <label for="Shift_1starttime" class="form-label fw-bold"
+            >Shift_1 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_1starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1endtime" class="form-label fw-bold"
+            >Shift_1 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_1endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1Breaktime" class="form-label fw-bold"
+            >Shift_1 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_1Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2starttime" class="form-label fw-bold"
+            >Shift_2 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_2starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2endtime" class="form-label fw-bold"
+            >Shift_2 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_2endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2Breaktime" class="form-label fw-bold"
+            >Shift_2 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_2Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3starttime" class="form-label fw-bold"
+            >Shift_3 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_3starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3endtime" class="form-label fw-bold"
+            >Shift_3 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_3endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3Breaktime" class="form-label fw-bold"
+            >Shift_3 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_3Breaktime" />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="numOfShifts === '4'">
+        <div class="col-md-4">
+          <label for="Shift_1starttime" class="form-label fw-bold"
+            >Shift_1 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_1starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1endtime" class="form-label fw-bold"
+            >Shift_1 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_1endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1Breaktime" class="form-label fw-bold"
+            >Shift_1 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_1Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2starttime" class="form-label fw-bold"
+            >Shift_2 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_2starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2endtime" class="form-label fw-bold"
+            >Shift_2 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_2endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2Breaktime" class="form-label fw-bold"
+            >Shift_2 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_2Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3starttime" class="form-label fw-bold"
+            >Shift_3 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_3starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3endtime" class="form-label fw-bold"
+            >Shift_3 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_3endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3Breaktime" class="form-label fw-bold"
+            >Shift_3 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_3Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4starttime" class="form-label fw-bold"
+            >Shift_4 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_4starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4endtime" class="form-label fw-bold"
+            >Shift_4 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_4endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4Breaktime" class="form-label fw-bold"
+            >Shift_4 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_4Breaktime" />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="numOfShifts === '5'">
+        <div class="col-md-4">
+          <label for="Shift_1starttime" class="form-label fw-bold"
+            >Shift_1 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_1starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1endtime" class="form-label fw-bold"
+            >Shift_1 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_1endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_1Breaktime" class="form-label fw-bold"
+            >Shift_1 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_1Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2starttime" class="form-label fw-bold"
+            >Shift_2 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_2starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2endtime" class="form-label fw-bold"
+            >Shift_2 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_2endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_2Breaktime" class="form-label fw-bold"
+            >Shift_2 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_2Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3starttime" class="form-label fw-bold"
+            >Shift_3 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_3starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3endtime" class="form-label fw-bold"
+            >Shift_3 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_3endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_3Breaktime" class="form-label fw-bold"
+            >Shift_3 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_3Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4starttime" class="form-label fw-bold"
+            >Shift_4 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_4starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4endtime" class="form-label fw-bold"
+            >Shift_4 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_4endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_4Breaktime" class="form-label fw-bold"
+            >Shift_4 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_4Breaktime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_5starttime" class="form-label fw-bold"
+            >Shift_5 start time</label
+          >
+          <input type="time" class="form-control" id="Shift_5starttime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_5endtime" class="form-label fw-bold"
+            >Shift_5 end time</label
+          >
+          <input type="time" class="form-control" id="Shift_5endtime" />
+        </div>
+        <div class="col-md-4">
+          <label for="Shift_5Breaktime" class="form-label fw-bold"
+            >Shift_5 Break time</label
+          >
+          <input type="time" class="form-control" id="Shift_5Breaktime" />
+        </div>
+      </ng-container>
+
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-dark tw-bg-black">Submit</button>
+        <button type="button" class="btn btn-danger tw-bg-btnDelete mx-1">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

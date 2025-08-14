@@ -1,0 +1,126 @@
+<!-- searchBar -->
+<div class="row">
+  <div class="my-4">
+    <button class="btn btn-success" (click)="openAddForm(addForm)">
+      Add
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="align-middle">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Number</th>
+          <th scope="col">Type</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let line of lines">
+          <td>
+            {{line.name}}
+          </td>
+          <td>
+            {{line.number}}
+          </td>
+          <td>
+            {{line.type}}
+          </td>
+          <td class="d-flex align-items-center">
+            <button class="btn btn-warning mx-3" (click)="openLg(content,line.id)">
+              Edit
+            </button>
+            <button class="btn btn-danger" (click)="delete(line)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<ng-template #content let-modal>
+  <div class="card">
+    <div class="card-body">
+      <form class="row g-3" [formGroup]="lineEditForm">
+        <div class="col-md-4">
+          <label for="ID" class="form-label">Factory</label>
+          <ng-select [items]="FactoriesDropDown"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="false"
+          formControlName="factoryId"
+          placeholder="Select Plant"
+        >
+        </ng-select>
+        </div>
+        <div class="col-md-4">
+          <label for="machineName" class="form-label">Name</label>
+          <input type="text" class="form-control" formControlName="name" id="machineName">
+        </div>
+        <div class="col-md-4">
+          <label for="functionality" class="form-label">Type</label>
+          <input type="text" class="form-control" formControlName="type" id="functionality">
+        </div>
+        <div class="col-md-4">
+          <label for="machineUid" class="form-label">Number</label>
+          <input type="number" class="form-control" formControlName="number" id="machineUid">
+        </div>
+        <div class="col-12 text-end">
+          <button type="submit" (click)="upDate()" class="btn btn-dark tw-bg-black">update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #addForm let-modal>
+	<div class="card">
+    <div class="card-body">
+      <form class="row g-3" [formGroup]="lineForm">
+        <div class="col-md-4">
+          <label for="ID" class="form-label">Factory</label>
+          <ng-select [items]="FactoriesDropDown"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="false"
+          formControlName="factoryId"
+          placeholder="Select Plant"
+          [(ngModel)]="selectedFactory"
+        >
+        </ng-select>
+        </div>
+        <div class="col-md-4">
+          <label for="machineName" class="form-label">Name</label>
+          <input type="text" class="form-control" formControlName="name" id="machineName">
+        </div>
+        <div class="col-md-4">
+          <label for="functionality" class="form-label">Type</label>
+          <input type="text" class="form-control" formControlName="type" id="functionality">
+        </div>
+        <div class="col-md-4">
+          <label for="machineUid" class="form-label">Number</label>
+          <input type="number" class="form-control" formControlName="number" id="machineUid">
+        </div>
+        <div class="col-12 text-end">
+          <button type="submit" (click)="add()" class="btn btn-dark tw-bg-black">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

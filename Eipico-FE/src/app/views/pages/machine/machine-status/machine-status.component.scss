@@ -1,0 +1,80 @@
+.bg-danger{
+  background-color: #e61d2b!important;
+}
+.text-danger{
+  color: #e61d2b!important;
+}
+
+.btn-outline-danger {
+  color: #e61d2b;
+  border-color: #e61d2b;
+}
+
+.btn-outline-danger:hover {
+  color: #fff;
+  background-color: #e61d2b;
+}
+
+.btn-danger {
+  background-color: #e61d2b!important;
+}
+
+.btn-primary{
+  background-color:   #6a94c6;
+  border: #6a94c6;
+  }
+
+  .btn-outline-primary{
+    border: #6a94c6 solid 1px;
+    }
+    .btn-outline-primary:hover{
+      background-color:   #6a94c6;
+      color: #fff;
+    }
+.badge{
+  width: 70px;
+  text-align: center;
+}
+
+@keyframes growProgressBar {
+  0%,
+  33% {
+    --pgPercentage: 0;
+  }
+  100% {
+    --pgPercentage: var(--value);
+  }
+}
+
+@property --pgPercentage {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 5;
+}
+
+div[role="progressbar"] {
+  --size: 8rem;
+  --fg: #e61d2b;
+  --bg: #def;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 3s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+      closest-side,
+      white 80%,
+      transparent 0 99.9%,
+      white 0
+    ),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage var(--value);
+}
