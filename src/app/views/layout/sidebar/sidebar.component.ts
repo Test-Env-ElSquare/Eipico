@@ -62,8 +62,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   getMenuItems() {
-    // debugger;
-    const fullAccess = this.authService.isHasAccessToEvery();
+    const fullAccess = true;
 
     this.menuItems = [
       {
@@ -81,12 +80,15 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           {
             label: 'Main Dashboard',
             link: '/MainDash',
-            showSubItems: this.authService.isHasAccessToMainDashboards(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToMainDashboards(),
           },
           {
             label: 'Historical Dashboard',
             link: '/Historical',
-            showSubItems: this.authService.isHasAccessToHistoricalDashboards(),
+            showSubItems:
+              fullAccess ||
+              this.authService.isHasAccessToHistoricalDashboards(),
           },
         ],
       },
@@ -98,18 +100,21 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         label: 'Machines',
         icon: 'settings',
         showSubItems:
+          fullAccess ||
           this.authService.isHasAccessToMachineStatus() ||
           this.authService.isHasAccessToLineMachine(),
         subItems: [
           {
             label: 'Machine State',
             link: '/machines/machineState',
-            showSubItems: this.authService.isHasAccessToMachineStatus(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToMachineStatus(),
           },
           {
             label: 'Line Machine',
             link: '/machines/lineMachine',
-            showSubItems: this.authService.isHasAccessToLineMachine(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToLineMachine(),
           },
         ],
       },
@@ -120,12 +125,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'Material',
         icon: 'bar-chart',
-        showSubItems: this.authService.isHasAccessToMaterialControl(),
+        showSubItems:
+          fullAccess || this.authService.isHasAccessToMaterialControl(),
         subItems: [
           {
             label: 'Material Control',
             link: '/Material/materialControl',
-            showSubItems: this.authService.isHasAccessToMaterialControl(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToMaterialControl(),
           },
         ],
       },
@@ -136,21 +143,17 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'plans',
         icon: 'table',
-        showSubItems: this.authService.isHasAccessToProductionPlan(),
+        showSubItems:
+          fullAccess || this.authService.isHasAccessToProductionPlan(),
         subItems: [
           {
             label: 'Production Plan',
             link: '/planProduct',
-            showSubItems: this.authService.isHasAccessToProductionPlan(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToProductionPlan(),
           },
-          // {
-          //   label: 'Stoppage Plan',
-          //   link: '/planResource',
-          //   showSubItems: this.authService.isHasAccessToStoppagePlan(),
-          // },
         ],
       },
-
       {
         label: 'Batch management',
         isTitle: true,
@@ -159,6 +162,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         label: 'Batch Management',
         icon: 'settings',
         showSubItems:
+          fullAccess ||
           this.authService.isHasAccessToBatchSettings() ||
           this.authService.isHasAccessToBatchWeight() ||
           this.authService.isHasAccessToBatchHistory() ||
@@ -168,27 +172,32 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           {
             label: 'Batch Settings',
             link: '/batchSetting',
-            showSubItems: this.authService.isHasAccessToBatchSettings(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToBatchSettings(),
           },
           {
             label: 'Batch Weight',
             link: '/batchSetting/batchWeight',
-            showSubItems: this.authService.isHasAccessToBatchWeight(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToBatchWeight(),
           },
           {
             label: 'Batch History',
             link: '/batchSetting/History',
-            showSubItems: this.authService.isHasAccessToBatchHistory(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToBatchHistory(),
           },
           {
             label: 'Scale History',
             link: '/Scale/status',
-            showSubItems: this.authService.isHasAccessToScaleHistory(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToScaleHistory(),
           },
           {
             label: 'Batch Scheduler',
             link: '/batchScheduler',
-            showSubItems: this.authService.isHasAccessToBatchSchedulerView(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToBatchSchedulerView(),
           },
         ],
       },
@@ -200,52 +209,41 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         label: 'Settings',
         icon: 'settings',
         showSubItems:
+          fullAccess ||
           this.authService.isHasAccessToMachineSettings() ||
           this.authService.isHasAccessToProductionSettings() ||
           this.authService.isHasAccessToLineSettings() ||
           this.authService.isHasAccessToAddRole() ||
-          this.authService.isHasAccessToAddRole(),
+          this.authService.isHasAccessToUserManagement(),
         subItems: [
-          // {
-          //   label: 'Machine Settings',
-          //   link: '/settings/machine-settings',
-          //   showSubItems: this.authService.isHasAccessToMachineSettings(),
-          // },
-          // {
-          //   label: 'Production Settings',
-          //   link: '/settings/production-settings',
-          //   showSubItems: this.authService.isHasAccessToProductionSettings(),
-          // },
-          // {
-          //   label: 'Line Settings',
-          //   link: '/settings/line-settings',
-          //   showSubItems: this.authService.isHasAccessToLineSettings(),
-          // },
           {
             label: 'Add Role',
             link: '/settings/addRole',
-            showSubItems: this.authService.isHasAccessToAddRole(),
+            showSubItems: fullAccess || this.authService.isHasAccessToAddRole(),
           },
           {
             label: 'User Management',
             link: '/settings/userMangement',
-            showSubItems: this.authService.isHasAccessToUserManagement(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToUserManagement(),
           },
           {
             label: 'Shift',
             link: '/settings/shift',
-            showSubItems: this.authService.isHasAccessToUserManagement(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToUserManagement(),
           },
-
           {
             label: 'Machines',
             link: '/settings/machine-settings',
-            showSubItems: this.authService.isHasAccessToUserManagement(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToUserManagement(),
           },
           {
             label: 'Profile',
             link: '/auth/view-profile',
-            showSubItems: this.authService.isHasAccessToUserManagement(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToUserManagement(),
           },
         ],
       },
@@ -257,31 +255,34 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         label: 'Reports',
         icon: 'cast',
         showSubItems:
+          fullAccess ||
           this.authService.isHasAccessToEnergyReport() ||
           this.authService.isHasAccessToBeconReport(),
         subItems: [
           {
             label: 'Daily reports',
             link: '/reports/dailyReports',
-            // showSubItems: this.authService.isHasAccessToBeconReport(),
+            showSubItems: fullAccess || true,
           },
           {
             label: 'Becon reports',
             link: '/reports/beconReports',
-            showSubItems: this.authService.isHasAccessToBeconReport(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToBeconReport(),
           },
         ],
       },
-
       {
         label: 'Utilities',
         icon: 'cast',
-        showSubItems: this.authService.isHasAccessToEnergyReport(),
+        showSubItems:
+          fullAccess || this.authService.isHasAccessToEnergyReport(),
         subItems: [
           {
             label: 'Energy',
             link: '/reports/energyReports',
-            showSubItems: this.authService.isHasAccessToEnergyReport(),
+            showSubItems:
+              fullAccess || this.authService.isHasAccessToEnergyReport(),
           },
         ],
       },
@@ -292,12 +293,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'Scada',
         icon: 'sliders',
-        showSubItems: this.authService.isHasAccessToscada(),
+        showSubItems: fullAccess || this.authService.isHasAccessToscada(),
         subItems: [
           {
             label: 'Main Scada',
             link: '/Scada/mainScada',
-            showSubItems: this.authService.isHasAccessToscada(),
+            showSubItems: fullAccess || this.authService.isHasAccessToscada(),
           },
         ],
       },

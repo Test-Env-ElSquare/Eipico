@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { JwtHelperService } from '@auth0/angular-jwt';
 export interface LoginResponse {
   token: string;
   user: string;
@@ -54,23 +55,29 @@ export interface Claim {
 })
 export class AuthService {
   //to emit that the user loged in
-
+  private jwtHelper = new JwtHelperService();
   public cureentUserSubject: BehaviorSubject<UserAccess | null | any>;
   public cureentUserName: any;
   public userClaims: any;
   public currentUserValue: Observable<any>;
   public permissions: any;
   constructor(private http: HttpClient) {
-    this.cureentUserSubject =
-      JSON.parse(localStorage.getItem('Token')!) || null;
-    this.cureentUserName = JSON.parse(localStorage.getItem('user')!) || '';
-
-    this.userClaims = this.cureentUserSubject;
-    this.permissions = this.cureentUserSubject?.value?.permissions || '';
-    const userData = this.cureentUserSubject.value; // أو getValue()
-    this.userClaims = userData;
-    this.permissions = userData?.permissions || '';
+    const token = localStorage.getItem('Token');
+    if (token) {
+      try {
+        if (!this.jwtHelper.isTokenExpired(token)) {
+          this.userClaims = this.jwtHelper.decodeToken(token);
+          this.permissions = this.userClaims?.permissions || '';
+        } else {
+          localStorage.removeItem('Token');
+        }
+      } catch (err) {
+        console.error('Invalid token in localStorage, clearing...', err);
+        localStorage.removeItem('Token');
+      }
+    }
   }
+
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
@@ -148,7 +155,7 @@ export class AuthService {
     }
   }
   isHasAccessToEvery(): boolean {
-    return this.permissions === 'HasAccessToEverything';
+    return this.permissions?.HasAccessToEverything === 'true';
   }
 
   isHasAccessToAddRole(): boolean {

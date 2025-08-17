@@ -95,6 +95,7 @@ export class LoginComponent implements OnInit {
       retina_detect: true,
     });
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    localStorage.clear();
   }
 
   loginForm: FormGroup = new FormGroup({
