@@ -13,6 +13,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { FeatherIconModule } from 'src/app/core/feather-icon/feather-icon.module';
 import { CodePreviewModule } from '../../partials/code-preview/code-preview.module';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,9 @@ const routes: Routes = [
         component: RegisterComponent,
       },
       { path: 'view-profile', component: ViewProfileComponent },
+      {
+
+      }
     ],
   },
 ];
@@ -45,6 +49,7 @@ const routes: Routes = [
     HoverLoginDirective,
     LoadingComponent,
     ViewProfileComponent,
+    EditProfileComponent,
   ],
   imports: [
     CommonModule,
