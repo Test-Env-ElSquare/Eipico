@@ -61,15 +61,14 @@ export class AuthService {
   public currentUserValue: Observable<any>;
   public permissions: any;
   constructor(private http: HttpClient) {
-    this.cureentUserSubject =
-      JSON.parse(localStorage.getItem('Token')!) || null;
+    const token = localStorage.getItem('Token');
     this.cureentUserName = JSON.parse(localStorage.getItem('user')!) || '';
 
-    this.userClaims = this.cureentUserSubject;
-    this.permissions = this.cureentUserSubject?.value?.permissions || '';
-    const userData = this.cureentUserSubject.value; // أو getValue()
-    this.userClaims = userData;
-    this.permissions = userData?.permissions || '';
+    if (token) {
+      const decoded: any = jwtDecode(token); // فك التوكن هنا
+      this.userClaims = decoded;
+      this.permissions = decoded?.permissions || '';
+    }
   }
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -148,7 +147,7 @@ export class AuthService {
     }
   }
   isHasAccessToEvery(): boolean {
-    return this.permissions === 'HasAccessToEverything';
+    return this.permissions?.HasAccessToEverything === 'true';
   }
 
   isHasAccessToAddRole(): boolean {
@@ -370,4 +369,7 @@ export class AuthService {
   getMyProfile(): Observable<any> {
     return this.http.get<any>(environment.baseUrl + 'api/Auth/MyProfile');
   }
+}
+function jwtDecode(token: string): any {
+  throw new Error('Function not implemented.');
 }
