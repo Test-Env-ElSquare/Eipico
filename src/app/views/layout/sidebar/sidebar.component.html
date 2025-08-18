@@ -1,87 +1,157 @@
-<nav class="sidebar">
+<nav class="sidebar" [class.sidebar-collapsed]="isCollapsed">
   <div class="sidebar-header">
-    <div></div>
-    <!--- Logo -->
-    <a routerLink="/" class="sidebar-brand nobleui-logo" style="font-size: 18px;">
-      MES Genies AI
-      <!-- ELSquare GenieSys -->
+    <!-- Logo -->
+    <a
+      routerLink="/"
+      class="sidebar-brand nobleui-logo"
+      aria-label="Go to homepage"
+    >
+      <span class="logo-text" [class.collapsed]="isCollapsed"
+        >MES Genies AI</span
+      >
     </a>
-    <!--
-    <a routerLink="/" class="sidebar-brand nobleui-logo">Taqa    </a> -->
-    <!--- Toggler -->
-    <div class="sidebar-toggler active" #sidebarToggler (click)="toggleSidebar($event)">
+
+    <!-- Toggler Button -->
+    <button
+      class="sidebar-toggler active"
+      type="button"
+      #sidebarToggler
+      (click)="toggleSidebar($event)"
+      aria-label="Toggle sidebar"
+    >
       <span></span>
       <span></span>
       <span></span>
-    </div>
+    </button>
   </div>
-  <div class="sidebar-body  " (mouseenter)="operSidebarFolded()" (mouseleave)="closeSidebarFolded()" [perfectScrollbar]>
 
-    <!--- Sidemenu start -->
-
-    <ul class="sidebar-nav metismenu tw-h-full tw-relative" id="sidebar-menu" #sidebarMenu>
-      <li class="nav-item text-center">
-        <img width="200" src="assets/images/logo.png"
-          class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}">
-
-        <!-- <img width="100" src="assets/images/logo.png" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} d-block tw-mx-auto tw-w-96" alt=""> -->
-        <!-- <a  class="nav-link">
-          <i class="link-icon" data-feather="hash" appFeatherIcon></i>
-          <span class="link-title">Documentation</span>
-        </a> -->
+  <div
+    class="sidebar-body"
+    (mouseenter)="operSidebarFolded()"
+    (mouseleave)="closeSidebarFolded()"
+    [perfectScrollbar]
+  >
+    <ul class="sidebar-nav metismenu" id="sidebar-menu" #sidebarMenu>
+      <!-- Logo Image (optional, shown only when expanded) -->
+      <li class="nav-item text-center py-3" *ngIf="!isCollapsed">
+        <img
+          src="assets/images/logo.png"
+          alt="Company Logo"
+          width="160"
+          class="img-fluid rounded shadow-sm"
+        />
       </li>
-      <ng-container *ngFor="let item of menuItems">
-        <!-- Title item -->
-        <li class="nav-item nav-category" *ngIf="item.showSubItems">{{
-          item.label }}</li>
 
-        <!-- Main item (with or without subitems) -->
+      <!-- Menu Items -->
+      <ng-container *ngFor="let item of menuItems; trackBy: trackByFn">
+        <!-- Category Title -->
+        <li class="nav-item nav-category" *ngIf="item.isTitle">
+          {{ item.label }}
+        </li>
+
+        <!-- Main Menu Item -->
         <li class="nav-item" *ngIf="!item.isTitle">
-
-          <!-- Main item with subitems -->
-          <a class="nav-link" *ngIf="item.showSubItems" href="javascript:void(0);" role="button">
-            <i class="link-icon" [attr.data-feather]="item.icon" appFeatherIcon *ngIf="item.icon"></i>
+          <!-- Parent with Children -->
+          <a
+            class="nav-link"
+            *ngIf="item.showSubItems"
+            href="javascript:void(0);"
+            (click)="toggleSubmenu(item)"
+            role="button"
+            aria-expanded="item.expanded"
+            [attr.aria-controls]="'submenu-' + item.id"
+          >
+            <i
+              class="link-icon"
+              [attr.data-feather]="item.icon"
+              appFeatherIcon
+            ></i>
             <span class="link-title">{{ item.label }}</span>
-            <span class="link-arrow" data-feather="chevron-down" appFeatherIcon></span>
+            <span class="link-arrow" data-feather="chevron-down"></span>
           </a>
 
-          <!-- Main item without subitems, just a link -->
-          <a class="nav-link nav-link-ref" [routerLink]="item.link" routerLinkActive="mm-active" *ngIf="!hasItems(item)"
-            [attr.data-parent]="item.parentId">
-            <i class="link-icon" [attr.data-feather]="item.icon" appFeatherIcon *ngIf="item.icon"></i>
+          <!-- Leaf Link (No Children) -->
+          <a
+            class="nav-link nav-link-ref"
+            [routerLink]="item.link"
+            routerLinkActive="mm-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            *ngIf="!item.showSubItems && item.link"
+            [attr.data-parent]="item.parentId"
+          >
+            <i
+              class="link-icon"
+              [attr.data-feather]="item.icon"
+              appFeatherIcon
+            ></i>
             <span class="link-title">{{ item.label }}</span>
-            <span class="badge bg-{{item.badge.variant}}" *ngIf="item.badge">{{ item.badge.text }}</span>
+            <span class="badge bg-{{ item.badge?.variant }}" *ngIf="item.badge">
+              {{ item.badge.text }}
+            </span>
           </a>
 
-          <!-- Sub-menu for items with subitems -->
-          <ul class="sidebar-nav sub-menu nav-second-level" *ngIf="item.showSubItems">
-            <li class="nav-item" *ngFor="let subitem of item.subItems" [ngClass]="{'side-nav-item': hasItems(subitem)}">
-
-              <!-- Subitem with sub-subitems -->
-              <a class="nav-link side-nav-link-a-ref" *ngIf="hasItems(subitem)" href="javascript:void(0);"
-                role="button">
-                <i class="link-icon" [attr.data-feather]="subitem.icon" appFeatherIcon *ngIf="subitem.icon"></i>
+          <!-- Submenu -->
+          <ul
+            class="sidebar-nav sub-menu nav-second-level"
+            *ngIf="item.showSubItems"
+            [@submenu]="item.expanded ? 'open' : 'closed'"
+            [id]="'submenu-' + item.id"
+          >
+            <li class="nav-item" *ngFor="let subitem of item.subItems">
+              <!-- Subitem with Children -->
+              <a
+                class="nav-link side-nav-link-a-ref"
+                *ngIf="subitem.showSubItems"
+                href="javascript:void(0);"
+                (click)="toggleSubSubmenu(subitem)"
+                role="button"
+              >
+                <i
+                  class="link-icon"
+                  [attr.data-feather]="subitem.icon"
+                  appFeatherIcon
+                ></i>
                 <span class="link-title">{{ subitem.label }}</span>
-                <span class="link-arrow" data-feather="chevron-down" appFeatherIcon></span>
+                <span class="link-arrow" data-feather="chevron-down"></span>
               </a>
 
-              <!-- Button for subitems without further subitems -->
-              <button [disabled]="subitem.label === 'Line Settings' || subitem.label === 'Production Settings' ||
-                                  subitem.label === 'Stoppage Plan' || subitem.label === 'Daily reports'"
-                *ngIf="subitem.showSubItems" class="nav-link nav-link-ref" [routerLink]="subitem.link"
-                routerLinkActive="mm-active" [routerLinkActiveOptions]="{exact: true}"
-                [attr.data-parent]="subitem.parentId">
-                <i class="link-icon" [attr.data-feather]="subitem.icon" appFeatherIcon *ngIf="subitem.icon"></i>
-                {{ subitem.label }}
+              <!-- Leaf Subitem (Button disabled conditionally) -->
+              <button
+                *ngIf="!subitem.showSubItems"
+                class="nav-link nav-link-ref"
+                [disabled]="isDisabled(subitem.label)"
+                [routerLink]="subitem.link"
+                routerLinkActive="mm-active"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                <i
+                  class="link-icon"
+                  [attr.data-feather]="subitem.icon"
+                  appFeatherIcon
+                ></i>
+                <span class="link-title">{{ subitem.label }}</span>
               </button>
 
-              <!-- Sub-sub-items -->
-              <ul class="sidebar-nav sub-menu nav-third-level" *ngIf="subitem.showSubItems">
-                <li class="nav-item" *ngFor="let subSubitem of subitem.subItems">
-                  <a class="nav-link nav-link-ref" [routerLink]="subSubitem.link" routerLinkActive="mm-active"
-                    [attr.data-parent]="subSubitem.parentId">
-                    <i class="link-icon" [attr.data-feather]="subSubitem.icon" appFeatherIcon
-                      *ngIf="subSubitem.icon"></i>
+              <!-- Sub-submenu -->
+              <ul
+                class="sidebar-nav sub-menu nav-third-level"
+                *ngIf="subitem.showSubItems"
+                [@submenu]="subitem.expanded ? 'open' : 'closed'"
+              >
+                <li
+                  class="nav-item"
+                  *ngFor="let subSubitem of subitem.subItems"
+                >
+                  <a
+                    class="nav-link nav-link-ref"
+                    [routerLink]="subSubitem.link"
+                    routerLinkActive="mm-active"
+                  >
+                    <i
+                      class="link-icon"
+                      [attr.data-feather]="subSubitem.icon"
+                      appFeatherIcon
+                    ></i>
                     {{ subSubitem.label }}
                   </a>
                 </li>
@@ -91,10 +161,10 @@
         </li>
       </ng-container>
 
-
-      <li class="nav-item nav-category tw-absolute -tw-bottom-32">Powered by Elsquare </li>
+      <!-- Footer -->
+      <li class="nav-item nav-category powered-by">
+        <small>Powered by <strong>ElSquare</strong></small>
+      </li>
     </ul>
   </div>
-
-
 </nav>
