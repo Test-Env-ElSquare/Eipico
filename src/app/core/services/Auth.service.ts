@@ -399,7 +399,7 @@ export class AuthService {
   }
   editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
     return this.http.put<UpdateUserProfile>(
-      environment.baseUrl + 'api/Auth/user/update-user',
+      environment.baseUrl + 'api/Auth/user/update-profile',
       data
     );
   }
