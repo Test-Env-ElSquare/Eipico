@@ -3,6 +3,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import {
+  IProfile,
+  UpdateAdminProfile,
+  UpdateUserProfile,
+  updateUserProfileByAdmin,
+} from 'src/app/views/pages/auth/models/auth';
 export interface LoginResponse {
   token: string;
   user: string;
@@ -374,7 +380,35 @@ export class AuthService {
       formData
     );
   }
-  getMyProfile(): Observable<any> {
-    return this.http.get<any>(environment.baseUrl + 'api/Auth/MyProfile');
+  private profileSubject = new BehaviorSubject<IProfile | null>(null);
+  profile$ = this.profileSubject.asObservable(); // يقدر أي كمبوننت يشترك فيه
+  getMyProfile(): Observable<IProfile> {
+    return this.http.get<IProfile>(environment.baseUrl + 'api/Auth/MyProfile');
+  }
+  loadProfile() {
+    this.getMyProfile().subscribe({
+      next: (res) => this.profileSubject.next(res),
+      error: (err) => console.error('Error loading profile', err),
+    });
+  }
+  editAdminProfile(data: UpdateAdminProfile): Observable<UpdateAdminProfile> {
+    return this.http.put<UpdateAdminProfile>(
+      environment.baseUrl + 'api/Auth/admin/update-user',
+      data
+    );
+  }
+  editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
+    return this.http.put<UpdateUserProfile>(
+      environment.baseUrl + 'api/Auth/user/update-user',
+      data
+    );
+  }
+  editUserProfileByAdmin(
+    data: updateUserProfileByAdmin
+  ): Observable<updateUserProfileByAdmin> {
+    return this.http.put<updateUserProfileByAdmin>(
+      environment.baseUrl + 'api/Auth/admin/update-user',
+      data
+    );
   }
 }

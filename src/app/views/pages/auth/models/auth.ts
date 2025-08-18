@@ -18,3 +18,31 @@ export interface Claim {
   type: string;
   value: string;
 }
+export interface UpdateAdminProfile {
+  userId: string;
+  roles: string[];
+  claims: string[];
+  areaIds: number[];
+}
+export interface UpdateUserProfile {
+  userId: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  currentPassword: string;
+  newPassword: string;
+}
+export interface updateUserProfileByAdmin {
+  userId: string;
+  roles: string[];
+  claims: string[];
+  areaIds: number[];
+}
+export interface IRole {
+  id: number;
+  name: string;
+}
+export interface Iclamis {
+  id: number;
+  name: string;
+}
