@@ -69,14 +69,21 @@ export class AuthService {
   public permissions: any;
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('Token');
-    this.cureentUserName = JSON.parse(localStorage.getItem('user')!) || '';
-
     if (token) {
-      const decoded: any = jwtDecode(token); // فك التوكن هنا
-      this.userClaims = decoded;
-      this.permissions = decoded?.permissions || '';
+      try {
+        if (!this.jwtHelper.isTokenExpired(token)) {
+          this.userClaims = this.jwtHelper.decodeToken(token);
+          this.permissions = this.userClaims?.permissions || '';
+        } else {
+          localStorage.removeItem('Token');
+        }
+      } catch (err) {
+        console.error('Invalid token in localStorage, clearing...', err);
+        localStorage.removeItem('Token');
+      }
     }
   }
+
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
@@ -392,7 +399,7 @@ export class AuthService {
   }
   editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
     return this.http.put<UpdateUserProfile>(
-      environment.baseUrl + 'api/Auth/user/update-profile',
+      environment.baseUrl + 'api/Auth/user/update-user',
       data
     );
   }
@@ -404,7 +411,4 @@ export class AuthService {
       data
     );
   }
-}
-function jwtDecode(token: string): any {
-  throw new Error('Function not implemented.');
 }

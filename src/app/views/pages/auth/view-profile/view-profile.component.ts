@@ -22,7 +22,7 @@ export class ViewProfileComponent implements OnInit {
         console.log(this.userData);
       },
       error: (err) => {
-        console.log('erroreeeee', err);
+        console.log('error', err);
         console.log('>???????? test github');
       },
     });

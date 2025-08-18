@@ -31,7 +31,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   menuItems: MenuItem[] = [];
 
   @ViewChild('sidebarMenu') sidebarMenu: ElementRef;
-  isCollapsed = false;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -93,10 +92,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Machines',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Machines',
+        isTitle: true,
+      },
       {
         label: 'Machines',
         icon: 'settings',
@@ -119,10 +118,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Material',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Material',
+        isTitle: true,
+      },
       {
         label: 'Material',
         icon: 'bar-chart',
@@ -137,10 +136,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'plan',
-      //   isTitle: true,
-      // },
+      {
+        label: 'plan',
+        isTitle: true,
+      },
       {
         label: 'plans',
         icon: 'table',
@@ -155,10 +154,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Batch management',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Batch management',
+        isTitle: true,
+      },
       {
         label: 'Batch Management',
         icon: 'settings',
@@ -202,10 +201,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Settings',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Settings',
+        isTitle: true,
+      },
       {
         label: 'Settings',
         icon: 'settings',
@@ -248,10 +247,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Reports',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Reports',
+        isTitle: true,
+      },
       {
         label: 'Reports',
         icon: 'cast',
@@ -263,7 +262,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           {
             label: 'Daily reports',
             link: '/reports/dailyReports',
-            showSubItems: fullAccess || true, // daily reports دايمًا تظهر مع fullAccess
+            showSubItems: fullAccess || true,
           },
           {
             label: 'Becon reports',
@@ -287,10 +286,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      // {
-      //   label: 'Scada',
-      //   isTitle: true,
-      // },
+      {
+        label: 'Scada',
+        isTitle: true,
+      },
       {
         label: 'Scada',
         icon: 'sliders',
@@ -314,7 +313,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   toggleSidebar(e: Event) {
     this.sidebarToggler.nativeElement.classList.toggle('active');
     this.sidebarToggler.nativeElement.classList.toggle('not-active');
-    this.isCollapsed = !this.isCollapsed;
     if (window.matchMedia('(min-width: 992px)').matches) {
       e.preventDefault();
       this.document.body.classList.toggle('sidebar-folded');
@@ -483,30 +481,5 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         }
       }
     }
-  }
-  trackByFn(index: number, item: any) {
-    return item.id || index;
-  }
-
-  // toggleSidebar(event: Event) {
-  //   this.isCollapsed = !this.isCollapsed;
-  // }
-
-  toggleSubmenu(item: any) {
-    item.expanded = !item.expanded;
-  }
-
-  toggleSubSubmenu(subitem: any) {
-    subitem.expanded = !subitem.expanded;
-  }
-
-  isDisabled(label: string): boolean {
-    const disabledItems = [
-      'Line Settings',
-      'Production Settings',
-      'Stoppage Plan',
-      'Daily reports',
-    ];
-    return disabledItems.includes(label);
   }
 }
