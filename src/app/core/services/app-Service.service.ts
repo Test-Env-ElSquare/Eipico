@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { factory, Line, Skus } from '../models/filter';
 import { skus } from 'src/app/components/Historical/models/model';
+import { lineS } from 'src/app/components/settings/models/model';
+import { Lines } from '../models/lines';
 
 @Injectable({
   providedIn: 'root',
@@ -69,6 +71,11 @@ export class AppService {
           isPending: isPending,
         },
       }
+    );
+  }
+  getAllLines(): Observable<Lines[]> {
+    return this._http.get<Lines[]>(
+      environment.baseUrl + 'api/Line/GetAllLines'
     );
   }
 }

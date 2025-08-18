@@ -10,6 +10,7 @@ import { AuthGuard } from './core/guard/auth.guard';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './views/pages/error-page/error-page.component';
 import { ToastrModule } from 'ngx-toastr';
+import { StepsModule } from 'primeng/steps';
 
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -23,6 +24,8 @@ import { SortableHeaderDirective } from './core/directives/sortable-header.direc
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
+
+    StepsModule,
     HttpClientModule,
     ToastrModule.forRoot(), // ToastrModule added
   ],

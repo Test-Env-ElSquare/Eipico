@@ -13,8 +13,11 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { FeatherIconModule } from 'src/app/core/feather-icon/feather-icon.module';
 import { CodePreviewModule } from '../../partials/code-preview/code-preview.module';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { StepsModule } from 'primeng/steps';
+import { DropdownModule } from 'primeng/dropdown';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
-
+import { ButtonModule } from 'primeng/button';
 const routes: Routes = [
   {
     path: '',
@@ -35,8 +38,9 @@ const routes: Routes = [
       },
       { path: 'view-profile', component: ViewProfileComponent },
       {
-
-      }
+        path: 'edit-profile',
+        component: EditProfileComponent,
+      },
     ],
   },
 ];
@@ -61,6 +65,10 @@ const routes: Routes = [
     NgbModule,
     PerfectScrollbarModule,
     FeatherIconModule,
+    StepsModule,
+    NgSelectModule,
+    DropdownModule,
+    ButtonModule,
   ],
 })
 export class AuthModule {}

@@ -3,29 +3,119 @@
     <!-- Profile Header -->
     <div class="text-center">
       <div class="d-flex justify-content-center">
-        <img src="../../../../../assets/images/user-picture.jpg" class="rounded-circle border" alt="Profile" width="150"
+        <img src="../../../../../assets/images/user.png" class="rounded-circle border" alt="Profile" width="150"
           height="100" />
       </div>
+      <div *ngIf="profile">
+        <h3 class="mt-3 mb-1">{{profile.username}}/ <span class="ps-3">Edit Profile</span></h3>
+        <div class="text-muted"> &nbsp;&nbsp; <i class=" pi pi-envelope p-2 mt-1"></i>{{profile.email}}</div>
 
-      <!-- <h2 class="mt-3 mb-1">{{userData.username}}</h2>
-      <div class="text-muted"> &nbsp;&nbsp; <i class=" pi pi-envelope p-2 mt-1"></i>{{userData.email}}</div> -->
-      <button class="btn btn-sm btn-outline-primary mt-2">
-        <i class="pi pi-pencil me-2"></i>Edit
-      </button>
+      </div>
+
     </div>
 
     <!-- Info Sections -->
-    <div class="row mt-5">
+    <div class="row mt-5 p-5">
       <!-- About Section -->
-      <div class="col-md-4 mb-4">
+      <!-- <div class="col-md-4 mb-4">
         <div class="border rounded p-3 h-75">
           <h2 class="fw-bold mb-3">About</h2>
 
         </div>
+      </div> -->
+      <div class="stepper-layout">
+        <!-- left side (steps navigation only) -->
+        <div class="custom-stepper">
+          <!-- Step 1 -->
+          <div class="step">
+            <div class="circle">1</div>
+            <div class="step-content">
+              <h4>Personal Information</h4>
+              <p>Change personal information</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <!-- <div class="step" [class.active]="currentStep === 2" (click)="goToStep(2)">
+            <div class="circle">2</div>
+            <div class="step-content">
+              <h4>Password</h4>
+              <p>Reset your password</p>
+            </div>
+          </div> -->
+        </div>
+
+        <!-- right side (form box) -->
+        <div class="content-box">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
+            <ng-container [ngSwitch]="currentStep">
+
+              <!-- Step 1 -->
+              <div *ngSwitchCase="1">
+                <h2 *ngIf="isUser()">Personal Information</h2>
+                <h2 *ngIf="isAdmin()">Update User</h2>
+
+                <!-- User form -->
+                <ng-container *ngIf="isUser()">
+                  <input type="text" formControlName="username" placeholder="Enter Name" class="form-control mb-2" />
+                  <input type="text" formControlName="email" placeholder="Enter Email" class="form-control mb-2" />
+                  <input type="text" formControlName="phoneNumber" placeholder="Enter Phone"
+                    class="form-control mb-2" />
+                  <input type="password" formControlName="currentPassword" placeholder="Enter Current Password"
+                    class="form-control mb-2" />
+                  <input type="password" formControlName="newPassword" placeholder="Enter New Password"
+                    class="form-control mb-2" />
+                </ng-container>
+
+                <!-- Admin form -->
+                <ng-container *ngIf="isAdmin()">
+                  <label class="m-2">Role</label>
+                  <p-dropdown formControlName="roleName" [options]="roles" optionLabel="name" optionValue="name"
+                    placeholder="Select role" styleClass="w-100">
+                  </p-dropdown>
+
+
+                  <label class="m-2">Claims</label>
+                  <p-dropdown formControlName="claims" [options]="clamis" optionLabel="name" optionValue="name"
+                    placeholder="Select claim" styleClass="w-100">
+                  </p-dropdown>
+
+                  <label class="m-2">Areas</label>
+                  <p-dropdown formControlName="areas" [options]="allAreas" optionLabel="area" optionValue="area"
+                    placeholder="Select area" styleClass="w-100 mb-1">
+                  </p-dropdown>
+
+                </ng-container>
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-success mt-5">Save</button>
+                </div>
+
+              </div>
+
+
+              <!--
+      <div *ngSwitchCase="2">
+        <h3>Reset Password</h3>
+        <input type="password" formControlName="newPassword" placeholder="New Password" class="form-control mb-2" />
+        <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" class="form-control mb-2" />
+
+        <button type="button" (click)="goToStep(1)" class="btn btn-secondary">Back</button>
+        <button type="submit" class="btn btn-success">Save</button>
+      </div>
+      -->
+            </ng-container>
+          </form>
+        </div>
+
       </div>
 
+
+
+
+
+
       <!-- Permissions Section (Optional Placeholder or Custom Content) -->
-      <div class="col-md-8 mb-4">
+      <!-- <div class="col-md-8 mb-4">
         <div class="card border rounded p-3 h-100">
           <h2 class="fw-bold mb-3">Permissions</h2>
           <div class="border rounded p-3 m-2 h-75">
@@ -88,7 +178,7 @@
         </div>
 
 
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
