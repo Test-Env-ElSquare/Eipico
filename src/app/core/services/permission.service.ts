@@ -15,8 +15,14 @@ export class PermissionService {
       return;
     }
     const hasAll =
-      claims['HasAccessToEverything'] === 'true' ||
+      claims['permissions']?.includes('HasAccessToEverything') ||
       claims['HasAccessToEverything'] === true;
+    const rawPermissions = claims['permissions'];
+    const permissionsArray: string[] = Array.isArray(rawPermissions)
+      ? rawPermissions
+      : typeof rawPermissions === 'string'
+      ? rawPermissions.split(',')
+      : [];
     for (const key of Object.values(Permission)) {
       if (key === Permission.Everything) {
         continue;

@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { PermissionService } from './permission.service';
+
 import {
   IProfile,
   UpdateAdminProfile,
   UpdateUserProfile,
   updateUserProfileByAdmin,
 } from 'src/app/views/pages/auth/models/auth';
+import { PermissionService } from './permission.service';
 export interface LoginResponse {
   token: string;
   user: string;
