@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { PermissionService } from './permission.service';
 import {
   IProfile,
   UpdateAdminProfile,
@@ -67,12 +68,16 @@ export class AuthService {
   public userClaims: any;
   public currentUserValue: Observable<any>;
   public permissions: any;
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private permissionService: PermissionService
+  ) {
     const token = localStorage.getItem('Token');
     if (token) {
       try {
         if (!this.jwtHelper.isTokenExpired(token)) {
           this.userClaims = this.jwtHelper.decodeToken(token);
+          this.permissionService.initFromClaims(this.userClaims);
           this.permissions = this.userClaims?.permissions || '';
         } else {
           localStorage.removeItem('Token');
@@ -88,8 +93,14 @@ export class AuthService {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     console.log(this.permissions);
+    console.log(
+      'this to show if has for every  thing or not >>>>',
+      this.isHasAccessToEvery()
+    );
   }
   public get CurrentUser(): LoginResponse {
+    console.log('permissions', this.permissions);
+    console.log('userData', this.userClaims);
     return this.cureentUserName;
   }
 
@@ -107,6 +118,16 @@ export class AuthService {
 
   isHasAccessToE1(): boolean {
     if (this.userClaims?.HasAccessToE1 == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  hasAccessToAddProductPlanning(): boolean {
+    if (this.permissions?.hasAccessToAddProductPlanning) {
+      console.log(
+        '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> has access to add product planning'
+      );
       return true;
     } else {
       return false;

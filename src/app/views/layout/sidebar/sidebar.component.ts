@@ -18,6 +18,8 @@ import MetisMenu from 'metismenujs';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { Router, NavigationEnd } from '@angular/router';
+import { Permission } from '../../../core/models/permission';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -37,7 +39,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private perms: PermissionService
   ) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
@@ -73,22 +76,23 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         label: 'Dashboards',
         showSubItems:
           fullAccess ||
-          this.authService.isHasAccessToHistoricalDashboards() ||
-          this.authService.isHasAccessToMainDashboards(),
+          this.perms.hasAny([
+            Permission.HistoricalDashboards,
+            Permission.MainDashboards,
+          ]),
         icon: 'home',
         subItems: [
           {
             label: 'Main Dashboard',
             link: '/MainDash',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToMainDashboards(),
+              fullAccess || this.perms.has(Permission.MainDashboards),
           },
           {
             label: 'Historical Dashboard',
             link: '/Historical',
             showSubItems:
-              fullAccess ||
-              this.authService.isHasAccessToHistoricalDashboards(),
+              fullAccess || this.perms.has(Permission.HistoricalDashboards),
           },
         ],
       },
@@ -101,20 +105,18 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         icon: 'settings',
         showSubItems:
           fullAccess ||
-          this.authService.isHasAccessToMachineStatus() ||
-          this.authService.isHasAccessToLineMachine(),
+          this.perms.hasAny([Permission.MachineStatus, Permission.LineMachine]),
         subItems: [
           {
             label: 'Machine State',
             link: '/machines/machineState',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToMachineStatus(),
+              fullAccess || this.perms.has(Permission.MachineStatus),
           },
           {
             label: 'Line Machine',
             link: '/machines/lineMachine',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToLineMachine(),
+            showSubItems: fullAccess || this.perms.has(Permission.LineMachine),
           },
         ],
       },
@@ -125,14 +127,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'Material',
         icon: 'bar-chart',
-        showSubItems:
-          fullAccess || this.authService.isHasAccessToMaterialControl(),
+        showSubItems: fullAccess || this.perms.has(Permission.MaterialControl),
         subItems: [
           {
             label: 'Material Control',
             link: '/Material/materialControl',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToMaterialControl(),
+              fullAccess || this.perms.has(Permission.MaterialControl),
           },
         ],
       },
@@ -143,14 +144,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'plans',
         icon: 'table',
-        showSubItems:
-          fullAccess || this.authService.isHasAccessToProductionPlan(),
+        showSubItems: fullAccess || this.perms.has(Permission.ProductionPlan),
         subItems: [
           {
             label: 'Production Plan',
             link: '/planProduct',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToProductionPlan(),
+              fullAccess || this.perms.has(Permission.ProductionPlan),
           },
         ],
       },
@@ -163,41 +163,40 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         icon: 'settings',
         showSubItems:
           fullAccess ||
-          this.authService.isHasAccessToBatchSettings() ||
-          this.authService.isHasAccessToBatchWeight() ||
-          this.authService.isHasAccessToBatchHistory() ||
-          this.authService.isHasAccessToScaleHistory() ||
-          this.authService.isHasAccessToBatchSchedulerView(),
+          this.perms.hasAny([
+            Permission.BatchSettings,
+            Permission.BatchWeight,
+            Permission.BatchHistory,
+            Permission.ScaleHistory,
+            Permission.BatchSchedulerView,
+          ]),
         subItems: [
           {
             label: 'Batch Settings',
             link: '/batchSetting',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToBatchSettings(),
+              fullAccess || this.perms.has(Permission.BatchSettings),
           },
           {
             label: 'Batch Weight',
             link: '/batchSetting/batchWeight',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToBatchWeight(),
+            showSubItems: fullAccess || this.perms.has(Permission.BatchWeight),
           },
           {
             label: 'Batch History',
             link: '/batchSetting/History',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToBatchHistory(),
+            showSubItems: fullAccess || this.perms.has(Permission.BatchHistory),
           },
           {
             label: 'Scale History',
             link: '/Scale/status',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToScaleHistory(),
+            showSubItems: fullAccess || this.perms.has(Permission.ScaleHistory),
           },
           {
             label: 'Batch Scheduler',
             link: '/batchScheduler',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToBatchSchedulerView(),
+              fullAccess || this.perms.has(Permission.BatchSchedulerView),
           },
         ],
       },
@@ -210,40 +209,42 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         icon: 'settings',
         showSubItems:
           fullAccess ||
-          this.authService.isHasAccessToMachineSettings() ||
-          this.authService.isHasAccessToProductionSettings() ||
-          this.authService.isHasAccessToLineSettings() ||
-          this.authService.isHasAccessToAddRole() ||
-          this.authService.isHasAccessToUserManagement(),
+          this.perms.hasAny([
+            Permission.MachineSettings,
+            Permission.ProductionSettings,
+            Permission.LineSettings,
+            Permission.AddRole,
+            Permission.UserManagement,
+          ]),
         subItems: [
           {
             label: 'Add Role',
             link: '/settings/addRole',
-            showSubItems: fullAccess || this.authService.isHasAccessToAddRole(),
+            showSubItems: fullAccess || this.perms.has(Permission.AddRole),
           },
           {
             label: 'User Management',
             link: '/settings/userMangement',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToUserManagement(),
+              fullAccess || this.perms.has(Permission.UserManagement),
           },
           {
             label: 'Shift',
             link: '/settings/shift',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToUserManagement(),
+              fullAccess || this.perms.has(Permission.UserManagement),
           },
           {
             label: 'Machines',
             link: '/settings/machine-settings',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToUserManagement(),
+              fullAccess || this.perms.has(Permission.UserManagement),
           },
           {
             label: 'Profile',
             link: '/auth/view-profile',
             showSubItems:
-              fullAccess || this.authService.isHasAccessToUserManagement(),
+              fullAccess || this.perms.has(Permission.UserManagement),
           },
         ],
       },
@@ -256,8 +257,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         icon: 'cast',
         showSubItems:
           fullAccess ||
-          this.authService.isHasAccessToEnergyReport() ||
-          this.authService.isHasAccessToBeconReport(),
+          this.perms.hasAny([Permission.EnergyReport, Permission.BeconReport]),
         subItems: [
           {
             label: 'Daily reports',
@@ -267,22 +267,19 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           {
             label: 'Becon reports',
             link: '/reports/beconReports',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToBeconReport(),
+            showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
           },
         ],
       },
       {
         label: 'Utilities',
         icon: 'cast',
-        showSubItems:
-          fullAccess || this.authService.isHasAccessToEnergyReport(),
+        showSubItems: fullAccess || this.perms.has(Permission.EnergyReport),
         subItems: [
           {
             label: 'Energy',
             link: '/reports/energyReports',
-            showSubItems:
-              fullAccess || this.authService.isHasAccessToEnergyReport(),
+            showSubItems: fullAccess || this.perms.has(Permission.EnergyReport),
           },
         ],
       },
@@ -293,12 +290,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       {
         label: 'Scada',
         icon: 'sliders',
-        showSubItems: fullAccess || this.authService.isHasAccessToscada(),
+        showSubItems: fullAccess || this.perms.has(Permission.Scada),
         subItems: [
           {
             label: 'Main Scada',
             link: '/Scada/mainScada',
-            showSubItems: fullAccess || this.authService.isHasAccessToscada(),
+            showSubItems: fullAccess || this.perms.has(Permission.Scada),
           },
         ],
       },
