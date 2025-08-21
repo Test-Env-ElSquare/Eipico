@@ -31,8 +31,8 @@ export class EditProfileComponent implements OnInit {
   profileForm!: FormGroup;
   allAreas: Lines[] = [];
   items: MenuItem[] = [];
-  currentStep = 1;
-  activeIndex = 0;
+  showCurrentPassword: boolean = false;
+  showNewPassword: boolean = false;
 
   roles: IRole[] = [
     { id: 1, name: 'Admin' },
@@ -45,6 +45,13 @@ export class EditProfileComponent implements OnInit {
     { id: 3, name: 'claim-three' },
   ];
 
+  toggleCurrentPassword() {
+    this.showCurrentPassword = !this.showCurrentPassword;
+  }
+
+  toggleNewPassword() {
+    this.showNewPassword = !this.showNewPassword;
+  }
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       username: [''],
@@ -70,10 +77,18 @@ export class EditProfileComponent implements OnInit {
           areas: p.areas,
           claims: p.claims,
         });
+        if (p.roleName?.toLowerCase() === 'admin') {
+          this.onGetAreasFromLines();
+        }
       }
     });
+  }
+  isAdmin(): boolean {
+    return this.profile?.roleName?.toLowerCase() === 'admin';
+  }
 
-    this.onGetAreasFromLines();
+  isUser(): boolean {
+    return this.profile?.roleName?.toLowerCase() === 'user';
   }
   onSubmitProfile() {
     if (!this.profileForm.valid) return;
@@ -83,13 +98,6 @@ export class EditProfileComponent implements OnInit {
     } else if (this.isUser()) {
       this.onUpdateUserProfile();
     }
-  }
-  isAdmin(): boolean {
-    return this.profile?.roleName?.toLowerCase() === 'admin';
-  }
-
-  isUser(): boolean {
-    return this.profile?.roleName?.toLowerCase() === 'user';
   }
 
   onUpdateUserProfile() {
@@ -104,23 +112,27 @@ export class EditProfileComponent implements OnInit {
 
     this._AuthService.editUserProfile(data).subscribe({
       next: (res) => console.log('User Profile updated:', res),
+      complete: () => {
+        localStorage.clear();
+        this.Router.navigate(['auth/login']);
+      },
     });
   }
 
   onUpdateUserProfileByAdmin() {
     const data: updateUserProfileByAdmin = {
-      roles: this.profileForm.value.roleName,
-      areaIds: this.profileForm.value.areas,
-      claims: this.profileForm.value.claims,
-      userId: this.userId,
+      userId: this.profile?.id ?? '',
+      roles: [this.profileForm.value.roleName],
+      claims: Array.isArray(this.profileForm.value.claims)
+        ? this.profileForm.value.claims.map((c: any) => c.name)
+        : [],
+      areaIds: Array.isArray(this.profileForm.value.areas)
+        ? this.profileForm.value.areas.map((a: any) => a.id)
+        : [],
     };
-
     this._AuthService.editUserProfileByAdmin(data).subscribe({
       next: (res) => console.log('Admin updated user profile:', res),
-      complete: () => {
-        localStorage.clear();
-        this.Router.navigate(['auth/login']);
-      },
+      error: (err) => console.error('Error while updating:', err),
     });
   }
 

@@ -46,3 +46,14 @@ export interface Iclamis {
   id: number;
   name: string;
 }
+export interface IFPassword {
+  email: string;
+}
+export interface ISendOtp {
+  email: string;
+  otp: string;
+}
+export interface IRPAssword {
+  email: string;
+  newPassword: string;
+}

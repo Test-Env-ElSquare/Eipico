@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   tokenPayload: any;
   expirationDate: any;
   showPassword: boolean = false;
+  displayPasswordStepper = false;
 
   constructor(
     private jwtHelper: JwtHelperService,
@@ -106,7 +107,9 @@ export class LoginComponent implements OnInit {
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
-
+  showPasswordStepper() {
+    this.displayPasswordStepper = true;
+  }
   onLoggedin(loginForm: any) {
     if (!loginForm.valid) return;
 

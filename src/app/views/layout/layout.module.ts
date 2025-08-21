@@ -10,7 +10,13 @@ import { FooterComponent } from './footer/footer.component';
 
 import { ContentAnimateDirective } from '../../core/content-animate/content-animate.directive';
 
-import { NgbDropdownModule, NgbCollapseModule, NgbDatepickerModule, NgbModule, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDropdownModule,
+  NgbCollapseModule,
+  NgbDatepickerModule,
+  NgbModule,
+  NgbTimepickerModule,
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { FeatherIconModule } from '../../core/feather-icon/feather-icon.module';
 
@@ -19,16 +25,23 @@ import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgSelectModule } from '@ng-select/ng-select';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthModule } from '../pages/auth/auth.module';
+import { DialogModule } from 'primeng/dialog';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
+  suppressScrollX: true,
 };
 
-
 @NgModule({
-  declarations: [BaseComponent, NavbarComponent, SidebarComponent, FooterComponent, ContentAnimateDirective],
+  declarations: [
+    BaseComponent,
+    NavbarComponent,
+    SidebarComponent,
+    FooterComponent,
+    ContentAnimateDirective,
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -41,18 +54,18 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbDatepickerModule,
     NgApexchartsModule,
     ReactiveFormsModule,
+    DialogModule,
     NgbModule,
     NgbTimepickerModule,
     NgSelectModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
-
   ],
   providers: [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    }
-  ]
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+  ],
 })
-export class LayoutModule { }
+export class LayoutModule {}

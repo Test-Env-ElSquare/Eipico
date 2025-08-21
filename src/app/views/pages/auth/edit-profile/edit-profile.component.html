@@ -48,10 +48,10 @@
         <!-- right side (form box) -->
         <div class="content-box">
           <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
-            <ng-container [ngSwitch]="currentStep">
+            <ng-container>
 
               <!-- Step 1 -->
-              <div *ngSwitchCase="1">
+              <div>
                 <h2 *ngIf="isUser()">Personal Information</h2>
                 <h2 *ngIf="isAdmin()">Update User</h2>
 
@@ -61,10 +61,20 @@
                   <input type="text" formControlName="email" placeholder="Enter Email" class="form-control mb-2" />
                   <input type="text" formControlName="phoneNumber" placeholder="Enter Phone"
                     class="form-control mb-2" />
-                  <input type="password" formControlName="currentPassword" placeholder="Enter Current Password"
-                    class="form-control mb-2" />
-                  <input type="password" formControlName="newPassword" placeholder="Enter New Password"
-                    class="form-control mb-2" />
+                  <div class="input-group mb-2">
+                    <input [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword"
+                      placeholder="Enter Current Password" class="form-control" />
+                    <span class="input-group-text" (click)="toggleCurrentPassword()" style="cursor: pointer;">
+                      <i class="pi" [ngClass]="showCurrentPassword ? 'pi-eye' : 'pi-eye-slash'"></i>
+                    </span>
+                  </div>
+                  <div class="input-group mb-2">
+                    <input [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword"
+                      placeholder="Enter New Password" class="form-control" />
+                    <span class="input-group-text" (click)="toggleNewPassword()" style="cursor: pointer;">
+                      <i class="pi" [ngClass]="showNewPassword ? 'pi-eye' : ' pi-eye-slash'"></i>
+                    </span>
+                  </div>
                 </ng-container>
 
                 <!-- Admin form -->

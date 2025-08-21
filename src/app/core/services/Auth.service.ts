@@ -4,7 +4,10 @@ import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {
+  IFPassword,
   IProfile,
+  IRPAssword,
+  ISendOtp,
   UpdateAdminProfile,
   UpdateUserProfile,
   updateUserProfileByAdmin,
@@ -381,7 +384,7 @@ export class AuthService {
     );
   }
   private profileSubject = new BehaviorSubject<IProfile | null>(null);
-  profile$ = this.profileSubject.asObservable(); // يقدر أي كمبوننت يشترك فيه
+  profile$ = this.profileSubject.asObservable();
   getMyProfile(): Observable<IProfile> {
     return this.http.get<IProfile>(environment.baseUrl + 'api/Auth/MyProfile');
   }
@@ -409,6 +412,28 @@ export class AuthService {
     return this.http.put<updateUserProfileByAdmin>(
       environment.baseUrl + 'api/Auth/admin/update-user',
       data
+    );
+  }
+  forgetPassword(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/forgot-password',
+      formatDate,
+      { responseType: 'text' }
+    );
+  }
+
+  sendOtp(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/validate-otp',
+      formatDate,
+      { responseType: 'text' }
+    );
+  }
+  resetPassword(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/reset-password',
+      formatDate,
+      { responseType: 'text' }
     );
   }
 }

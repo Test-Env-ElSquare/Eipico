@@ -13,6 +13,7 @@ export class NavbarComponent implements OnInit {
   title: any;
   showWithRouting: boolean = false;
   UserEmail: any;
+  displayPasswordStepper: boolean = false;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -56,5 +57,9 @@ export class NavbarComponent implements OnInit {
     e.preventDefault();
     this.router.navigate(['/auth/login']);
     this._Auth.logOut();
+  }
+  showPasswordStepper() {
+    this.displayPasswordStepper = true;
+    console.log('popuppp');
   }
 }

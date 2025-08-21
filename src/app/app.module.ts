@@ -6,12 +6,12 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { LayoutModule } from './views/layout/layout.module';
 import { AuthGuard } from './core/guard/auth.guard';
-
+import { StepsModule } from 'primeng/steps';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './views/pages/error-page/error-page.component';
 import { ToastrModule } from 'ngx-toastr';
-import { StepsModule } from 'primeng/steps';
 
+import { DialogModule } from 'primeng/dialog';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './core/services/interceptor.service';
@@ -26,6 +26,7 @@ import { SortableHeaderDirective } from './core/directives/sortable-header.direc
     LayoutModule,
 
     StepsModule,
+
     HttpClientModule,
     ToastrModule.forRoot(), // ToastrModule added
   ],
