@@ -55,7 +55,7 @@
               <p-dialog header="Forget Password" [(visible)]="displayPasswordStepper" [modal]="true"
                 [style]="{width: '60vw'}" [draggable]="false" [resizable]="false">
 
-                <app-password-stepper></app-password-stepper>
+                <app-password-stepper (close)="displayPasswordStepper = false"></app-password-stepper>
 
               </p-dialog>
             </div>

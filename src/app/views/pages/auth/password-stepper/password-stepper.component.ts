@@ -10,8 +10,10 @@ export class PasswordStepperComponent implements OnInit {
   currentStep = 1;
   password = '';
   userEmail: string = '';
-  displayResetPassword: boolean = true;
+
   @Output() emailCaptured: EventEmitter<string> = new EventEmitter<string>();
+  @Output() close = new EventEmitter<void>();
+  displayPasswordStepper: boolean = true;
 
   constructor() {}
 
@@ -19,6 +21,11 @@ export class PasswordStepperComponent implements OnInit {
 
   goToStep(step: number) {
     this.currentStep = step;
+    console.log(this.currentStep);
+  }
+
+  isCompleted(step: number): boolean {
+    return step < this.currentStep;
   }
 
   hasUpperCase() {
@@ -39,5 +46,11 @@ export class PasswordStepperComponent implements OnInit {
 
   minLength() {
     return this.password.length >= 8;
+  }
+  closePasswordStepper() {
+    this.displayPasswordStepper = false;
+  }
+  onClose() {
+    this.close.emit();
   }
 }
