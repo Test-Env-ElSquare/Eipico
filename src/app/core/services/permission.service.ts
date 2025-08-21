@@ -6,6 +6,8 @@ import { Permission } from '../models/permission';
 export class PermissionService {
   private readonly granted = new Set<Permission>();
   private readonly subject = new BehaviorSubject<Set<Permission>>(new Set());
+  constructor() {}
+
   changes$ = this.subject.asObservable();
 
   initFromClaims(claims: Record<string, any> | null | undefined): void {
@@ -17,12 +19,12 @@ export class PermissionService {
     const hasAll =
       claims['permissions']?.includes('HasAccessToEverything') ||
       claims['HasAccessToEverything'] === true;
-    const rawPermissions = claims['permissions'];
-    const permissionsArray: string[] = Array.isArray(rawPermissions)
-      ? rawPermissions
-      : typeof rawPermissions === 'string'
-      ? rawPermissions.split(',')
-      : [];
+    // const rawPermissions = claims['permissions'];
+    // const permissionsArray: string[] = Array.isArray(rawPermissions)
+    //   ? rawPermissions
+    //   : typeof rawPermissions === 'string'
+    //   ? rawPermissions.split(',')
+    //   : [];
     for (const key of Object.values(Permission)) {
       if (key === Permission.Everything) {
         continue;
@@ -37,6 +39,7 @@ export class PermissionService {
     if (hasAll) {
       this.granted.add(Permission.Everything);
     }
+    console.log('✅ Granted permissions:', Array.from(this.granted));
     this.subject.next(new Set(this.granted));
   }
 
