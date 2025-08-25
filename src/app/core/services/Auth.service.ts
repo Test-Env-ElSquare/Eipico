@@ -376,14 +376,14 @@ export class AuthService {
   //set the response value to localStorage
   Login(formData: object): Observable<any> {
     return this.http.post<any>(
-      environment.baseUrl + 'api/Auth/login',
+      environment.url + 'api/Auth/login',
       formData
     );
   }
   private profileSubject = new BehaviorSubject<IProfile | null>(null);
   profile$ = this.profileSubject.asObservable(); // يقدر أي كمبوننت يشترك فيه
   getMyProfile(): Observable<IProfile> {
-    return this.http.get<IProfile>(environment.baseUrl + 'api/Auth/MyProfile');
+    return this.http.get<IProfile>(environment.url + 'api/Auth/MyProfile');
   }
   loadProfile() {
     this.getMyProfile().subscribe({
@@ -393,13 +393,13 @@ export class AuthService {
   }
   editAdminProfile(data: UpdateAdminProfile): Observable<UpdateAdminProfile> {
     return this.http.put<UpdateAdminProfile>(
-      environment.baseUrl + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/admin/update-user',
       data
     );
   }
   editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
     return this.http.put<UpdateUserProfile>(
-      environment.baseUrl + 'api/Auth/user/update-user',
+      environment.url + 'api/Auth/user/update-user',
       data
     );
   }
@@ -407,7 +407,7 @@ export class AuthService {
     data: updateUserProfileByAdmin
   ): Observable<updateUserProfileByAdmin> {
     return this.http.put<updateUserProfileByAdmin>(
-      environment.baseUrl + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/admin/update-user',
       data
     );
   }

@@ -75,7 +75,7 @@ export class AppService {
   }
   getAllLines(): Observable<Lines[]> {
     return this._http.get<Lines[]>(
-      environment.baseUrl + 'api/Line/GetAllLines'
+      environment.url + 'api/Line/GetAllLines'
     );
   }
 }
