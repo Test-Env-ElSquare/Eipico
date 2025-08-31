@@ -9,6 +9,11 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { NumberOfPartsComponent } from './components/production/number-of-parts/number-of-parts.component';
+import { EnergyConsumptionComponent } from './components/production/energy-consumption/energy-consumption.component';
+import { EURComponent } from './components/production/eur/eur.component';
+import { OeeDashboardComponent } from './components/production/oee-dashboard/oee-dashboard.component';
+import { SkeletonModule } from 'primeng/skeleton';
 
 
 
@@ -16,7 +21,11 @@ import { ToastrModule } from 'ngx-toastr';
   declarations: [
     MainDashComponent,
     ConsumptionComponent,
-    ProductionComponent
+    ProductionComponent,
+    NumberOfPartsComponent,
+    EnergyConsumptionComponent,
+    EURComponent,
+    OeeDashboardComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +33,8 @@ import { ToastrModule } from 'ngx-toastr';
     NgApexchartsModule,
     NgbDropdownModule,
     FormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    SkeletonModule
   ]
 })
 export class MainDashModule { }

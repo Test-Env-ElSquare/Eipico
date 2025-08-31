@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
+
 import {
   IFPassword,
   IProfile,
@@ -12,6 +13,7 @@ import {
   UpdateUserProfile,
   updateUserProfileByAdmin,
 } from 'src/app/views/pages/auth/models/auth';
+import { PermissionService } from './permission.service';
 export interface LoginResponse {
   token: string;
   user: string;
@@ -70,12 +72,16 @@ export class AuthService {
   public userClaims: any;
   public currentUserValue: Observable<any>;
   public permissions: any;
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private permissionService: PermissionService
+  ) {
     const token = localStorage.getItem('Token');
     if (token) {
       try {
         if (!this.jwtHelper.isTokenExpired(token)) {
           this.userClaims = this.jwtHelper.decodeToken(token);
+          this.permissionService.initFromClaims(this.userClaims);
           this.permissions = this.userClaims?.permissions || '';
         } else {
           localStorage.removeItem('Token');
@@ -91,8 +97,14 @@ export class AuthService {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     console.log(this.permissions);
+    console.log(
+      'this to show if has for every  thing or not >>>>',
+      this.isHasAccessToEvery()
+    );
   }
   public get CurrentUser(): LoginResponse {
+    console.log('permissions', this.permissions);
+    console.log('userData', this.userClaims);
     return this.cureentUserName;
   }
 
@@ -110,6 +122,16 @@ export class AuthService {
 
   isHasAccessToE1(): boolean {
     if (this.userClaims?.HasAccessToE1 == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  hasAccessToAddProductPlanning(): boolean {
+    if (this.permissions?.hasAccessToAddProductPlanning) {
+      console.log(
+        '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> has access to add product planning'
+      );
       return true;
     } else {
       return false;
@@ -378,15 +400,12 @@ export class AuthService {
   //map the response to check if there is response from back end or not
   //set the response value to localStorage
   Login(formData: object): Observable<any> {
-    return this.http.post<any>(
-      environment.baseUrl + 'api/Auth/login',
-      formData
-    );
+    return this.http.post<any>(environment.url + 'api/Auth/login', formData);
   }
   private profileSubject = new BehaviorSubject<IProfile | null>(null);
   profile$ = this.profileSubject.asObservable();
   getMyProfile(): Observable<IProfile> {
-    return this.http.get<IProfile>(environment.baseUrl + 'api/Auth/MyProfile');
+    return this.http.get<IProfile>(environment.url + 'api/Auth/MyProfile');
   }
   loadProfile() {
     this.getMyProfile().subscribe({
@@ -396,13 +415,13 @@ export class AuthService {
   }
   editAdminProfile(data: UpdateAdminProfile): Observable<UpdateAdminProfile> {
     return this.http.put<UpdateAdminProfile>(
-      environment.baseUrl + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/admin/update-user',
       data
     );
   }
   editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
     return this.http.put<UpdateUserProfile>(
-      environment.baseUrl + 'api/Auth/user/update-profile',
+      environment.url + 'api/Auth/user/update-user',
       data
     );
   }
@@ -410,7 +429,7 @@ export class AuthService {
     data: updateUserProfileByAdmin
   ): Observable<updateUserProfileByAdmin> {
     return this.http.put<updateUserProfileByAdmin>(
-      environment.baseUrl + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/admin/update-user',
       data
     );
   }

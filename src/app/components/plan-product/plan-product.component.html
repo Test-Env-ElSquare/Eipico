@@ -1,7 +1,11 @@
 <!-- add component the emit to the parent that new product added -->
 
-<app-add *ngIf="hasAccessToAddProductPlanning()" (newPlanProductEvent)="newPostDone($event)"></app-add>
+<app-add
+  *ngIf="hasAccessToAddProductPlanning()"
+  (newPlanProductEvent)="newPostDone($event)"
+></app-add>
 <!-- parent send to the table that the user added new product so get the data from backend-->
 
 <!-- [newObj]="newObj" -->
 <app-data-table [newObj]="newObj"></app-data-table>
+<h1>Hello you are in plane product</h1>

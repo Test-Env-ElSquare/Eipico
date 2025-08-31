@@ -1,0 +1,35 @@
+<div *ngIf="energy; else skeleton" class="bg-white rounded-3 px-2 py-4 shadow-sm">
+    <header class="d-flex gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path
+                d="M1 9C1.77968 5.18409 4.66918 2.12932 8.40618 1.08977C8.71987 1.00251 8.87671 0.958878 8.96119 1.05236C9.04568 1.14584 8.98344 1.30042 8.85897 1.60956L8 3.5M13 1C16.8159 1.77968 19.8707 4.66918 20.9102 8.40618C20.9975 8.71987 21.0411 8.87671 20.9476 8.96119C20.8542 9.04568 20.6996 8.98344 20.3904 8.85897L18.5 8M21 13C20.2203 16.8159 17.3308 19.8707 13.5938 20.9102C13.2801 20.9975 13.1233 21.0411 13.0388 20.9476C12.9543 20.8542 13.0166 20.6996 13.141 20.3904L14 18.5M9 21C5.18409 20.2203 2.12932 17.3308 1.08977 13.5938C1.00251 13.2801 0.958878 13.1233 1.05236 13.0388C1.14584 12.9543 1.30042 13.0166 1.60956 13.141L3.5 14"
+                stroke="#141B34" stroke-width="1.5" stroke-linecap="round" />
+            <path
+                d="M7.61288 10.6647L11.112 6.17326C11.3857 5.82199 11.8986 6.04062 11.8986 6.50853V9.98497C11.8986 10.2653 12.0998 10.4925 12.3479 10.4925H14.0498C14.4364 10.4925 14.6425 11.0074 14.3871 11.3353L10.888 15.8267C10.6143 16.178 10.1014 15.9594 10.1014 15.4915V12.015C10.1014 11.7347 9.90024 11.5075 9.6521 11.5075H7.95018C7.56356 11.5075 7.35747 10.9926 7.61288 10.6647Z"
+                stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <h3>Energy Consumption</h3>
+    </header>
+    <div class="row gy-4 text-center">
+        <div class="col-6">
+            <h5>Total Energy Consumption</h5>
+            <strong>{{energy.totalEnergyConsumption| number: "1.0-1"}}</strong>
+        </div>
+        <div class="col-6">
+            <h5>Avg Power Factor</h5>
+            <strong>{{energy.avgPowerFactor| number: "1.0-1"}}</strong>
+        </div>
+        <div class="col-6">
+            <h5>Avg PTHD</h5>
+            <strong>{{energy.avgPTHDv| number: "1.0-1"}}</strong>
+        </div>
+        <div class="col-6">
+            <h5>Avg THDi</h5>
+            <strong>{{energy.avgTHDi| number: "1.0-1"}}</strong>
+        </div>
+    </div>
+</div>
+
+<ng-template #skeleton>
+    <p-skeleton width="100%" height="220px"></p-skeleton>
+</ng-template>

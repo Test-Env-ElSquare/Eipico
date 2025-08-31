@@ -1,18 +1,16 @@
-import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import {
   Iclamis,
   IProfile,
   IRole,
-  UpdateUserProfile,
+  UpdateAdminProfile,
   updateUserProfileByAdmin,
 } from '../models/auth';
 import { MenuItem } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { Lines } from 'src/app/core/models/lines';
-
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -22,13 +20,10 @@ export class EditProfileComponent implements OnInit {
   constructor(
     private _AuthService: AuthService,
     private fb: FormBuilder,
-    private _appService: AppService,
-    private Router: Router
+    private _appService: AppService
   ) {}
-
+  data!: UpdateAdminProfile;
   profile!: IProfile | null;
-  userId!: string;
-  profileForm!: FormGroup;
   allAreas: Lines[] = [];
   items: MenuItem[] = [];
   showCurrentPassword: boolean = false;
@@ -38,7 +33,6 @@ export class EditProfileComponent implements OnInit {
     { id: 1, name: 'Admin' },
     { id: 2, name: 'User' },
   ];
-
   clamis: Iclamis[] = [
     { id: 1, name: 'claim-one' },
     { id: 2, name: 'claim-two' },

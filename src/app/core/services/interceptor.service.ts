@@ -28,8 +28,8 @@ export class InterceptorService implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('Token')?.trim();
 
-    console.log('Token from localStorage:', token);
-    console.log('Request URL:', req.url);
+    // console.log('Token from localStorage:', token);
+    // console.log('Request URL:', req.url);
 
     const reqCopy = token
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })

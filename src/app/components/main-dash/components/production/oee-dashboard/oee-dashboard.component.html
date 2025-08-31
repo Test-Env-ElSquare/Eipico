@@ -1,0 +1,8 @@
+<div *ngIf="RadarChartOptions; else skelton" class="bg-white shadow-sm rounded-3 px-2"><apx-chart
+        [series]="RadarChartOptions.series" [chart]="RadarChartOptions.chart" [xaxis]="RadarChartOptions.xaxis"
+        [yaxis]="RadarChartOptions.yaxis" [title]="RadarChartOptions.title">
+    </apx-chart>
+</div>
+<ng-template #skelton>
+    <p-skeleton width="100%" height="289px"></p-skeleton>
+</ng-template>
