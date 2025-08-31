@@ -5,12 +5,14 @@ import {
   IProfile,
   IRole,
   UpdateAdminProfile,
+  UpdateUserProfile,
   updateUserProfileByAdmin,
 } from '../models/auth';
 import { MenuItem } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { Lines } from 'src/app/core/models/lines';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -20,7 +22,8 @@ export class EditProfileComponent implements OnInit {
   constructor(
     private _AuthService: AuthService,
     private fb: FormBuilder,
-    private _appService: AppService
+    private _appService: AppService,
+    private _Router: Router
   ) {}
   data!: UpdateAdminProfile;
   profile!: IProfile | null;
@@ -28,6 +31,8 @@ export class EditProfileComponent implements OnInit {
   items: MenuItem[] = [];
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
+  profileForm: any;
+  userId: any;
 
   roles: IRole[] = [
     { id: 1, name: 'Admin' },
@@ -108,7 +113,7 @@ export class EditProfileComponent implements OnInit {
       next: (res) => console.log('User Profile updated:', res),
       complete: () => {
         localStorage.clear();
-        this.Router.navigate(['auth/login']);
+        this._Router.navigate(['auth/login']);
       },
     });
   }
