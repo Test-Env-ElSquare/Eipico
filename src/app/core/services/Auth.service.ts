@@ -397,13 +397,10 @@ export class AuthService {
   //map the response to check if there is response from back end or not
   //set the response value to localStorage
   Login(formData: object): Observable<any> {
-    return this.http.post<any>(
-      environment.url + 'api/Auth/login',
-      formData
-    );
+    return this.http.post<any>(environment.url + 'api/Auth/login', formData);
   }
   private profileSubject = new BehaviorSubject<IProfile | null>(null);
-  profile$ = this.profileSubject.asObservable(); // يقدر أي كمبوننت يشترك فيه
+  profile$ = this.profileSubject.asObservable();
   getMyProfile(): Observable<IProfile> {
     return this.http.get<IProfile>(environment.url + 'api/Auth/MyProfile');
   }
