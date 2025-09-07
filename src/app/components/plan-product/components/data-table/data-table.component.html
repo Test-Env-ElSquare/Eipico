@@ -5,8 +5,15 @@
       <div class="card-header">
         <div class="col-md-3 py-3 w-100" *ngIf="accessToFactories">
           <div class="form-floating">
-            <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false" bindLabel="name"
-              bindValue="id" placeholder="Select Plant" [(ngModel)]="selectedplant">
+            <ng-select
+              [items]="FactoriesDropDown"
+              [loading]="!FactoriesDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select Plant"
+              [(ngModel)]="selectedplant"
+            >
             </ng-select>
           </div>
         </div>
@@ -14,18 +21,26 @@
       <!-- filter by date -->
       <div class="card-body">
         <div class="d-flex justify-content-center">
-          <ngb-datepicker #dp [(ngModel)]="selectedDate" (navigate)="date = $event.next" (click)="
+          <ngb-datepicker
+            #dp
+            [(ngModel)]="selectedDate"
+            (navigate)="date = $event.next"
+            (click)="
               GetPlanShiftMaterialConsumptionsBySpecificDate(
                 selectedDate,
                 selectedplant
               )
-            "></ngb-datepicker>
+            "
+          ></ngb-datepicker>
         </div>
       </div>
     </div>
   </div>
   <!-- table data -->
-  <div class="col-xl-9 stretch-card grid-margin" *ngIf="getPlanShiftMaterialConsumptions?.length !== 0">
+  <div
+    class="col-xl-9 stretch-card grid-margin"
+    *ngIf="getPlanShiftMaterialConsumptions?.length !== 0"
+  >
     <div class="card">
       <div class="card-body table-responsive">
         <table class="table table table-sm">
@@ -40,7 +55,8 @@
           </thead>
           <!--  -->
           <tbody>
-            <tr *ngFor="
+            <tr
+              *ngFor="
                 let item of getPlanShiftMaterialConsumptions
                   | paginate
                     : {
@@ -48,19 +64,29 @@
                         currentPage: page,
                         totalItems: count
                       }
-              ">
+              "
+            >
               <td>{{ item?.factoryName }}</td>
               <td>{{ item?.lineName }}</td>
               <td>{{ item?.day | date : "medium" }}</td>
-              <td>{{ item?.skuName?item?.skuName : '-' }}</td>
+              <td>{{ item?.skuName ? item?.skuName : "-" }}</td>
               <td>{{ item?.target }}</td>
               <td class="d-flex">
-                <button *ngIf="hasAccessToEditProductionPlan()" type="button"
-                  class="btn btn-primary tw-bg-searchBtn mx-1" (click)="openBasicModal(edit, item); getId(item.id)">
+                <button
+                  *ngIf="hasAccessToEditProductionPlan()"
+                  type="button"
+                  class="btn btn-primary tw-bg-searchBtn mx-1"
+                  (click)="openBasicModal(edit, item); getId(item.id)"
+                >
                   <i class="icon feather icon-edit"></i>
                 </button>
-                <button type="button" *ngIf="hasAccessToDeleteProductionPlan()" [disabled]="loadonDelete"
-                  (click)="delete(item)" class="btn btn-danger tw-bg-btnDelete mx-1">
+                <button
+                  type="button"
+                  *ngIf="hasAccessToDeleteProductionPlan()"
+                  [disabled]="loadonDelete"
+                  (click)="delete(item)"
+                  class="btn btn-danger tw-bg-btnDelete mx-1"
+                >
                   <i class="icon feather icon-delete"></i>
                 </button>
               </td>
@@ -69,14 +95,20 @@
         </table>
       </div>
       <div class="d-flex justify-content-end mt-3">
-        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+        <pagination-controls
+          previousLabel="Prev"
+          nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"
+        >
         </pagination-controls>
       </div>
     </div>
   </div>
 
-  <div *ngIf="getPlanShiftMaterialConsumptions?.length === 0"
-    class="col-xl-9 stretch-card grid-margin bg-white d-flex align-items-center justify-content-center">
+  <div
+    *ngIf="getPlanShiftMaterialConsumptions?.length === 0"
+    class="col-xl-9 stretch-card grid-margin bg-white d-flex align-items-center justify-content-center"
+  >
     <div class="spinner-border text-danger" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
@@ -88,48 +120,91 @@
 <div class="example">
   <ng-template #edit let-modal>
     <div class="modal-header">
-      <button type="button" class="btn-close" (click)="modal.close('by: close icon')" aria-label="Close"></button>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="modal.close('by: close icon')"
+        aria-label="Close"
+      ></button>
     </div>
     <div class="modal-body">
       <form [formGroup]="editProductPlanningForm" (ngSubmit)="OnEdit()">
         <div class="row">
           <div class="col-md-3 grid-margin">
             <label class="form-label">Select Plant</label>
-            <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false" bindLabel="name"
-              bindValue="id" placeholder="Select Plant" formControlName="factoryId" [(ngModel)]="selectedplant1"
-              (click)="lineID(selectedplant1)">
+            <ng-select
+              [items]="FactoriesDropDown"
+              [loading]="!FactoriesDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select Plant"
+              formControlName="factoryId"
+              [(ngModel)]="selectedplant1"
+              (click)="lineID(selectedplant1)"
+            >
             </ng-select>
           </div>
           <div class="col-md-3 grid-margin">
             <label class="form-label">Select Line</label>
-            <ng-select [items]="LineDropDown" [searchable]="false" bindLabel="name" bindValue="id"
-              placeholder="Select line" formControlName="lineId" [(ngModel)]="selectedLine">
+            <ng-select
+              [items]="LineDropDown"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select line"
+              formControlName="lineId"
+              [(ngModel)]="selectedLine"
+            >
             </ng-select>
           </div>
           <div class="col-md-3 grid-margin">
             <label class="form-label">Select SKU</label>
-            <ng-select [items]="skuId" [searchable]="false" bindLabel="name" bindValue="sku" placeholder="Select SKU"
-              formControlName="skuName">
+            <ng-select
+              [items]="skuId"
+              [searchable]="false"
+              bindLabel="name"
+              bindValue="sku"
+              placeholder="Select SKU"
+              formControlName="skuName"
+            >
             </ng-select>
           </div>
           <div class="col-md-3 grid-margin">
             <label class="form-label">Day</label>
-            <input formControlName="day" class="form-control" type="date" [value]="editdate | date : 'yyyy-MM-dd'" />
+            <input
+              formControlName="day"
+              class="form-control"
+              type="date"
+              [value]="editdate | date : 'yyyy-MM-dd'"
+            />
           </div>
           <div class="col-md-3 grid-margin">
             <label class="form-label">Target</label>
-            <input formControlName="target" class="form-control" type="number" />
+            <input
+              formControlName="target"
+              class="form-control"
+              type="number"
+            />
           </div>
         </div>
         <div class="d-flex justify-content-end">
-          <button class="btn btn-primary tw-bg-searchBtn" type="submit" [disabled]="editProductPlanningForm.invalid">
+          <button
+            class="btn btn-primary tw-bg-searchBtn"
+            type="submit"
+            [disabled]="editProductPlanningForm.invalid"
+          >
             Submit
           </button>
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger tw-bg-btnDelete" (click)="modal.close('by: close button')">
+      <button
+        type="button"
+        class="btn btn-danger tw-bg-btnDelete"
+        (click)="modal.close('by: close button')"
+      >
         Close
       </button>
     </div>

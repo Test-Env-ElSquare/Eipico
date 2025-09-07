@@ -15,7 +15,7 @@ export class AppService {
 
   GetAllFactories(): Observable<factory[]> {
     return this._http.get<factory[]>(
-      environment.url + 'api/Factory/GetAllFactories'
+      environment.url + 'api/Factory/GetUserFactories'
     );
   }
 
@@ -74,8 +74,6 @@ export class AppService {
     );
   }
   getAllLines(): Observable<Lines[]> {
-    return this._http.get<Lines[]>(
-      environment.url + 'api/Line/GetAllLines'
-    );
+    return this._http.get<Lines[]>(environment.url + 'api/Line/GetAllLines');
   }
 }
