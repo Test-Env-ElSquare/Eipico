@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { AddProductPlans } from '../../models/model';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 
 @Component({
   selector: 'app-add',
@@ -43,7 +45,8 @@ export class AddComponent implements OnInit {
     private _planProduct: PlanProductService,
     private _appService: AppService,
     private _authService: AuthService,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private _perms: PermissionService
   ) {}
 
   //create add form
@@ -68,8 +71,9 @@ export class AddComponent implements OnInit {
   //get all factories
   getFactory() {
     if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
+      // this._authService.isHasAccessToE2() &&
+      // this._authService.isHasAccessToE1()
+      this._perms.hasAll([Permission.E1, Permission.E2]) // alternative for
     ) {
       this._appService.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;

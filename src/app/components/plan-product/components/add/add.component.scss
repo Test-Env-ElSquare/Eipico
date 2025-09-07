@@ -1,0 +1,35 @@
+/* Optional: Style ng-select for tighter fit */
+.custom-ng-select .ng-select-container {
+  min-height: 32px !important;
+  font-size: 0.9rem;
+  padding: 0 0.5rem;
+}
+
+.form-control-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  height: 32px;
+}
+
+/* Optional: Style scrollbar for overflow */
+.card-body form {
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* IE 10+ */
+}
+
+.card-body form::-webkit-scrollbar {
+  height: 6px;
+}
+
+.card-body form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.card-body form::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.card-body form::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

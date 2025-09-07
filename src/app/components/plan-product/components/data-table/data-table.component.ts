@@ -14,6 +14,8 @@ import { PlanProductService } from '../../services/plan-product.service';
 import { AddProductPlans, GetAllProductPlans } from '../../models/model';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 
 @Component({
   selector: 'app-data-table',
@@ -63,7 +65,8 @@ export class DataTableComponent implements OnInit, OnChanges {
     private _authService: AuthService,
     private _fb: FormBuilder,
     private _modalService: NgbModal,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private _perms: PermissionService
   ) {}
 
   //create the editfrom
@@ -79,11 +82,11 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   hasAccessToEditProductionPlan() {
-    return this._authService.isHasAccessToProductionPlanAndEdit();
+    return this._perms.has(Permission.ProductionPlanAndEdit);
   }
 
   hasAccessToDeleteProductionPlan() {
-    return this._authService.isHasAccessToProductionPlanAndDelete();
+    return this._perms.has(Permission.ProductionPlanAndDelete);
   }
 
   //call back end with the user selected filter

@@ -1,7 +1,79 @@
-::ng-deep{
-  .ngx-pagination .current {
-    background: #000 !important;
-}
+/* Style table for better readability */
+.table {
+  th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-top: none;
+  }
+
+  td {
+    vertical-align: middle;
+  }
 }
 
+/* Style action buttons */
+.btn-group {
+  flex-direction: row-reverse;
+}
 
+.btn-group .btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  margin-left: 10px;
+}
+
+/* Style datepicker container */
+ngb-datepicker {
+  display: block !important;
+  width: 100% !important;
+
+  table {
+    width: 100% !important;
+  }
+}
+
+/* Optional: Modal header background */
+.modal-header.bg-light {
+  border-bottom: 1px solid #dee2e6;
+}
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+/* Optional: Improve wrapping behavior on small screens */
+@media (max-width: 576px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .pagination-container > div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pagination-container > div:first-child {
+    justify-content: flex-start;
+  }
+
+  .pagination-container > div:last-child {
+    justify-content: flex-end;
+  }
+}
+.w-100 {
+  width: 100% !important;
+}
+.fa-pen {
+  color: #0d6efd;
+}
+
+.fa-trash-alt {
+  color: #dc3545;
+}

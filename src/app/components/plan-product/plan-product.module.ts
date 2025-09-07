@@ -10,13 +10,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 
-
 @NgModule({
-  declarations: [
-    PlansComponent,
-    AddComponent,
-    DataTableComponent
-  ],
+  declarations: [PlansComponent, AddComponent, DataTableComponent],
   imports: [
     CommonModule,
     PlansRoutingModule,
@@ -24,7 +19,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ReactiveFormsModule,
     NgSelectModule,
     NgbDatepickerModule,
-    NgxPaginationModule
-  ]
+    NgxPaginationModule,
+  ],
 })
-export class PlansModule { }
+export class PlansModule {}
