@@ -6,6 +6,7 @@ import { Permission } from '../models/permission';
 export class PermissionService {
   private readonly granted = new Set<Permission>();
   private readonly subject = new BehaviorSubject<Set<Permission>>(new Set());
+  HasAccessToEverything: string;
   constructor() {}
 
   changes$ = this.subject.asObservable();

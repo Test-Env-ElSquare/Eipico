@@ -171,12 +171,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             Permission.BatchSchedulerView,
           ]),
         subItems: [
-          {
-            label: 'Batch Settings',
-            link: '/batchSetting',
-            showSubItems:
-              fullAccess || this.perms.has(Permission.BatchSettings),
-          },
+          // {
+          //   label: 'Batch Settings',
+          //   link: '/batchSetting',
+          //   showSubItems:
+          //     fullAccess || this.perms.has(Permission.BatchSettings),
+          // },
           {
             label: 'Batch Weight',
             link: '/batchSetting/batchWeight',
@@ -215,8 +215,15 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             Permission.LineSettings,
             Permission.AddRole,
             Permission.UserManagement,
+            Permission.BatchSettings,
           ]),
         subItems: [
+          {
+            label: 'Batch Settings',
+            link: '/batchSetting',
+            showSubItems:
+              fullAccess || this.perms.has(Permission.BatchSettings),
+          },
           {
             label: 'Add Role',
             link: '/settings/addRole',

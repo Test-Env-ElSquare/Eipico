@@ -28,6 +28,7 @@ export class EditProfileComponent implements OnInit {
   data!: UpdateAdminProfile;
   profile!: IProfile | null;
   allAreas: Lines[] = [];
+  allClaims: Iclamis[] = [];
   items: MenuItem[] = [];
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
@@ -37,11 +38,6 @@ export class EditProfileComponent implements OnInit {
   roles: IRole[] = [
     { id: 1, name: 'Admin' },
     { id: 2, name: 'User' },
-  ];
-  clamis: Iclamis[] = [
-    { id: 1, name: 'claim-one' },
-    { id: 2, name: 'claim-two' },
-    { id: 3, name: 'claim-three' },
   ];
 
   toggleCurrentPassword() {
@@ -78,6 +74,7 @@ export class EditProfileComponent implements OnInit {
         });
         if (p.roleName?.toLowerCase() === 'admin') {
           this.onGetAreasFromLines();
+          this.onGetAllClaims();
         }
       }
     });
@@ -122,12 +119,8 @@ export class EditProfileComponent implements OnInit {
     const data: updateUserProfileByAdmin = {
       userId: this.profile?.id ?? '',
       roles: [this.profileForm.value.roleName],
-      claims: Array.isArray(this.profileForm.value.claims)
-        ? this.profileForm.value.claims.map((c: any) => c.name)
-        : [],
-      areaIds: Array.isArray(this.profileForm.value.areas)
-        ? this.profileForm.value.areas.map((a: any) => a.id)
-        : [],
+      claims: this.profileForm.value.claims,
+      areaIds: this.profileForm.value.areaIds,
     };
     this._AuthService.editUserProfileByAdmin(data).subscribe({
       next: (res) => console.log('Admin updated user profile:', res),
@@ -139,7 +132,15 @@ export class EditProfileComponent implements OnInit {
     this._appService.getAllLines().subscribe({
       next: (res) => {
         this.allAreas = res;
-        console.log(res);
+        console.log(this.allAreas);
+      },
+    });
+  }
+  onGetAllClaims() {
+    this._appService.getAllClaims().subscribe({
+      next: (res) => {
+        this.allClaims = res;
+        console.log(this.allClaims);
       },
     });
   }

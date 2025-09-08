@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { factory, Line, Skus } from '../models/filter';
 import { skus } from 'src/app/components/Historical/models/model';
-import { lineS } from 'src/app/components/settings/models/model';
 import { Lines } from '../models/lines';
+import { Iclamis } from 'src/app/views/pages/auth/models/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -74,8 +74,9 @@ export class AppService {
     );
   }
   getAllLines(): Observable<Lines[]> {
-    return this._http.get<Lines[]>(
-      environment.url + 'api/Line/GetAllLines'
-    );
+    return this._http.get<Lines[]>(environment.url + 'api/Line/GetAllLines');
+  }
+  getAllClaims(): Observable<Iclamis[]> {
+    return this._http.get<Iclamis[]>(environment.url + 'api/Auth/GetAllClaims');
   }
 }

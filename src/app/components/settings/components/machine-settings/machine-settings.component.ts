@@ -34,7 +34,7 @@ export class MachineSettingsComponent implements OnInit {
   Skus: Skus[];
   accessToFactories: boolean = true;
   isUser: boolean = true;
-
+  showDeleteDialog = false;
   constructor(
     private _fp: FormBuilder,
     private _appService: AppService,
@@ -225,7 +225,9 @@ export class MachineSettingsComponent implements OnInit {
       this.getAllMachines();
     });
   }
-
+  openDeleteDialog() {
+    this.showDeleteDialog = true;
+  }
   ngOnInit(): void {
     if (localStorage.getItem('Role') == 'User') {
       this.isUser = false;

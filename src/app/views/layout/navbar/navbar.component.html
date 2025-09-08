@@ -1,4 +1,4 @@
-<nav class="navbar">
+<nav class="navbar" [ngClass]="customClass">
   <button class="sidebar-toggler" (click)="toggleSidebar($event)">
     <i class="feather icon-menu"></i>
   </button>
@@ -96,13 +96,19 @@
             </div>
           </div>
           <ul class="list-unstyled p-1">
-            <li class="dropdown-item py-2">
+            <li *ngIf="showProfile()" class="dropdown-item py-2">
               <a routerLink="/auth/view-profile" class="d-flex text-body ms-0">
                 <i class="feather icon-user me-2 icon-md"></i>
                 <span>Profile</span>
               </a>
             </li>
-            <li class="dropdown-item py-2">
+            <li *ngIf="showMainDashboard()" class="dropdown-item py-2">
+              <a routerLink="/MainDash" class="d-flex text-body ms-0">
+                <i class="pi pi-home me-2"></i>
+                <span>Main-Dashboard</span>
+              </a>
+            </li>
+            <li *ngIf="showPassword()" class="dropdown-item py-2">
               <a routerLink="/auth/password-stepper" class="d-flex text-body ms-0">
                 <i class="pe-1 pi pi-lock"></i>
                 <span>Change Password</span>

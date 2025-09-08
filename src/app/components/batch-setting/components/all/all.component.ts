@@ -1,5 +1,7 @@
+import { Permission } from 'src/app/core/models/permission';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { BatchService } from '../../services/batch.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
 import {
   Batch,
   BatchMatarials,
@@ -34,6 +36,7 @@ export class AllComponent implements OnInit {
   materialName: string;
   directions: SortDirection = 'desc';
   splited: number;
+  showDeleteDialog: boolean = false;
   rotate: { [key: string]: SortDirection } = {
     asc: 'desc',
     desc: '',
@@ -49,15 +52,16 @@ export class AllComponent implements OnInit {
     private _batchService: BatchService,
     private _authService: AuthService,
     private _modalService: NgbModal,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private Permission: PermissionService
   ) {}
 
-  hasAccessToPrintBatch() {
-    return this._authService.isHasAccessToBatchSettingsAndPrint();
+  hasAccessToPrintBatch(): boolean {
+    return this.Permission.has(Permission.BatchSettingsAndPrint);
   }
 
-  hasAccessToDeleteBatch() {
-    return this._authService.isHasAccessToBatchSettingsAndDelete();
+  hasAccessToDeleteBatch(): boolean {
+    return this.Permission.has(Permission.BatchSettingsAndDelete);
   }
 
   getAll(page: number = 1, searchtext: string | null = null) {
@@ -153,6 +157,9 @@ export class AllComponent implements OnInit {
   rotates() {
     this.directions = this.rotate[this.directions];
     console.log(this.directions);
+  }
+  openDeleteDialog() {
+    this.showDeleteDialog = true;
   }
   ngOnInit(): void {
     this.getAll();

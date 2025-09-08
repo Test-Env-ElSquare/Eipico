@@ -9,15 +9,22 @@ import { FormsModule } from '@angular/forms';
 import { SearchPipe } from './search.pipe';
 import { BatchHistoryComponent } from './components/batch-history/batch-history.component';
 import { BatchWeightComponent } from './components/batch-weight/batch-weight.component';
+import { SharedModule } from 'src/app/views/shared/shared.module';
 
 @NgModule({
-  declarations: [AllComponent ,SearchPipe, BatchHistoryComponent, BatchWeightComponent] ,
+  declarations: [
+    AllComponent,
+    SearchPipe,
+    BatchHistoryComponent,
+    BatchWeightComponent,
+  ],
   imports: [
     CommonModule,
     BatchSettingRoutingModule,
     NgxPaginationModule,
     FeatherIconModule,
-    FormsModule
+    FormsModule,
+    SharedModule,
   ],
 })
 export class BatchSettingModule {}

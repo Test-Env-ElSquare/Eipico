@@ -1,4 +1,5 @@
-<div class="container my-4">
+<div class="container my-4 mt-5">
+  <app-navbar customClass="profile-override"></app-navbar>
   <div class=" p-4  rounded-4">
     <!-- Profile Header -->
     <div class="text-center">
@@ -86,9 +87,17 @@
 
 
                   <label class="m-2">Claims</label>
-                  <p-dropdown formControlName="claims" [options]="clamis" optionLabel="name" optionValue="name"
-                    placeholder="Select claim" styleClass="w-100">
-                  </p-dropdown>
+                  <!-- <p-multiSelect formControlName="claims" [options]="allClaims" optionLabel="claimName"
+                    optionValue="claimName" placeholder="Select claims" [maxSelectedLabels]="5" styleClass="w-100"
+                    scrollHeight="250px">
+                  </p-multiSelect> -->
+                  <ng-select formControlName="claims" [items]="allClaims" bindLabel="claimName"
+                    placeholder="Select Claims" [multiple]="true">
+                  </ng-select>
+
+
+
+
 
                   <label class="m-2">Areas</label>
                   <p-dropdown formControlName="areas" [options]="allAreas" optionLabel="area" optionValue="area"

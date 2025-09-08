@@ -89,22 +89,35 @@
                     <td>{{ batch.timestamp | date : "medium" }}</td>
                     <td class="tw-flex tw-items-center tw-justify-between">
                       <button (click)="openLg(content, batch.batchname)"
-                        class="btn tw-bg-sky-500 tw-text-white hover:tw-bg-sky-950 hover:tw-text-white">
+                        class="btn tw-text-black hover:tw-bg-sky-950 hover:tw-text-white">
                         <i data-feather="eye" appFeatherIcon></i>
                       </button>
-                      <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
+                      <!-- <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
                         class="btn tw-bg-green-600 tw-text-white hover:tw-bg-green-800 hover:tw-text-white">
                         <i data-feather="printer" appFeatherIcon></i>
+                      </button> -->
+                      <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
+                        class="btn tw-text-black hover:tw-bg-green-800 hover:tw-text-white">
+                        <i data-feather="printer" appFeatherIcon></i>
                       </button>
-                      <button *ngIf="hasAccessToDeleteBatch()"
+                      <!-- <button *ngIf="hasAccessToDeleteBatch()"
                         class="btn tw-bg-red-700 tw-text-white hover:tw-bg-red-800 hover:tw-text-white">
                         <i data-feather="delete" appFeatherIcon></i>
+                      </button> -->
+                      <button *ngIf="hasAccessToDeleteBatch()" (click)="openDeleteDialog()"
+                        class="btn tw-text-black hover:tw-bg-red-800 hover:tw-text-white">
+                        <i data-feather="trash-2" appFeatherIcon></i>
                       </button>
+
+                      <!-- <p-dialog [(visible)]="showDeleteDialog" [style]="{width: '30vw'}">
+                        <app-delete-component></app-delete-component>
+                      </p-dialog> -->
+
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <div class="tw-text-right tw-my-3" *ngIf="batchArr?.length !=0">
+              <div class="tw-flex tw-justify-center tw-my-3" *ngIf="batchArr?.length !=0">
                 <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
               </div>
             </div>

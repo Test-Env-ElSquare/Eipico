@@ -44,7 +44,7 @@ export interface IRole {
 }
 export interface Iclamis {
   id: number;
-  name: string;
+  claimName: string;
 }
 export interface IFPassword {
   email: string;

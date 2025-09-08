@@ -26,7 +26,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthModule } from '../pages/auth/auth.module';
 import { DialogModule } from 'primeng/dialog';
 
@@ -59,8 +59,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbTimepickerModule,
     NgSelectModule,
     MatProgressBarModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
   ],
+  exports: [NavbarComponent],
   providers: [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,

@@ -26,6 +26,8 @@ import { OtpComponent } from './otp/otp.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MessageService } from 'primeng/api';
 import { PasswordStepperComponent } from './password-stepper/password-stepper.component';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { LayoutModule } from '../../layout/layout.module';
 const routes: Routes = [
   {
     path: '',
@@ -91,6 +93,8 @@ const routes: Routes = [
     DropdownModule,
 
     ButtonModule,
+    LayoutModule,
+    MultiSelectModule,
   ],
   providers: [MessageService],
 })
