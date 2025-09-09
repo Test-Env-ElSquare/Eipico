@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 
 @Component({
   selector: 'app-material-control',
@@ -26,7 +28,8 @@ export class MaterialControlComponent implements OnInit {
     private _modalService: NgbModal,
     private _fb: FormBuilder,
     private _authService: AuthService,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private _perms: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -40,15 +43,15 @@ export class MaterialControlComponent implements OnInit {
   }
 
   HasAccessToAddMaterial(): boolean {
-    return this._authService.isHasAccessToAddMaterial();
+    return this._perms.has(Permission.MaterialControl);
   }
 
   HasAccessToEditMaterial(): boolean {
-    return this._authService.isHasAccessToEditMaterial();
+    return this._perms.has(Permission.MaterialControl);
   }
 
   HasAccessToDeleteMaterial(): boolean {
-    return this._authService.isHasAccessToDeleteMaterial();
+    return this._perms.has(Permission.MaterialControl);
   }
 
   GetAllMaterials() {
