@@ -26,4 +26,16 @@ export class UserManagementService {
   getRoles(): Observable<any> {
     return this._http.get<any>(environment.url + 'api/Auth/Roles');
   }
+  getAllUSers(role?: string, email?: string): Observable<any> {
+    let params: any = {};
+    if (role) {
+      params.role = role;
+    }
+    if (email) {
+      params.email = email;
+    }
+    return this._http.get<any>(environment.url + 'api/Auth/GetAllUsers', {
+      params,
+    });
+  }
 }

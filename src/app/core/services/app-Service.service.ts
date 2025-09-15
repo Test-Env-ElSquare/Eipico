@@ -5,7 +5,11 @@ import { environment } from 'src/environments/environment';
 import { factory, Line, Skus } from '../models/filter';
 import { skus } from 'src/app/components/Historical/models/model';
 import { Lines } from '../models/lines';
-import { Iclamis } from 'src/app/views/pages/auth/models/auth';
+import {
+  IArea,
+  Iclamis,
+  IRoleAreaResponse,
+} from 'src/app/views/pages/auth/models/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -78,5 +82,10 @@ export class AppService {
   }
   getAllClaims(): Observable<Iclamis[]> {
     return this._http.get<Iclamis[]>(environment.url + 'api/Auth/GetAllClaims');
+  }
+  getAllAreasAndRoles(): Observable<IRoleAreaResponse> {
+    return this._http.get<IRoleAreaResponse>(
+      environment.url + 'api/Auth/RoleAndAreaList'
+    );
   }
 }

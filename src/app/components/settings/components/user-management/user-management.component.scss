@@ -1,3 +1,16 @@
 .required {
   color: red;
 }
+.btn-danger {
+  background-color: #0083cb !important;
+  border-color: #0083cb !important;
+}
+.bg-edit-primary {
+  color: #475467 !important;
+}
+.p-dialog-mask {
+  background: transparent !important;
+}
+::ng-deep .edit-dialog {
+  box-shadow: none !important;
+}

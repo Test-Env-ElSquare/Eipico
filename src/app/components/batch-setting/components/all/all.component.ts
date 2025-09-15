@@ -37,6 +37,7 @@ export class AllComponent implements OnInit {
   directions: SortDirection = 'desc';
   splited: number;
   showDeleteDialog: boolean = false;
+  DeleteView: boolean = false;
   rotate: { [key: string]: SortDirection } = {
     asc: 'desc',
     desc: '',
@@ -160,6 +161,9 @@ export class AllComponent implements OnInit {
   }
   openDeleteDialog() {
     this.showDeleteDialog = true;
+  }
+  openDeleteDialogView() {
+    this.DeleteView = true;
   }
   ngOnInit(): void {
     this.getAll();

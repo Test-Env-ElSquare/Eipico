@@ -24,6 +24,7 @@ import {
   NgbTimepickerModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/views/shared/shared.module';
+import { AuthModule } from 'src/app/views/pages/auth/auth.module';
 @NgModule({
   declarations: [
     MachineSettingsComponent,
@@ -51,6 +52,7 @@ import { SharedModule } from 'src/app/views/shared/shared.module';
     CalendarModule,
     SharedModule,
     DialogModule,
+    AuthModule,
     // FeatherIconModule,
   ],
 })

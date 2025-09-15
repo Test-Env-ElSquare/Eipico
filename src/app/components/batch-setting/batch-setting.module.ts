@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { DialogModule } from 'primeng/dialog';
 import { BatchSettingRoutingModule } from './batch-setting-routing.module';
 import { AllComponent } from './components/all/all.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -24,6 +24,7 @@ import { SharedModule } from 'src/app/views/shared/shared.module';
     NgxPaginationModule,
     FeatherIconModule,
     FormsModule,
+    DialogModule,
     SharedModule,
   ],
 })

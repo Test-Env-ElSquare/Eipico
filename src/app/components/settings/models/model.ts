@@ -49,6 +49,15 @@ export interface IShift {
   from: string;
   to: string;
 }
+export interface IAllUSers {
+  id: string;
+  userName: string;
+  email: string;
+  roleName: string;
+  phoneNumber: string;
+  isDeleted: boolean;
+  creationDate: string;
+}
 // "lineName": "E1_Cep_L2",
 // "name": "E1_Cep_L2_Cart",
 // "faunctionality": "Cart",

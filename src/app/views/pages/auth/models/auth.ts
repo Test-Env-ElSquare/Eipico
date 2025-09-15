@@ -57,3 +57,16 @@ export interface IRPAssword {
   email: string;
   newPassword: string;
 }
+export interface IRole {
+  text: string;
+}
+
+export interface IArea {
+  value: number;
+  text: string;
+}
+
+export interface IRoleAreaResponse {
+  roles: IRole[];
+  areas: IArea[];
+}

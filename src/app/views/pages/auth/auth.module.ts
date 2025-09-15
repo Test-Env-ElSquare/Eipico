@@ -96,6 +96,7 @@ const routes: Routes = [
     LayoutModule,
     MultiSelectModule,
   ],
+  exports: [EditProfileComponent],
   providers: [MessageService],
 })
 export class AuthModule {}

@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import {
+  IArea,
   Iclamis,
   IProfile,
   IRole,
@@ -24,31 +25,9 @@ export class EditProfileComponent implements OnInit {
     private fb: FormBuilder,
     private _appService: AppService,
     private _Router: Router
-  ) {}
-  data!: UpdateAdminProfile;
-  profile!: IProfile | null;
-  allAreas: Lines[] = [];
-  allClaims: Iclamis[] = [];
-  items: MenuItem[] = [];
-  showCurrentPassword: boolean = false;
-  showNewPassword: boolean = false;
-  profileForm: any;
-  userId: any;
-
-  roles: IRole[] = [
-    { id: 1, name: 'Admin' },
-    { id: 2, name: 'User' },
-  ];
-
-  toggleCurrentPassword() {
-    this.showCurrentPassword = !this.showCurrentPassword;
-  }
-
-  toggleNewPassword() {
-    this.showNewPassword = !this.showNewPassword;
-  }
-  ngOnInit(): void {
+  ) {
     this.profileForm = this.fb.group({
+      userId: [''],
       username: [''],
       email: [''],
       phoneNumber: [''],
@@ -58,41 +37,73 @@ export class EditProfileComponent implements OnInit {
       areas: [''],
       claims: [''],
     });
-
-    this._AuthService.loadProfile();
-    this._AuthService.profile$.subscribe((p) => {
-      this.profile = p;
-      if (p) {
-        this.userId = p.id;
-        this.profileForm.patchValue({
-          username: p.username,
-          email: p.email,
-          phoneNumber: p.phoneNumber,
-          roleName: p.roleName,
-          areas: p.areas,
-          claims: p.claims,
-        });
-        if (p.roleName?.toLowerCase() === 'admin') {
-          this.onGetAreasFromLines();
-          this.onGetAllClaims();
-        }
-      }
-    });
   }
-  isAdmin(): boolean {
-    return this.profile?.roleName?.toLowerCase() === 'admin';
+  data!: UpdateAdminProfile;
+  profile!: IProfile | null;
+  @Input() allAreas: IArea[] = [];
+  @Input() allClaims: Iclamis[] = [];
+  @Input() profileToEdit: IProfile | null = null;
+  items: MenuItem[] = [];
+  showCurrentPassword: boolean = false;
+  showNewPassword: boolean = false;
+  profileForm: any;
+  userId: any;
+
+  allRoles: IRole[] = [];
+
+  toggleCurrentPassword() {
+    this.showCurrentPassword = !this.showCurrentPassword;
   }
 
-  isUser(): boolean {
-    return this.profile?.roleName?.toLowerCase() === 'user';
+  toggleNewPassword() {
+    this.showNewPassword = !this.showNewPassword;
   }
+  ngOnInit(): void {
+    this.onGetAllClaims();
+    this.onGetAreas();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['profileToEdit'] && this.profileToEdit) {
+      this.userId = this.profileToEdit.id;
+      this.profileForm.patchValue({
+        username: this.profileToEdit.username,
+        email: this.profileToEdit.email,
+        phoneNumber: this.profileToEdit.phoneNumber,
+        roleName: this.profileToEdit.roleName,
+        areas: this.profileToEdit.areas,
+        claims: this.profileToEdit.claims,
+      });
+    }
+  }
+
+  isEditBySuperAdmin(): boolean {
+    return this.profileToEdit != null;
+  }
+
+  isUserSelf(): boolean {
+    return (
+      !this.profileToEdit &&
+      (this.profile?.roleName?.toLowerCase() === 'user' ||
+        this.profile?.roleName?.toLowerCase() === 'admin')
+    );
+  }
+
   onSubmitProfile() {
+    console.log(' Form submitted');
+    console.log('Form Valid:', this.profileForm.valid);
+    console.log('Form Values:', this.profileForm.value);
+    console.log('isEditBySuperAdmin:', this.isEditBySuperAdmin());
+    console.log('isUserSelf:', this.isUserSelf());
+
     if (!this.profileForm.valid) return;
 
-    if (this.isAdmin()) {
+    if (this.isEditBySuperAdmin()) {
       this.onUpdateUserProfileByAdmin();
-    } else if (this.isUser()) {
+    } else if (this.isUserSelf()) {
       this.onUpdateUserProfile();
+    } else {
+      console.warn(' No matching condition, nothing called!');
     }
   }
 
@@ -114,28 +125,50 @@ export class EditProfileComponent implements OnInit {
       },
     });
   }
-
   onUpdateUserProfileByAdmin() {
+    if (!this.profileToEdit || !this.profileToEdit.id) {
+      console.error(' Cannot update: userId is missing!');
+      return;
+    }
+
     const data: updateUserProfileByAdmin = {
-      userId: this.profile?.id ?? '',
-      roles: [this.profileForm.value.roleName],
-      claims: this.profileForm.value.claims,
-      areaIds: this.profileForm.value.areaIds,
+      userId: this.profileToEdit?.id ?? '',
+      roles: this.profileForm.value.roleName
+        ? [this.profileForm.value.roleName]
+        : [],
+      claims: (this.profileForm.value.claims || []).map((c: any) =>
+        typeof c === 'string' ? c : c.claimName
+      ),
+      areaIds: this.profileForm.value.areas
+        ? Array.isArray(this.profileForm.value.areas)
+          ? this.profileForm.value.areas
+          : [this.profileForm.value.areas]
+        : [],
     };
+
+    console.log('Final Request Data:', data);
+
     this._AuthService.editUserProfileByAdmin(data).subscribe({
-      next: (res) => console.log('Admin updated user profile:', res),
-      error: (err) => console.error('Error while updating:', err),
+      next: (res) => {
+        console.log('✅ Admin updated user profile:', res);
+        this._Router.navigate(['auth/login']);
+      },
+      error: (err) => {
+        console.error(' Error while updating:', err);
+      },
     });
   }
 
-  onGetAreasFromLines() {
-    this._appService.getAllLines().subscribe({
+  onGetAreas() {
+    this._appService.getAllAreasAndRoles().subscribe({
       next: (res) => {
-        this.allAreas = res;
+        this.allRoles = res.roles;
+        this.allAreas = res.areas;
         console.log(this.allAreas);
       },
     });
   }
+
   onGetAllClaims() {
     this._appService.getAllClaims().subscribe({
       next: (res) => {

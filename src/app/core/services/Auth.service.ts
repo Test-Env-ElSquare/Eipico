@@ -15,6 +15,7 @@ import {
 } from 'src/app/views/pages/auth/models/auth';
 import { PermissionService } from './permission.service';
 export interface LoginResponse {
+  toLowerCase(): unknown;
   token: string;
   user: string;
   expiration: string;
@@ -429,7 +430,7 @@ export class AuthService {
     data: updateUserProfileByAdmin
   ): Observable<updateUserProfileByAdmin> {
     return this.http.put<updateUserProfileByAdmin>(
-      environment.url + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/SuperAdmin/update-user',
       data
     );
   }
