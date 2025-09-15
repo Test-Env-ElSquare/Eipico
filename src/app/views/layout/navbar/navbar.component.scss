@@ -1,5 +1,11 @@
-.loaderContainer{
-  position: fixed;
+// .loaderContainer {
+//   position: fixed;
+//   width: 100%;
+//   z-index: 99;
+// }
+
+.profile-override {
   width: 100%;
-  z-index: 99;
+  left: 0;
+  top: 0;
 }

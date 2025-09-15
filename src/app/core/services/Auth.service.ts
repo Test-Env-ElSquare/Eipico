@@ -5,13 +5,17 @@ import { environment } from '../../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 import {
+  IFPassword,
   IProfile,
+  IRPAssword,
+  ISendOtp,
   UpdateAdminProfile,
   UpdateUserProfile,
   updateUserProfileByAdmin,
 } from 'src/app/views/pages/auth/models/auth';
 import { PermissionService } from './permission.service';
 export interface LoginResponse {
+  toLowerCase(): unknown;
   token: string;
   user: string;
   expiration: string;
@@ -426,8 +430,30 @@ export class AuthService {
     data: updateUserProfileByAdmin
   ): Observable<updateUserProfileByAdmin> {
     return this.http.put<updateUserProfileByAdmin>(
-      environment.url + 'api/Auth/admin/update-user',
+      environment.url + 'api/Auth/SuperAdmin/update-user',
       data
+    );
+  }
+  forgetPassword(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/forgot-password',
+      formatDate,
+      { responseType: 'text' }
+    );
+  }
+
+  sendOtp(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/validate-otp',
+      formatDate,
+      { responseType: 'text' }
+    );
+  }
+  resetPassword(formatDate: object): Observable<string> {
+    return this.http.post(
+      environment.baseUrl + 'api/Auth/reset-password',
+      formatDate,
+      { responseType: 'text' }
     );
   }
 }

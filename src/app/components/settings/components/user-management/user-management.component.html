@@ -1,7 +1,7 @@
 <form [formGroup]="form">
 
   <div class="row">
-    <div class="col-md-4 my-2">
+    <div class="col-md-2 my-2">
       <label>Username</label>
       <input formControlName="username" class="form-control" />
       <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')">
@@ -12,7 +12,7 @@
       </p>
     </div>
 
-    <div class="col-md-4 my-2">
+    <div class="col-md-2 my-2">
       <label>Email</label>
       <input formControlName="email" class="form-control" type="email" />
       <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
@@ -23,7 +23,7 @@
       </p>
     </div>
 
-    <div class="col-md-4 my-2">
+    <div class="col-md-2 my-2">
       <label>Password</label>
       <input formControlName="password" class="form-control" type="text" />
       <p class="required" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="col-md-4 my-2">
+    <div class="col-md-2 my-2">
       <label>Roles</label>
       <ng-select [items]="roles" bindLabel="name" bindValue="name" placeholder="Select Role" formControlName="roleName">
       </ng-select>
@@ -49,7 +49,7 @@
       </ng-select>
     </div> -->
 
-    <div class="col-md-3 my-2">
+    <div class="col-md-2 my-2">
       <br>
       <button class="btn btn-primary" [disabled]="form.invalid" (click)="addUser()">Add User</button>
     </div>
@@ -57,3 +57,60 @@
   </div>
 
 </form>
+
+
+<div class="card mt-3  tw-shadow-lg">
+  <div class="card-body table-responsive">
+    <div class="d-flex align-items-center mb-3 gap-3">
+      <!-- Filter select -->
+      <ng-select [items]="allRoles" id="roleFilter" class="w-50" [(ngModel)]="selectedRole" placeholder="Filter by Role"
+        (change)="onRoleChange()">
+      </ng-select>
+
+      <!-- Search input -->
+      <input type="text" [(ngModel)]="searchText" class="form-control w-50" placeholder="Search By Email" />
+      <button (click)="onSearchClick()" for="Search"
+        class="btn btn-danger  col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1">Search</button>
+    </div>
+
+    <table class="table table-hover align-middle ">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Email</th>
+          <th>Creation Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{ user.userName }}</td>
+          <td>{{ user.roleName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.creationDate | date: "dd-MM-yyyy hh:mm a" }}</td>
+          <td class="">
+
+
+            <button (click)="openEditDialog(user)" type="button" class="btn btn-sm text-white bg-edit-primary mx-2"
+              title="Edit">
+              <i class="pi pi-pencil"></i>
+            </button>
+
+            <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
+              [style]="{width: '60vw'}">
+              <ng-container *ngIf="showEditDialog">
+                <app-edit-profile [allClaims]="allClaims" [allAreas]="allAreas" [profileToEdit]="selectedUser">
+                </app-edit-profile>
+
+              </ng-container>
+
+
+            </p-dialog>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

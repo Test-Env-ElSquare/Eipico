@@ -1,21 +1,24 @@
 <section>
   <div class="row">
     <div class="col-12 col-xl-12 stretch-card">
+
       <div class="row flex-grow-1">
+        <div class="tw-flex tw-items-center tw-justify-between">
+          <p class="tw-font-bold">Total Number Of Batchs : {{ totalCount }}</p>
+
+        </div>
+        <div class="col-lg-4 tw-flex tw-justify-around mb-2">
+          <div class="col-sm-10">
+            <input type="text" class="tw-mr-1 form-control" id="Search"
+              placeholder="BATCH NAME, SKU CODE, SKU NAME, JOB ORDER" [(ngModel)]="searchText">
+          </div>
+          <button for="Search" class="btn btn-danger  col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
+            (click)="search(searchText)">Search</button>
+        </div>
         <div class="col-md-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body table-responsive">
-              <div class="tw-flex tw-items-center tw-justify-between">
-                <p class="tw-font-bold">Total Number Of Batchs : {{ totalCount }}</p>
-                <div class="col-lg-4 tw-flex tw-justify-around ">
-                  <div class="col-sm-10">
-                    <input type="text" class="tw-mr-1 form-control" id="Search"
-                      placeholder="BATCH NAME, SKU CODE, SKU NAME, JOB ORDER" [(ngModel)]="searchText">
-                  </div>
-                  <button for="Search" class="btn btn-success   col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
-                    (click)="search(searchText)">Search</button>
-                </div>
-              </div>
+
               <div class="tw-text-center" *ngIf="batchArr?.length ==0">
                 <h3 class="text-danger">
                   No Data Matches Your Search Word
@@ -63,10 +66,10 @@
                     <th scope="col" sortable="timestamp">
                       <span>
                         <p>Time Stamp</p>
-                        <img (click)="
+                        <!-- <img (click)="
                         onSort({ column: 'timestamp', direction: directions });
                         rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                      " src="assets/images/up-and-down-arrows.png" class="sortimage" /> -->
                       </span>
                     </th>
                     <th></th>
@@ -87,24 +90,38 @@
                     <td>{{ batch.skuname }}</td>
                     <td>{{ batch.joborder }}</td>
                     <td>{{ batch.timestamp | date : "medium" }}</td>
-                    <td class="tw-flex tw-items-center tw-justify-between">
+                    <td class="tw-flex tw-items-center tw-justify-center">
                       <button (click)="openLg(content, batch.batchname)"
-                        class="btn tw-bg-sky-500 tw-text-white hover:tw-bg-sky-950 hover:tw-text-white">
+                        class="btn tw-text-blue-900 hover:tw-text-black">
                         <i data-feather="eye" appFeatherIcon></i>
                       </button>
-                      <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
+                      <!-- <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
                         class="btn tw-bg-green-600 tw-text-white hover:tw-bg-green-800 hover:tw-text-white">
                         <i data-feather="printer" appFeatherIcon></i>
+                      </button> -->
+                      <button (click)="printBatch(batch.batchname)" *ngIf="hasAccessToPrintBatch()"
+                        class="btn tw-text-green-600">
+                        <i data-feather="printer" appFeatherIcon></i>
                       </button>
-                      <button *ngIf="hasAccessToDeleteBatch()"
+                      <!-- <button *ngIf="hasAccessToDeleteBatch()"
                         class="btn tw-bg-red-700 tw-text-white hover:tw-bg-red-800 hover:tw-text-white">
                         <i data-feather="delete" appFeatherIcon></i>
+                      </button> -->
+                      <!-- <button *ngIf="hasAccessToDeleteBatch()" (click)="openDeleteDialog()" class="btn tw-text-red-700">
+                        <i data-feather="trash-2" appFeatherIcon></i>
                       </button>
+
+                      <p-dialog [(visible)]="showDeleteDialog" styleClass="delete-dialog" [closable]="true"
+                        [modal]="false" [style]="{width: '30vw'}">
+                        <app-delete-component></app-delete-component>
+                      </p-dialog> -->
+
+
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <div class="tw-text-right tw-my-3" *ngIf="batchArr?.length !=0">
+              <div class="tw-flex tw-justify-center tw-my-3" *ngIf="batchArr?.length !=0">
                 <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
               </div>
             </div>
@@ -195,10 +212,14 @@
               class="btn tw-bg-green-600 tw-text-white hover:tw-bg-green-800 hover:tw-text-white">
               <i data-feather="printer" appFeatherIcon></i>
             </button>
-            <button *ngIf="hasAccessToDeleteBatch()"
+            <!-- <button (click)="openDeleteDialogView()" *ngIf="hasAccessToDeleteBatch()"
               class="btn tw-bg-red-700 tw-text-white hover:tw-bg-red-800 hover:tw-text-white">
-              <i data-feather="delete" appFeatherIcon></i>
+              <i data-feather="trash-2" appFeatherIcon></i>
             </button>
+            <p-dialog [(visible)]="showDeleteDialog" styleClass="delete-dialog" [closable]="true" [modal]="false"
+              [style]="{width: '30vw'}">
+              <app-delete-component></app-delete-component>
+            </p-dialog> -->
           </td>
         </tr>
       </tbody>

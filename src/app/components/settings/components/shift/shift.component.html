@@ -55,9 +55,16 @@
 
             <td class="text-center p-2">
 
-              <button type="button" class="btn btn-sm text-white bg-delete-danger" title="Delete" [disabled]="false">
+              <button (click)="openDeleteDialog()" type="button" class="btn btn-sm text-white bg-delete-danger"
+                title="Delete" [disabled]="false">
                 <i class="pi pi-trash"></i>
               </button>
+
+              <p-dialog [(visible)]="showDeleteDialog" [modal]="true" [closable]="true" [style]="{width: '30vw'}">
+                <app-delete-component></app-delete-component>
+
+
+              </p-dialog>
               <button type="button" class="btn btn-sm text-white bg-edit-primary mx-2" title="Edit">
                 <i class="pi pi-pencil"></i>
               </button>

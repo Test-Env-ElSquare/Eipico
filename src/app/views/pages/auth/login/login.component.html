@@ -1,5 +1,5 @@
 <div class="row w-100 ">
-  <div class="col-md-3  vh-100   d-flex align-items-center">
+  <div class="col-md-3 vh-100 d-flex align-items-center">
     <div class="row">
       <div class="col-md-6 m-auto">
         <div class="animate__animated animate__fadeIn shadow animate__delay-1s p-2 bg-  bg-opacity-25" (click)="robot()"
@@ -46,9 +46,18 @@
             </div>
             <div class="form-check mb-3">
               <input type="checkbox" class="form-check-input" id="authCheck">
-              <label class="form-check-label" for="authCheck">
-                Remember me
-              </label>
+              <div class="d-flex justify-content-between">
+                <label class="form-check-label" for="authCheck">
+                  Remember me
+                </label>
+                <a class="text-end" (click)="showPasswordStepper()">Forget Password?</a>
+              </div>
+              <p-dialog header="Forget Password" [(visible)]="displayPasswordStepper" [modal]="true"
+                [style]="{width: '60vw'}" [draggable]="false" [resizable]="false">
+
+                <app-password-stepper (close)="displayPasswordStepper = false"></app-password-stepper>
+
+              </p-dialog>
             </div>
             <div>
               <button type="submit" class="btn btn-primary tw-bg-searchBtn px-5 me-2 mb-2 mb-md-0"

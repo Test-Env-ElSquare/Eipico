@@ -13,6 +13,7 @@ export class ShiftComponent implements OnInit {
   hourFormat?: string;
   fromDate: Date | null = null;
   toDate: Date | null = null;
+  showDeleteDialog = false;
 
   ngOnInit(): void {
     this.onGetAllShifts();
@@ -24,5 +25,8 @@ export class ShiftComponent implements OnInit {
         console.log(this.ShiftList);
       },
     });
+  }
+  openDeleteDialog() {
+    this.showDeleteDialog = true;
   }
 }

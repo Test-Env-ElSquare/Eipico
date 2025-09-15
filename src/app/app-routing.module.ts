@@ -125,6 +125,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./components/scale/scale.module').then((m) => m.ScaleModule),
       },
+      {
+        path: 'shared',
+        loadChildren: () =>
+          import('./views/shared/shared.module').then((m) => m.SharedModule),
+      },
       { path: '**', redirectTo: 'MainDashboard', pathMatch: 'full' },
     ],
   },

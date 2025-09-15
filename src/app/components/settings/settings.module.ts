@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
 import { ShiftComponent } from './components/shift/shift.component';
-
+import { DialogModule } from 'primeng/dialog';
 import { CalendarModule } from 'primeng/calendar';
 import {
   NgbDropdownModule,
@@ -23,6 +23,8 @@ import {
   NgbDatepickerModule,
   NgbTimepickerModule,
 } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'src/app/views/shared/shared.module';
+import { AuthModule } from 'src/app/views/pages/auth/auth.module';
 @NgModule({
   declarations: [
     MachineSettingsComponent,
@@ -48,6 +50,9 @@ import {
     NgbTimepickerModule,
     DropdownModule,
     CalendarModule,
+    SharedModule,
+    DialogModule,
+    AuthModule,
     // FeatherIconModule,
   ],
 })

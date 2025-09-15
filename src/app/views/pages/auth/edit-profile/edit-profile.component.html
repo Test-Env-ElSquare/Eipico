@@ -1,5 +1,5 @@
-<div class="container my-4">
-
+<div class="container my-4 mt-5">
+  <app-navbar customClass="profile-override"></app-navbar>
   <div class=" p-4  rounded-4">
     <!-- Profile Header -->
     <div class="text-center">
@@ -7,11 +7,20 @@
         <img src="../../../../../assets/images/user.png" class="rounded-circle border" alt="Profile" width="150"
           height="100" />
       </div>
-      <div *ngIf="profile">
-        <h3 class="mt-3 mb-1">{{profile.username}}/ <span class="ps-3">Edit Profile</span></h3>
-        <div class="text-muted"> &nbsp;&nbsp; <i class=" pi pi-envelope p-2 mt-1"></i>{{profile.email}}</div>
-
+      <div *ngIf="isUserSelf(); else superAdminView">
+        <h3 class="mt-3 mb-1">{{ profile?.username }} / <span class="ps-3">Edit Profile</span></h3>
+        <div class="text-muted">
+          &nbsp;&nbsp; <i class="pi pi-envelope p-2 mt-1"></i>{{ profile?.email }}
+        </div>
       </div>
+
+      <ng-template #superAdminView>
+        <h3 class="mt-3 mb-1">{{ profileToEdit?.username }} <span class="ps-3">Edit User Profile</span></h3>
+        <div class="text-muted">
+          &nbsp;&nbsp; <i class="pi pi-envelope p-2 mt-1"></i>{{ profileToEdit?.email }}
+        </div>
+      </ng-template>
+
 
     </div>
 
@@ -49,40 +58,58 @@
         <!-- right side (form box) -->
         <div class="content-box">
           <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
-            <ng-container [ngSwitch]="currentStep">
+            <ng-container>
 
               <!-- Step 1 -->
-              <div *ngSwitchCase="1">
-                <h2 *ngIf="isUser()">Personal Information</h2>
-                <h2 *ngIf="isAdmin()">Update User</h2>
+              <div>
+                <h2 *ngIf="isUserSelf()">Personal Information</h2>
+                <h2 *ngIf="isEditBySuperAdmin()">Update User</h2>
 
                 <!-- User form -->
-                <ng-container *ngIf="isUser()">
+                <ng-container *ngIf="isUserSelf()">
                   <input type="text" formControlName="username" placeholder="Enter Name" class="form-control mb-2" />
                   <input type="text" formControlName="email" placeholder="Enter Email" class="form-control mb-2" />
                   <input type="text" formControlName="phoneNumber" placeholder="Enter Phone"
                     class="form-control mb-2" />
-                  <input type="password" formControlName="currentPassword" placeholder="Enter Current Password"
-                    class="form-control mb-2" />
-                  <input type="password" formControlName="newPassword" placeholder="Enter New Password"
-                    class="form-control mb-2" />
+                  <div class="input-group mb-2">
+                    <input [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword"
+                      placeholder="Enter Current Password" class="form-control" />
+                    <span class="input-group-text" (click)="toggleCurrentPassword()" style="cursor: pointer;">
+                      <i class="pi" [ngClass]="showCurrentPassword ? 'pi-eye' : 'pi-eye-slash'"></i>
+                    </span>
+                  </div>
+                  <div class="input-group mb-2">
+                    <input [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword"
+                      placeholder="Enter New Password" class="form-control" />
+                    <span class="input-group-text" (click)="toggleNewPassword()" style="cursor: pointer;">
+                      <i class="pi" [ngClass]="showNewPassword ? 'pi-eye' : ' pi-eye-slash'"></i>
+                    </span>
+                  </div>
                 </ng-container>
 
-                <!-- Admin form -->
-                <ng-container *ngIf="isAdmin()">
+                <!-- update user by suprAdmin form -->
+                <ng-container *ngIf="isEditBySuperAdmin()">
                   <label class="m-2">Role</label>
-                  <p-dropdown formControlName="roleName" [options]="roles" optionLabel="name" optionValue="name"
+                  <p-dropdown formControlName="roleName" [options]="allRoles" optionLabel="text" optionValue="text"
                     placeholder="Select role" styleClass="w-100">
                   </p-dropdown>
 
 
                   <label class="m-2">Claims</label>
-                  <p-dropdown formControlName="claims" [options]="clamis" optionLabel="name" optionValue="name"
-                    placeholder="Select claim" styleClass="w-100">
-                  </p-dropdown>
+                  <!-- <p-multiSelect formControlName="claims" [options]="allClaims" optionLabel="claimName"
+                    optionValue="claimName" placeholder="Select claims" [maxSelectedLabels]="5" styleClass="w-100"
+                    scrollHeight="250px">
+                  </p-multiSelect> -->
+                  <ng-select formControlName="claims" [items]="allClaims" bindLabel="claimName"
+                    placeholder="Select Claims" [multiple]="true">
+                  </ng-select>
+
+
+
+
 
                   <label class="m-2">Areas</label>
-                  <p-dropdown formControlName="areas" [options]="allAreas" optionLabel="area" optionValue="area"
+                  <p-dropdown formControlName="areas" [options]="allAreas" optionLabel="text" optionValue="value"
                     placeholder="Select area" styleClass="w-100 mb-1">
                   </p-dropdown>
 

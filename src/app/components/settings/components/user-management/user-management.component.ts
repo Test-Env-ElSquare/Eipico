@@ -5,9 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { IFactory, roles } from '../../models/model';
+import { IAllUSers, IFactory, roles } from '../../models/model';
 import { UserManagementService } from '../../services/user-management.service';
 import { ToastrService } from 'ngx-toastr';
+import { IArea, Iclamis, IProfile } from 'src/app/views/pages/auth/models/auth';
+import { AppService } from 'src/app/core/services/app-Service.service';
 
 @Component({
   selector: 'app-user-management',
@@ -19,16 +21,30 @@ export class UserManagementComponent implements OnInit {
   roles: roles[];
   factoryList: IFactory[];
   isRoleAdmin: boolean = false;
-
+  tableOfUsers: IAllUSers[];
+  filteredUsers: any[] = [];
+  allRoles: any[] = [];
+  selectedRole: string | undefined = undefined;
+  searchText: string = '';
+  showEditDialog: boolean = false;
+  allClaims: Iclamis[] = [];
+  profileToEdit: IProfile | null = null;
+  allAreas: IArea[] = [];
+  selectedUser: any;
   constructor(
     private fb: FormBuilder,
     private userManagementService: UserManagementService,
+    private _appService: AppService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getRoles();
     this.initForm();
+    this.onGetAllUsers();
+    this._appService
+      .getAllClaims()
+      .subscribe((data) => (this.allClaims = data));
   }
 
   initForm() {
@@ -62,6 +78,7 @@ export class UserManagementComponent implements OnInit {
       next: (data: any) => {
         this.toastr.success(data.message);
         this.form.reset();
+        this.onGetAllUsers();
       },
       error: (err: any) => {
         console.log(err);
@@ -69,5 +86,33 @@ export class UserManagementComponent implements OnInit {
         this.form.reset();
       },
     });
+  }
+
+  onGetAllUsers(role?: string, email?: string) {
+    this.userManagementService.getAllUSers(role, email).subscribe({
+      next: (res) => {
+        this.tableOfUsers = res;
+        this.filteredUsers = res;
+
+        if (!this.allRoles.length) {
+          this.allRoles = [...new Set(res.map((u: any) => u.roleName))];
+        }
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
+  onRoleChange() {
+    this.onGetAllUsers(this.selectedRole || undefined);
+  }
+  onSearchClick() {
+    this.onGetAllUsers(this.selectedRole, this.searchText);
+    console.log('search', this.searchText);
+  }
+  openEditDialog(user: IProfile) {
+    this.selectedUser = user;
+    this.showEditDialog = true;
   }
 }

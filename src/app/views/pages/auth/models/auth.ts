@@ -44,5 +44,29 @@ export interface IRole {
 }
 export interface Iclamis {
   id: number;
-  name: string;
+  claimName: string;
+}
+export interface IFPassword {
+  email: string;
+}
+export interface ISendOtp {
+  email: string;
+  otp: string;
+}
+export interface IRPAssword {
+  email: string;
+  newPassword: string;
+}
+export interface IRole {
+  text: string;
+}
+
+export interface IArea {
+  value: number;
+  text: string;
+}
+
+export interface IRoleAreaResponse {
+  roles: IRole[];
+  areas: IArea[];
 }

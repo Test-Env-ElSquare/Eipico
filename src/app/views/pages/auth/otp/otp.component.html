@@ -1,0 +1,49 @@
+<div class="container my-1">
+  <div class="p-2 rounded-4">
+    <!-- Profile Header -->
+    <!-- <div class="text-center">
+      <div class="d-flex justify-content-center">
+        <img src="../../../../../assets/images/user.png" class="rounded-circle border" alt="Profile" width="150"
+          height="100" />
+      </div>
+    </div> -->
+
+    <!-- OTP Section -->
+    <div class="row mt-1 ">
+      <div class="stepper-layout">
+        <div class="content-box ">
+          <form [formGroup]="otpForm" (ngSubmit)="onVerify()">
+            <div class="text-center">
+              <i class="pi pi-envelope p-2 mt-1"></i>
+              <h2>Check your email</h2>
+              <p>We sent a verification code to <span>{{email}}</span></p>
+            </div>
+
+            <!-- OTP Inputs -->
+            <div class="d-flex justify-content-center gap-2" formArrayName="digits">
+              <ng-container *ngFor="let ctrl of digits.controls; let i = index">
+                <input type="text" maxlength="1" class="otp-input" [formControlName]="i" (input)="moveNext($event, i)">
+              </ng-container>
+            </div>
+
+            <!-- Verify Button -->
+            <div class="d-flex justify-content-center">
+              <!-- <button type="button" class="btn btn-secondary" (click)="back.emit()">Back</button> -->
+
+              <button type="submit" class="btn btn-success mt-3">Verify</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<p-dialog header="Reset Password" [(visible)]="displayResetPassword" [modal]="true" [style]="{width: '60vw'}"
+  [draggable]="false" [resizable]="false">
+  <app-reset-password [email]="email"></app-reset-password>
+</p-dialog>
+
+<!-- Toast -->
+<!-- <p-toast></p-toast> -->
