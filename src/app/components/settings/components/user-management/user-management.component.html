@@ -99,14 +99,11 @@
 
             <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
               [style]="{width: '60vw'}">
-              <ng-container *ngIf="showEditDialog">
-                <app-edit-profile [allClaims]="allClaims" [allAreas]="allAreas" [profileToEdit]="selectedUser">
-                </app-edit-profile>
-
-              </ng-container>
-
-
+              <app-edit-profile [allClaims]="allClaims" [allAreas]="allAreas" [allRoles]="allRoles"
+                [profileToEdit]="selectedUser">
+              </app-edit-profile>
             </p-dialog>
+
 
           </td>
         </tr>

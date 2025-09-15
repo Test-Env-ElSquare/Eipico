@@ -2,27 +2,38 @@
   <app-navbar customClass="profile-override"></app-navbar>
   <div class=" p-4  rounded-4">
     <!-- Profile Header -->
+    <!-- Profile Header -->
     <div class="text-center">
       <div class="d-flex justify-content-center">
         <img src="../../../../../assets/images/user.png" class="rounded-circle border" alt="Profile" width="150"
           height="100" />
       </div>
-      <div *ngIf="isUserSelf(); else superAdminView">
+
+      <!-- User/Admin self -->
+      <div *ngIf="isUserSelf()">
         <h3 class="mt-3 mb-1">{{ profile?.username }} / <span class="ps-3">Edit Profile</span></h3>
         <div class="text-muted">
           &nbsp;&nbsp; <i class="pi pi-envelope p-2 mt-1"></i>{{ profile?.email }}
         </div>
       </div>
 
-      <ng-template #superAdminView>
+      <!-- SuperAdmin self -->
+      <div *ngIf="isSuperAdminSelf()">
+        <h3 class="mt-3 mb-1">{{ profile?.username }} / <span class="ps-3">Edit SuperAdmin Profile</span></h3>
+        <div class="text-muted">
+          &nbsp;&nbsp; <i class="pi pi-envelope p-2 mt-1"></i>{{ profile?.email }}
+        </div>
+      </div>
+
+      <!-- SuperAdmin editing another user -->
+      <ng-container *ngIf="isEditBySuperAdmin()">
         <h3 class="mt-3 mb-1">{{ profileToEdit?.username }} <span class="ps-3">Edit User Profile</span></h3>
         <div class="text-muted">
           &nbsp;&nbsp; <i class="pi pi-envelope p-2 mt-1"></i>{{ profileToEdit?.email }}
         </div>
-      </ng-template>
-
-
+      </ng-container>
     </div>
+
 
     <!-- Info Sections -->
     <div class="row mt-5 p-5">
@@ -59,18 +70,15 @@
         <div class="content-box">
           <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
             <ng-container>
-
-              <!-- Step 1 -->
               <div>
-                <h2 *ngIf="isUserSelf()">Personal Information</h2>
-                <h2 *ngIf="isEditBySuperAdmin()">Update User</h2>
-
-                <!-- User form -->
-                <ng-container *ngIf="isUserSelf()">
+                <!-- User/Admin self OR SuperAdmin self -->
+                <ng-container *ngIf="isUserSelf() || isSuperAdminSelf()">
+                  <h2>Personal Information</h2>
                   <input type="text" formControlName="username" placeholder="Enter Name" class="form-control mb-2" />
                   <input type="text" formControlName="email" placeholder="Enter Email" class="form-control mb-2" />
                   <input type="text" formControlName="phoneNumber" placeholder="Enter Phone"
                     class="form-control mb-2" />
+
                   <div class="input-group mb-2">
                     <input [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword"
                       placeholder="Enter Current Password" class="form-control" />
@@ -78,6 +86,7 @@
                       <i class="pi" [ngClass]="showCurrentPassword ? 'pi-eye' : 'pi-eye-slash'"></i>
                     </span>
                   </div>
+
                   <div class="input-group mb-2">
                     <input [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword"
                       placeholder="Enter New Password" class="form-control" />
@@ -87,53 +96,33 @@
                   </div>
                 </ng-container>
 
-                <!-- update user by suprAdmin form -->
+                <!-- SuperAdmin editing another user -->
                 <ng-container *ngIf="isEditBySuperAdmin()">
+                  <h2>Update User</h2>
                   <label class="m-2">Role</label>
                   <p-dropdown formControlName="roleName" [options]="allRoles" optionLabel="text" optionValue="text"
                     placeholder="Select role" styleClass="w-100">
                   </p-dropdown>
 
-
                   <label class="m-2">Claims</label>
-                  <!-- <p-multiSelect formControlName="claims" [options]="allClaims" optionLabel="claimName"
-                    optionValue="claimName" placeholder="Select claims" [maxSelectedLabels]="5" styleClass="w-100"
-                    scrollHeight="250px">
-                  </p-multiSelect> -->
                   <ng-select formControlName="claims" [items]="allClaims" bindLabel="claimName"
                     placeholder="Select Claims" [multiple]="true">
                   </ng-select>
-
-
-
-
 
                   <label class="m-2">Areas</label>
                   <p-dropdown formControlName="areas" [options]="allAreas" optionLabel="text" optionValue="value"
                     placeholder="Select area" styleClass="w-100 mb-1">
                   </p-dropdown>
-
                 </ng-container>
+
                 <div class="d-flex justify-content-end">
                   <button type="submit" class="btn btn-success mt-5">Save</button>
                 </div>
-
               </div>
-
-
-              <!--
-      <div *ngSwitchCase="2">
-        <h3>Reset Password</h3>
-        <input type="password" formControlName="newPassword" placeholder="New Password" class="form-control mb-2" />
-        <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" class="form-control mb-2" />
-
-        <button type="button" (click)="goToStep(1)" class="btn btn-secondary">Back</button>
-        <button type="submit" class="btn btn-success">Save</button>
-      </div>
-      -->
             </ng-container>
           </form>
         </div>
+
 
       </div>
 

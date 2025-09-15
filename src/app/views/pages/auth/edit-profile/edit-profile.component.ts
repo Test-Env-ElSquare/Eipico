@@ -42,14 +42,13 @@ export class EditProfileComponent implements OnInit {
   profile!: IProfile | null;
   @Input() allAreas: IArea[] = [];
   @Input() allClaims: Iclamis[] = [];
+  @Input() allRoles: IRole[] = [];
   @Input() profileToEdit: IProfile | null = null;
   items: MenuItem[] = [];
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
   profileForm: any;
   userId: any;
-
-  allRoles: IRole[] = [];
 
   toggleCurrentPassword() {
     this.showCurrentPassword = !this.showCurrentPassword;
@@ -61,6 +60,25 @@ export class EditProfileComponent implements OnInit {
   ngOnInit(): void {
     this.onGetAllClaims();
     this.onGetAreas();
+
+    if (!this.profileToEdit) {
+      this._AuthService.getMyProfile().subscribe({
+        next: (res: IProfile) => {
+          this.profile = res;
+          this.userId = res.id;
+
+          this.profileForm.patchValue({
+            username: res.username,
+            email: res.email,
+            phoneNumber: res.phoneNumber,
+            roleName: res.roleName,
+            areas: res.areas,
+            claims: res.claims,
+          });
+        },
+        error: (err) => console.error(' Error loading self profile:', err),
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -88,22 +106,29 @@ export class EditProfileComponent implements OnInit {
         this.profile?.roleName?.toLowerCase() === 'admin')
     );
   }
+  isSuperAdminSelf(): boolean {
+    return (
+      !this.profileToEdit &&
+      this.profile?.roleName?.toLowerCase() === 'superadmin'
+    );
+  }
 
   onSubmitProfile() {
-    console.log(' Form submitted');
-    console.log('Form Valid:', this.profileForm.valid);
-    console.log('Form Values:', this.profileForm.value);
-    console.log('isEditBySuperAdmin:', this.isEditBySuperAdmin());
-    console.log('isUserSelf:', this.isUserSelf());
+    // console.log(' Form submitted');
+    // console.log('Form Valid:', this.profileForm.valid);
+    // console.log('Form Values:', this.profileForm.value);
+    // console.log('isEditBySuperAdmin:', this.isEditBySuperAdmin());
+    // console.log('isUserSelf:', this.isUserSelf());
+    // console.log('isSuperAdminSelf:', this.isSuperAdminSelf());
 
     if (!this.profileForm.valid) return;
 
     if (this.isEditBySuperAdmin()) {
       this.onUpdateUserProfileByAdmin();
-    } else if (this.isUserSelf()) {
+    } else if (this.isUserSelf() || this.isSuperAdminSelf()) {
       this.onUpdateUserProfile();
     } else {
-      console.warn(' No matching condition, nothing called!');
+      console.warn('⚠️ No matching condition, nothing called!');
     }
   }
 

@@ -39,14 +39,26 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getRoles();
     this.initForm();
     this.onGetAllUsers();
-    this._appService
-      .getAllClaims()
-      .subscribe((data) => (this.allClaims = data));
+    this.loadAllStaticData();
   }
+  loadAllStaticData(): void {
+    // Get All Claims
+    this._appService.getAllClaims().subscribe((res) => {
+      this.allClaims = res;
+    });
 
+    // Get All Areas
+    this._appService.getAllAreasAndRoles().subscribe((res) => {
+      this.allAreas = res.areas;
+    });
+
+    // لو عندك API للأدوار
+    this._appService.getAllAreasAndRoles().subscribe((res) => {
+      this.allRoles = res.roles;
+    });
+  }
   initForm() {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
