@@ -1,27 +1,88 @@
 <div class="container-fluid">
-  <div class="my-4" *ngIf="HasAccessToAddMaterial() || true">
-    <button class="btn btn-success" (click)="openAddForm(addForm)">Add</button>
+  <!-- Header Row -->
+  <div
+    class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"
+  >
+    <!-- LEFT SIDE: Search Bar -->
+    <div class="position-relative" style="width: 320px">
+      <input
+        type="text"
+        class="form-control ps-5"
+        placeholder="Search Item Code, Name..."
+        [(ngModel)]="searchText"
+        (input)="onSearchChange($event)"
+      />
+      <i
+        class="fas fa-search position-absolute top-50 translate-middle-y ms-3 text-muted"
+      ></i>
+    </div>
+
+    <!-- RIGHT SIDE: Delete Selected + Add Button -->
+    <div class="d-flex align-items-center gap-3">
+      <!-- Delete Selected Button -->
+      <button
+        *ngIf="selectedItems.length > 0"
+        class="btn btn-danger d-flex align-items-center gap-2"
+        (click)="deleteSelected()"
+      >
+        <i class="fas fa-trash-alt"></i>
+        ({{ selectedItems.length }})
+      </button>
+
+      <!-- Add Button -->
+      <button
+        class="btn btn-primary d-flex align-items-center gap-2"
+        (click)="openAddForm(addForm)"
+      >
+        <i class="fas fa-plus"></i> New Materials
+      </button>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-body">
+
+  <!-- Table Card -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
       <div class="table-responsive">
-        <div class="tw-flex tw-justify-end">
-          <input
-            type="text"
-            class="tw-w-96 form-control tw-mr-1 tw-items-end"
-            id="Search"
-            placeholder="ITEM CODE, NAME "
-            [(ngModel)]="searchText"
-          />
-        </div>
-        <table class="table table table-sm">
-          <thead class="text-white">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
             <tr>
+              <th class="ps-4" style="width: 50px">
+                <div class="form-check mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [checked]="
+                      selectedItems.length ===
+                        (
+                          AllMaterials
+                          | search : searchText
+                          | paginate
+                            : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count
+                              }
+                        ).length &&
+                      (
+                        AllMaterials
+                        | search : searchText
+                        | paginate
+                          : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count
+                            }
+                      ).length > 0
+                    "
+                    (change)="onSelectAll($event)"
+                  />
+                </div>
+              </th>
               <th>Item Code</th>
               <th>Name</th>
+              <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
-
           <tbody>
             <tr
               *ngFor="
@@ -34,86 +95,107 @@
                         totalItems: count
                       }
               "
+              [class.table-active]="isItemSelected(item)"
             >
+              <td class="ps-4">
+                <div class="form-check mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [checked]="isItemSelected(item)"
+                    (change)="toggleSelection(item)"
+                  />
+                </div>
+              </td>
               <td>{{ item.itemCode }}</td>
               <td>{{ item.name }}</td>
-
-              <td class="d-flex">
-                <!--  (click)="openBasicModal(edit,item);getId(item.id)" -->
-                <button
-                  *ngIf="HasAccessToEditMaterial()"
-                  type="button"
-                  (click)="openLg(content, item)"
-                  class="btn btn-primary tw-bg-searchBtn mx-1"
-                >
-                  <i class="icon feather icon-edit"></i>
-                </button>
-                <!--  [disabled]="loadonDelete"
-           (click)="delete(item)"
-          -->
-                <button
-                  type="button"
-                  *ngIf="HasAccessToDeleteMaterial()"
-                  class="btn btn-danger tw-bg-btnDelete mx-1"
-                  (click)="delete(item.id)"
-                >
-                  <i class="icon feather icon-delete"></i>
-                </button>
+              <td class="text-end pe-4">
+                <div class="btn-group btn-group-sm" role="group">
+                  <!-- Edit -->
+                  <button
+                    *ngIf="HasAccessToEditMaterial()"
+                    type="button"
+                    (click)="openLg(content, item)"
+                    class="btn btn btn-sm rounded-2"
+                    title="Edit"
+                  >
+                    <i class="fas fa-pen"></i>
+                  </button>
+                  <!-- Delete Single -->
+                  <button
+                    *ngIf="HasAccessToDeleteMaterial()"
+                    type="button"
+                    (click)="delete(item.id)"
+                    class="btn btn-sm rounded-2"
+                    title="Delete"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="d-flex justify-content-end mt-3">
-          <pagination-controls
-            previousLabel="Prev"
-            nextLabel="Next"
-            (pageChange)="onTableDataChange($event)"
-          >
-          </pagination-controls>
-        </div>
       </div>
     </div>
   </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-end mt-3">
+    <pagination-controls
+      previousLabel="Prev"
+      nextLabel="Next"
+      (pageChange)="onTableDataChange($event)"
+    ></pagination-controls>
+  </div>
 </div>
 
+<!-- Edit Modal -->
 <ng-template #content let-modal>
-  <div class="modal-header tw-flex tw-items-center tw-justify-between">
-    <h4 class="modal-title">{{ updatedModalTitle }}</h4>
+  <div class="modal-header border-bottom">
+    <h5 class="modal-title">{{ updatedModalTitle }}</h5>
     <button
       type="button"
-      class="btn-close tw-flex tw-items-center tw-justify-center tw-text-2xl"
+      class="btn-close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
-    >
-      <i data-feather="x" appFeatherIcon></i>
-    </button>
+    ></button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="editedForm" class="d-flex justify-content-around">
-      <div class="col-md-4">
-        <label for="machineUid" class="form-label">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="name"
-          id="machineUid"
-        />
-      </div>
-      <div class="col-md-4">
-        <label for="machineUid" class="form-label">Item Code</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="itemCode"
-          id="machineUid"
-        />
+    <form [formGroup]="editedForm">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="name"
+            id="name"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="itemCode" class="form-label">Item Code</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="itemCode"
+            id="itemCode"
+          />
+        </div>
       </div>
     </form>
   </div>
-  <div class="modal-footer">
+  <div class="modal-footer border-top">
     <button
       type="button"
-      class="btn btn-light tw-bg-searchBtn tw-text-white"
+      class="btn btn-secondary"
+      (click)="modal.close('Close click')"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
       (click)="modal.close('Close click'); onUpdate(editedForm.value)"
     >
       Save
@@ -121,50 +203,55 @@
   </div>
 </ng-template>
 
+<!-- Add Modal -->
 <ng-template #addForm let-modal>
-  <div class="card">
-    <div class="modal-header tw-flex tw-items-center tw-justify-between">
-      <h4 class="modal-title">Add New Material</h4>
-      <button
-        type="button"
-        class="btn-close tw-flex tw-items-center tw-justify-center tw-text-2xl"
-        aria-label="Close"
-        (click)="modal.dismiss('Cross click')"
-      >
-        <i data-feather="x" appFeatherIcon></i>
-      </button>
-    </div>
-    <div class="card-body">
-      <form class="row g-3 tw-my-1" [formGroup]="AddMaterialForm">
-        <div class="col-md-4">
-          <label for="machineName" class="form-label">NAME</label>
+  <div class="modal-header border-bottom">
+    <h5 class="modal-title">Add New Material</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="AddMaterialForm">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="name" class="form-label">NAME</label>
           <input
             type="text"
             class="form-control"
             formControlName="name"
-            id="machineName"
+            id="name"
           />
         </div>
-        <div class="col-md-4">
-          <label for="functionality" class="form-label">ITEM CODE</label>
+        <div class="col-md-6">
+          <label for="itemCode" class="form-label">ITEM CODE</label>
           <input
             type="text"
             class="form-control"
             formControlName="itemCode"
-            id="functionality"
+            id="itemCode"
           />
         </div>
-
-        <div class="col-12 text-end">
-          <button
-            type="submit"
-            (click)="add(); modal.close('Close click')"
-            class="btn btn-dark tw-bg-black"
-          >
-            Add
-          </button>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer border-top">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="modal.dismiss('Close click')"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-dark"
+      (click)="add(); modal.close('Close click')"
+    >
+      Add
+    </button>
   </div>
 </ng-template>

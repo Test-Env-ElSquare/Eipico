@@ -42,12 +42,14 @@ export class MaterialService {
 
   // Delete for material control component
 
-  DeleteMaterial(id: number) {
-    return this._http.delete(environment.url + 'api/Material/DeleteMaterial', {
-      params: {
-        id: id,
-      },
-    });
+  DeleteMaterials(ids: number[]) {
+    return this._http.request(
+      'delete',
+      environment.url + 'api/Material/DeleteMaterial',
+      {
+        body: ids,
+      }
+    );
   }
 
   //Putfor material control component
