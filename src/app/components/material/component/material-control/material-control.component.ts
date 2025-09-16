@@ -22,6 +22,7 @@ export class MaterialControlComponent implements OnInit {
   count: number = 0;
   tableSize: number = 12;
   updatedModalTitle: string;
+  selectedItems: any[] = [];
 
   constructor(
     private _materialService: MaterialService,
@@ -41,7 +42,62 @@ export class MaterialControlComponent implements OnInit {
 
     this.GetAllMaterials();
   }
+  onSearchChange(event: any) {
+    // Debounce logic here if needed
+  }
 
+  toggleSelection(item: any) {
+    const index = this.selectedItems.indexOf(item);
+    if (index > -1) {
+      this.selectedItems.splice(index, 1); // Deselect
+    } else {
+      this.selectedItems.push(item); // Select
+    }
+  }
+  onSelectAll(event: any) {
+    const filteredItems = this.AllMaterials.filter(
+      (item) =>
+        !this.searchText ||
+        (item.itemCode?.toLowerCase().includes(this.searchText.toLowerCase()) ??
+          false) ||
+        (item.name?.toLowerCase().includes(this.searchText.toLowerCase()) ??
+          false)
+    ).slice((this.page - 1) * this.tableSize, this.page * this.tableSize);
+
+    if (event.target.checked) {
+      // Add all visible filtered items to selection (avoid duplicates)
+      filteredItems.forEach((item) => {
+        if (!this.selectedItems.includes(item)) {
+          this.selectedItems.push(item);
+        }
+      });
+    } else {
+      // Remove all visible filtered items from selection
+      this.selectedItems = this.selectedItems.filter(
+        (item) => !filteredItems.includes(item)
+      );
+    }
+  }
+
+  deleteSelected() {
+    if (this.selectedItems.length === 0) return;
+
+    // Show confirmation if needed
+    if (
+      confirm(
+        `Are you sure you want to delete ${this.selectedItems.length} items?`
+      )
+    ) {
+      this.selectedItems.forEach((item) => {
+        this.delete(item.id); // Reuse your existing delete method
+      });
+      this.selectedItems = []; // Clear selection after delete
+    }
+  }
+
+  isItemSelected(item: any): boolean {
+    return this.selectedItems.includes(item);
+  }
   HasAccessToAddMaterial(): boolean {
     return this._perms.has(Permission.MaterialControl);
   }
@@ -63,9 +119,15 @@ export class MaterialControlComponent implements OnInit {
       });
   }
 
-  delete(item: any) {
-    this._materialService.DeleteMaterial(item).subscribe((data: any) => {
-      this._toastr.error('deleted');
+  delete(item: number) {
+    this._materialService.DeleteMaterials([item]).subscribe((data: any) => {
+      this._toastr.error('Deleted');
+      this.GetAllMaterials();
+    });
+  }
+  deleteMultiple(items: number[]) {
+    this._materialService.DeleteMaterials(items).subscribe((data: any) => {
+      this._toastr.error('Deleted multiple');
       this.GetAllMaterials();
     });
   }
