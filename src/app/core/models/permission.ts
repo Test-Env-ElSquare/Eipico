@@ -29,4 +29,8 @@ export enum Permission {
   AddRole = 'AddRole',
   UserManagement = 'UserManagement',
   Everything = 'Everything',
+  AddMatrial = 'AddMatrial',
+  EditMatrial = 'EditMatrial',
+  DeleteMatrial = 'DeleteMatrial',
+  ViewMatrial = 'ViewMatrial',
 }
