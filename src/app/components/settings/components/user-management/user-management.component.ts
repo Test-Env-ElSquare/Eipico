@@ -8,7 +8,12 @@ import {
 import { IAllUSers, IFactory, roles } from '../../models/model';
 import { UserManagementService } from '../../services/user-management.service';
 import { ToastrService } from 'ngx-toastr';
-import { IArea, Iclamis, IProfile } from 'src/app/views/pages/auth/models/auth';
+import {
+  IArea,
+  Iclamis,
+  IProfile,
+  IRole,
+} from 'src/app/views/pages/auth/models/auth';
 import { AppService } from 'src/app/core/services/app-Service.service';
 
 @Component({
@@ -23,7 +28,7 @@ export class UserManagementComponent implements OnInit {
   isRoleAdmin: boolean = false;
   tableOfUsers: IAllUSers[];
   filteredUsers: any[] = [];
-  allRoles: any[] = [];
+  allRoles: IRole[] = [];
   selectedRole: string | undefined = undefined;
   searchText: string = '';
   showEditDialog: boolean = false;
@@ -41,6 +46,7 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.onGetAllUsers();
+
     this.loadAllStaticData();
   }
   loadAllStaticData(): void {
@@ -49,13 +55,9 @@ export class UserManagementComponent implements OnInit {
       this.allClaims = res;
     });
 
-    // Get All Areas
+    // Get All Areas and Roles
     this._appService.getAllAreasAndRoles().subscribe((res) => {
       this.allAreas = res.areas;
-    });
-
-    // لو عندك API للأدوار
-    this._appService.getAllAreasAndRoles().subscribe((res) => {
       this.allRoles = res.roles;
     });
   }
@@ -106,9 +108,9 @@ export class UserManagementComponent implements OnInit {
         this.tableOfUsers = res;
         this.filteredUsers = res;
 
-        if (!this.allRoles.length) {
-          this.allRoles = [...new Set(res.map((u: any) => u.roleName))];
-        }
+        // if (!this.allRoles.length) {
+        //   this.allRoles = [...new Set(res.map((u: any) => u.roleName))];
+        // }
         console.log(res);
       },
       error: (err) => {

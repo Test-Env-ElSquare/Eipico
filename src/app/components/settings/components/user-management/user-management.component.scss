@@ -13,4 +13,8 @@
 }
 ::ng-deep .edit-dialog {
   box-shadow: none !important;
+  z-index: 9999 !important;
+}
+.hide-navbar app-navbar {
+  display: none;
 }

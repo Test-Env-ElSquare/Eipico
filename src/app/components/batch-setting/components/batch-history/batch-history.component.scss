@@ -1,25 +1,27 @@
-::ng-deep{
+::ng-deep {
   .ngx-pagination .current {
     background: #000 !important;
+  }
 }
-}
-.hoveringState{
+.hoveringState {
   @apply hover:tw-bg-gray-300 hover:tw-ease-in-out;
 }
 
-.imagess{
+.imagess {
   width: 34px;
   height: 34px;
 }
 
-.sortimage{
+.sortimage {
   @apply hover:tw-cursor-pointer tw-w-4 tw-h-4;
 }
+.btn-danger {
+  background-color: #0083cb !important;
+  border-color: #0083cb !important;
+}
 
-
-
-#sku{
-  span{
+#sku {
+  span {
     @apply tw-flex tw-items-center tw-justify-between;
   }
 }

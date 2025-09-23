@@ -1,18 +1,77 @@
-<div class="row">
-  <div class="col-md-3">
-    <label for="">Role Name :</label>
-    <input [(ngModel)]="roleName" class="form-control" />
-  </div>
+<div class="card p-5">
+  <div class="row align-items-end">
+    <!-- Role Name -->
+    <div class="col-md-3">
+      <label class="mb-2" for="">Role Name :</label>
+      <input [(ngModel)]="roleName" class="form-control" placeholder="Enter Role Name" />
+    </div>
 
-  <div class="col-md-3">
-    <label for="">Claims :</label>
-    <ng-select [items]="claimsList" bindLabel="type" [(ngModel)]="selectedClaims" placeholder="Select Claims"
-      [multiple]="true">
-    </ng-select>
+    <!-- Claims -->
+    <div class="col-md-3">
+      <label class="mb-2" for="">Claims :</label>
+      <ng-select [items]="claimsList" bindLabel="claimName" bindValue="claimName" [(ngModel)]="selectedClaims"
+        placeholder="Select Claims" [multiple]="true" class="w-100">
+      </ng-select>
+    </div>
+    <div class="col-md-3">
+      <label class="mb-2" for="">Areas :</label>
+      <ng-select [items]="allAreas" bindLabel="text" bindValue="value" [(ngModel)]="selectedAreas"
+        placeholder="Select Areas" [multiple]="true" class="w-100">
+      </ng-select>
+    </div>
+    <!-- Button -->
+    <div class="col-md-1">
+      <button class="btn btn-primary w-100" (click)="addRole()">Add Role</button>
+    </div>
   </div>
+</div>
+<div class="card mt-3  tw-shadow-lg">
+  <div class="card-body table-responsive">
+    <div class="d-flex align-items-center mb-3 gap-3">
+      <!-- Filter select Role -->
+      <ng-select [items]="allRoles" id="roleFilter" bindLabel="name" bindValue="name" class="w-50"
+        [(ngModel)]="selectedRole" placeholder="Filter by Role" (change)="onRoleChange()">
+      </ng-select>
+      <!-- Filter select claims -->
+      <ng-select [items]="claimsList" id="claimFilter" bindLabel="claimName" bindValue="claimName" class="w-50"
+        [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (change)="onClaimChange()">
+      </ng-select>
+      <!-- Search input -->
 
-  <div class="col-md-3 ">
-    <br>
-    <button class="btn btn-primary" (click)="addRole()">Add Role</button>
+    </div>
+
+    <table class="table table-hover align-middle mt-3 text-center ">
+      <thead class="tw-text-center">
+        <tr>
+
+          <th>Role</th>
+          <th>Claims</th>
+          <th>Areas</th>
+
+        </tr>
+      </thead>
+      <tbody class="tw-text-center">
+        <tr *ngFor="let role of allRolesDetails">
+          <td>{{ role.roleName }}</td>
+          <td>
+            <ng-container *ngIf="role.claims?.length > 0; else noClaims">
+              <ng-container *ngFor="let c of role.claims; let last = last">
+                {{ c.value }}<span *ngIf="!last">, </span>
+              </ng-container>
+            </ng-container>
+            <ng-template #noClaims>--</ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="role.areas?.length > 0; else noAreas">
+              <ng-container *ngFor="let a of role.areas; let last = last">
+                {{ a.name }}<span *ngIf="!last">, </span>
+              </ng-container>
+            </ng-container>
+            <ng-template #noAreas>--</ng-template>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

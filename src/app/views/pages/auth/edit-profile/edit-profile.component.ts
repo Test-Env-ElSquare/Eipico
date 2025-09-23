@@ -58,8 +58,8 @@ export class EditProfileComponent implements OnInit {
     this.showNewPassword = !this.showNewPassword;
   }
   ngOnInit(): void {
-    this.onGetAllClaims();
-    this.onGetAreas();
+    // this.onGetAllClaims();
+    // this.onGetAreas();
 
     if (!this.profileToEdit) {
       this._AuthService.getMyProfile().subscribe({

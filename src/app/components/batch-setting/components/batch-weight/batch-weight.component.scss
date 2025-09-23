@@ -1,7 +1,10 @@
 .sortimage {
   @apply hover:tw-cursor-pointer tw-w-4 tw-h-4;
 }
-
+.btn-danger {
+  background-color: #0083cb !important;
+  border-color: #0083cb !important;
+}
 #sku {
   span {
     @apply tw-flex tw-items-center tw-justify-between;
