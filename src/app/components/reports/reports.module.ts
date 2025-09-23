@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { EnergyReportComponent } from './components/energy-report/energy-report.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TableModule } from 'primeng/table';
+import { share } from 'rxjs';
+import { SharedModule } from 'src/app/views/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { TableModule } from 'primeng/table';
     NgxPaginationModule,
     TableModule,
     NgxPaginationModule,
+    SharedModule,
   ],
 })
 export class ReportsModule {}

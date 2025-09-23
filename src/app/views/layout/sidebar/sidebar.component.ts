@@ -216,6 +216,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             Permission.AddRole,
             Permission.UserManagement,
             Permission.BatchSettings,
+            Permission.Everything,
           ]),
         subItems: [
           {
@@ -267,13 +268,18 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           this.perms.hasAny([Permission.EnergyReport, Permission.BeconReport]),
         subItems: [
           {
-            label: 'Daily reports',
-            link: '/reports/dailyReports',
-            showSubItems: fullAccess || true,
-          },
-          {
             label: 'Becon reports',
             link: '/reports/beconReports',
+            showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
+          },
+          // {
+          //   label: 'Daily reports',
+          //   link: '/reports/dailyReports',
+          //   showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
+          // },
+          {
+            label: ' Daily reports',
+            link: '/reports/dailyReports',
             showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
           },
         ],

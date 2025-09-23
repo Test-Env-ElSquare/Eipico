@@ -5,13 +5,13 @@ import { BeconReportComponent } from './components/becon-report/becon-report.com
 import { EnergyReportComponent } from './components/energy-report/energy-report.component';
 
 const routes: Routes = [
-  { path: 'dailyReports', component: DailyReportsComponent},
+  { path: 'dailyReports', component: DailyReportsComponent },
   { path: 'beconReports', component: BeconReportComponent },
   { path: 'energyReports', component: EnergyReportComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ReportsRoutingModule { }
+export class ReportsRoutingModule {}
