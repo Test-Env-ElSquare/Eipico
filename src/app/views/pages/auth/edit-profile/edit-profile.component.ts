@@ -40,6 +40,7 @@ export class EditProfileComponent implements OnInit {
   }
   data!: UpdateAdminProfile;
   profile!: IProfile | null;
+  showNavbar: boolean = true;
   @Input() allAreas: IArea[] = [];
   @Input() allClaims: Iclamis[] = [];
   @Input() allRoles: IRole[] = [];
@@ -60,6 +61,7 @@ export class EditProfileComponent implements OnInit {
   ngOnInit(): void {
     // this.onGetAllClaims();
     // this.onGetAreas();
+    document.body.classList.add('hide-navbar');
 
     if (!this.profileToEdit) {
       this._AuthService.getMyProfile().subscribe({
@@ -201,5 +203,8 @@ export class EditProfileComponent implements OnInit {
         console.log(this.allClaims);
       },
     });
+  }
+  ngOnDestroy() {
+    document.body.classList.remove('hide-navbar');
   }
 }

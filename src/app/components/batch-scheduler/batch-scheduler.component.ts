@@ -12,6 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HistoricalDashboardService } from '../Historical/services/historical-dashboard.service';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 
 @Component({
   selector: 'app-batch-scheduler',
@@ -38,7 +40,8 @@ export class BatchSchedulerComponent implements OnInit {
     private _batchScheduler: BatchSchedulerService,
     private _toastrService: ToastrService,
     private modalService: NgbModal,
-    private _historicalDashboardService: HistoricalDashboardService
+    private _historicalDashboardService: HistoricalDashboardService,
+    private Permission: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -47,17 +50,18 @@ export class BatchSchedulerComponent implements OnInit {
   }
 
   hasAccessToActivateBatch() {
-    return this._authService.isHasAccessToBatchSchedulerViewAndActivate();
+    return this.Permission.has(Permission.BatchSchedulerViewAndActivate);
   }
 
   hasAccessToFinisheBatch() {
-    return this._authService.isHasAccessToBatchSchedulerViewAndFinish();
+    return this.Permission.has(Permission.BatchSchedulerViewAndFinish);
   }
 
   GetAllFactories() {
     if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
+      // this._authService.isHasAccessToE2() &&
+      // this._authService.isHasAccessToE1()
+      this.Permission.hasAll([Permission.E1, Permission.E2])
     ) {
       this._appServices.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;

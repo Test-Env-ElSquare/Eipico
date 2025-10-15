@@ -17,16 +17,11 @@ export class UserManagementService {
     );
   }
 
-  addRole(role: string, claims: string[], areas: number[]): Observable<any> {
-    const mappedClaims = claims.map((c) => ({
-      type: c,
-      value: c,
-    }));
-
+  addRole(role: string, claims: string, areaIds: number): Observable<any> {
     return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
       roleName: role,
-      claims: mappedClaims,
-      areaIds: areas,
+      claims: claims,
+      areaIds: areaIds,
     });
   }
 

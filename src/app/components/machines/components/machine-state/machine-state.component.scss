@@ -1,0 +1,25 @@
+.bg-warning {
+  background-color: #0083cb !important;
+  border-color: #0083cb !important;
+}
+.rounded-4 {
+  border-radius: 25px !important;
+}
+.bg-custom {
+  background-color: #ebaeab !important;
+  border-radius: 16px !important;
+}
+.bg-danger {
+}
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.8em;
+  font-weight: 500;
+  line-height: 1;
+  // /* color: #fff; */
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  // border-radius: 0.25rem;
+}

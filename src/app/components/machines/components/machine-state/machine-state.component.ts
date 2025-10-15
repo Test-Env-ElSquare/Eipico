@@ -1,6 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MachinesService } from '../../services/machines.service';
 import { Line, factory } from 'src/app/core/models/filter';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 import {
   MachineState,
   MachineTag,
@@ -51,7 +53,8 @@ export class MachineStateComponent implements OnInit {
     private _fb: FormBuilder,
     private _appService: AppService,
     private _authService: AuthService,
-    private _modalService: NgbModal
+    private _modalService: NgbModal,
+    private Permission: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -84,8 +87,9 @@ export class MachineStateComponent implements OnInit {
 
   GetAllFactories() {
     if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
+      // this._authService.isHasAccessToE2() &&
+      // this._authService.isHasAccessToE1()
+      this.Permission.hasAll([Permission.E1, Permission.E2])
     ) {
       this._appService.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;

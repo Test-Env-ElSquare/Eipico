@@ -3,6 +3,7 @@ import { UserManagementService } from '../../services/user-management.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { IArea, Iclamis, IRole } from 'src/app/views/pages/auth/models/auth';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-role',
@@ -11,26 +12,28 @@ import { IArea, Iclamis, IRole } from 'src/app/views/pages/auth/models/auth';
 })
 export class AddRoleComponent implements OnInit {
   roleName: string;
-
   selectedClaims: any;
   filteredClaims: any;
   claimsList: Iclamis[];
   allRolesDetails: any;
   allRoles: IRole[] = [];
   selectedRole: string | undefined = undefined;
-  selectedAreas: number[];
+  selectedAreas: number;
   allAreas: IArea[] = [];
+  form: FormGroup;
 
   constructor(
     private userManagementService: UserManagementService,
     private toastr: ToastrService,
-    private _appService: AppService
+    private _appService: AppService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
     this.onGetAllCalims();
-    this.onGetAllRoles();
-    this.getRoles();
+    // this.onGetAllRoles();
+    // this.getRoles();
     this.onGetAreas();
     // this.claimsList = [
     //   { type: 'HasAccessToE1', value: 'true' },
@@ -66,6 +69,13 @@ export class AddRoleComponent implements OnInit {
     //   { type: 'HasAccessToUserManagement', value: 'true' },
     // ];
   }
+  initForm() {
+    this.form = this.fb.group({
+      roleName: ['', Validators.required],
+      claims: ['', Validators.required],
+      areaIds: ['', Validators.required],
+    });
+  }
   onGetAreas() {
     this._appService.getAllAreasAndRoles().subscribe({
       next: (res) => {
@@ -74,15 +84,15 @@ export class AddRoleComponent implements OnInit {
       },
     });
   }
-  getRoles() {
-    this.userManagementService.getRoles().subscribe({
-      next: (data: any) => {
-        //All
-        this.allRoles = [{ name: 'All' }, ...data];
-        this.claimsList = [{ claimName: 'All' }, ...data];
-      },
-    });
-  }
+  // getRoles() {
+  //   this.userManagementService.getRoles().subscribe({
+  //     next: (data: any) => {
+  //       //All
+  //       this.allRoles = [{ name: 'All' }, ...data];
+  //       this.claimsList = [{ claimName: 'All' }, ...data];
+  //     },
+  //   });
+  // }
 
   onGetAllRoles(roleName?: string, claims?: string) {
     this.userManagementService.getRolesDetails(roleName, claims).subscribe({
@@ -113,7 +123,6 @@ export class AddRoleComponent implements OnInit {
   }
 
   addRole() {
-    console.log(this.selectedClaims);
     this.userManagementService
       .addRole(this.roleName, this.selectedClaims, this.selectedAreas)
       .subscribe({
@@ -121,9 +130,10 @@ export class AddRoleComponent implements OnInit {
           this.toastr.success(data.message);
           this.roleName = '';
           this.selectedClaims = [];
-          this.selectedAreas = [];
+          // this.selectedAreas = [];
           this.onGetAllRoles();
         },
+
         error: (err) => {
           this.toastr.error(err.error.message);
         },
@@ -133,6 +143,7 @@ export class AddRoleComponent implements OnInit {
     this._appService.getAllClaims().subscribe({
       next: (res) => {
         this.claimsList = res;
+        console.log(res);
       },
       error: (err) => {
         console.log(err);

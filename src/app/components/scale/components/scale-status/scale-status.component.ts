@@ -14,6 +14,7 @@ import { data } from 'jquery';
 })
 export class ScaleStatusComponent implements OnInit {
   selectedFactory: number;
+  selectedRoomId: any = null;
   FactoriesDropDown: factory[];
   scaleRoom: Rooms[];
   rooms: { name: string; value: number }[] = [];

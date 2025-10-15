@@ -1,30 +1,33 @@
-<div class="card p-5">
-  <div class="row align-items-end">
-    <!-- Role Name -->
-    <div class="col-md-3">
-      <label class="mb-2" for="">Role Name :</label>
-      <input [(ngModel)]="roleName" class="form-control" placeholder="Enter Role Name" />
-    </div>
+<form class="" [formGroup]="form">
+  <div class="card p-5">
+    <div class="row align-items-end">
+      <!-- Role Name -->
+      <div class="col-md-3">
+        <label class="mb-2" for="">Role Name :</label>
+        <input formControlName="roleName" class="form-control" placeholder="Enter Role Name" />
+      </div>
 
-    <!-- Claims -->
-    <div class="col-md-3">
-      <label class="mb-2" for="">Claims :</label>
-      <ng-select [items]="claimsList" bindLabel="claimName" bindValue="claimName" [(ngModel)]="selectedClaims"
-        placeholder="Select Claims" [multiple]="true" class="w-100">
-      </ng-select>
-    </div>
-    <div class="col-md-3">
-      <label class="mb-2" for="">Areas :</label>
-      <ng-select [items]="allAreas" bindLabel="text" bindValue="value" [(ngModel)]="selectedAreas"
-        placeholder="Select Areas" [multiple]="true" class="w-100">
-      </ng-select>
-    </div>
-    <!-- Button -->
-    <div class="col-md-1">
-      <button class="btn btn-primary w-100" (click)="addRole()">Add Role</button>
+      <!-- Claims -->
+      <div class="col-md-3">
+        <label class="mb-2" for="">Claims :</label>
+        <ng-select formControlName="claims" [items]="claimsList" bindLabel="claimName" bindValue="id"
+          placeholder="Select Claims" [multiple]="true" class="w-100">
+        </ng-select>
+      </div>
+      <div class="col-md-3">
+        <label class="mb-2" for="">Areas :</label>
+        <ng-select formControlName="areaIds" [items]="allAreas" bindLabel="text" bindValue="value"
+          placeholder="Select Areas" [multiple]="true" class="w-100">
+        </ng-select>
+      </div>
+      <!-- Button -->
+      <div class="col-md-1">
+        <button class="btn btn-primary w-100" (click)="addRole()">Add Role</button>
+      </div>
     </div>
   </div>
-</div>
+</form>
+
 <div class="card mt-3  tw-shadow-lg">
   <div class="card-body table-responsive">
     <div class="d-flex align-items-center mb-3 gap-3">

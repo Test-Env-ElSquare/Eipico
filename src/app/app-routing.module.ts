@@ -126,6 +126,13 @@ const routes: Routes = [
           import('./components/scale/scale.module').then((m) => m.ScaleModule),
       },
       {
+        path: 'eipico-layout',
+        loadChildren: () =>
+          import('./eipico-layout/eipico-layout.module').then(
+            (m) => m.EipicoLayoutModule
+          ),
+      },
+      {
         path: 'shared',
         loadChildren: () =>
           import('./views/shared/shared.module').then((m) => m.SharedModule),
