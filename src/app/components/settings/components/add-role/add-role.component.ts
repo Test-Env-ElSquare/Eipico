@@ -18,7 +18,7 @@ export class AddRoleComponent implements OnInit {
   allRolesDetails: any;
   allRoles: IRole[] = [];
   selectedRole: string | undefined = undefined;
-  selectedAreas: number;
+  selectedAreas: number[];
   allAreas: IArea[] = [];
   form: FormGroup;
 
@@ -123,19 +123,32 @@ export class AddRoleComponent implements OnInit {
   }
 
   addRole() {
+    console.log('selectedClaims:', this.selectedClaims); // Should be array of IDs
+
+    // Format claims to match backend structure
+
+    const formattedClaims = this.selectedClaims.map(
+      (claimId: { toString: () => any }) => ({
+        type: this.claimsList.find((claim) => claim.id === claimId)?.claimName,
+        value: claimId.toString(), // Convert to string
+      })
+    );
+
+    console.log('formattedClaims:', formattedClaims);
+
     this.userManagementService
-      .addRole(this.roleName, this.selectedClaims, this.selectedAreas)
+      .addRole(this.roleName, formattedClaims, this.selectedAreas)
       .subscribe({
         next: (data) => {
           this.toastr.success(data.message);
           this.roleName = '';
           this.selectedClaims = [];
-          // this.selectedAreas = [];
+          this.selectedAreas = [];
           this.onGetAllRoles();
         },
-
         error: (err) => {
-          this.toastr.error(err.error.message);
+          console.error('Full error:', err);
+          this.toastr.error(err.error?.title || 'An error occurred');
         },
       });
   }

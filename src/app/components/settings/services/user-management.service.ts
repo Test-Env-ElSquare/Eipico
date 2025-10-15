@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Iclamis } from 'src/app/views/pages/auth/models/auth';
+import { Claims, Iclamis } from 'src/app/views/pages/auth/models/auth';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -17,11 +17,13 @@ export class UserManagementService {
     );
   }
 
-  addRole(role: string, claims: string, areaIds: number): Observable<any> {
+  addRole(role: string, claims: Claims[], areaIds: number[]): Observable<any> {
     return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
-      roleName: role,
-      claims: claims,
-      areaIds: areaIds,
+      model: {
+        roleName: role,
+        claims: claims,
+        areaIds: areaIds,
+      },
     });
   }
 

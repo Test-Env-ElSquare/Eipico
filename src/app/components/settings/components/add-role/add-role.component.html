@@ -11,13 +11,13 @@
       <div class="col-md-3">
         <label class="mb-2" for="">Claims :</label>
         <ng-select formControlName="claims" [items]="claimsList" bindLabel="claimName" bindValue="id"
-          placeholder="Select Claims" [multiple]="true" class="w-100">
+          [(ngModel)]="selectedClaims" placeholder="Select Claims" [multiple]="true" class="w-100">
         </ng-select>
       </div>
       <div class="col-md-3">
         <label class="mb-2" for="">Areas :</label>
         <ng-select formControlName="areaIds" [items]="allAreas" bindLabel="text" bindValue="value"
-          placeholder="Select Areas" [multiple]="true" class="w-100">
+          [(ngModel)]="selectedAreas" placeholder="Select Areas" [multiple]="true" class="w-100">
         </ng-select>
       </div>
       <!-- Button -->

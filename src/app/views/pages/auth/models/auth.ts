@@ -32,6 +32,10 @@ export interface UpdateUserProfile {
   currentPassword: string;
   newPassword: string;
 }
+export interface Claims {
+  type: string;
+  value: string;
+}
 export interface updateUserProfileByAdmin {
   userId: string;
   roles: string[];
