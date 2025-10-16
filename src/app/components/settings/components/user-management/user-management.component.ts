@@ -46,7 +46,6 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.onGetAllUsers();
-
     this.loadAllStaticData();
   }
   loadAllStaticData(): void {
@@ -129,4 +128,5 @@ export class UserManagementComponent implements OnInit {
     this.selectedUser = user;
     this.showEditDialog = true;
   }
+
 }

@@ -17,15 +17,14 @@ export class UserManagementService {
     );
   }
 
-  addRole(role: string, claims: Claims[], areaIds: number[]): Observable<any> {
-    return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
-      model: {
-        roleName: role,
-        claims: claims,
-        areaIds: areaIds,
-      },
-    });
-  }
+addRole(role: string, claims: any[], areaIds: number[]): Observable<any> {
+  return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
+    roleName: role,
+    claims: claims,
+    areaIds: areaIds,
+  });
+}
+
 
   getRoles(): Observable<any> {
     return this._http.get<any>(environment.url + 'api/Auth/Roles');
@@ -42,16 +41,19 @@ export class UserManagementService {
       params,
     });
   }
-  getRolesDetails(roleName?: string, claims?: string): Observable<any> {
+  getRolesDetails(roleName?: string, claimValues?: string): Observable<any> {
     let params: any = {};
     if (roleName) {
       params.roleName = roleName;
     }
-    if (claims) {
-      params.claims = claims;
+    if (claimValues) {
+      params.claimValues = claimValues;
     }
-    return this._http.get<any>(environment.url + 'api/Auth/GetRoleDetails', {
+    return this._http.post<any>(environment.url + 'api/Auth/GetRoleDetails', {
       params,
     });
+  }
+  deleteRole(roleName:string):Observable<any>{
+   return this._http.delete<any>(environment.url + 'api/Auth/DeleteRole', {params:{roleName:roleName}})
   }
 }

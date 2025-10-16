@@ -4,20 +4,20 @@
       <!-- Role Name -->
       <div class="col-md-3">
         <label class="mb-2" for="">Role Name :</label>
-        <input formControlName="roleName" class="form-control" placeholder="Enter Role Name" />
+        <input formControlName="RoleName" class="form-control" placeholder="Enter Role Name" />
       </div>
 
       <!-- Claims -->
       <div class="col-md-3">
         <label class="mb-2" for="">Claims :</label>
-        <ng-select formControlName="claims" [items]="claimsList" bindLabel="claimName" bindValue="id"
-          [(ngModel)]="selectedClaims" placeholder="Select Claims" [multiple]="true" class="w-100">
+        <ng-select formControlName="Claims" [items]="claimsList" bindLabel="claimName" bindValue="id"
+          placeholder="Select Claims" [multiple]="true" class="w-100">
         </ng-select>
       </div>
       <div class="col-md-3">
         <label class="mb-2" for="">Areas :</label>
-        <ng-select formControlName="areaIds" [items]="allAreas" bindLabel="text" bindValue="value"
-          [(ngModel)]="selectedAreas" placeholder="Select Areas" [multiple]="true" class="w-100">
+        <ng-select formControlName="AreaIds" [items]="allAreas" bindLabel="text" bindValue="value"
+         placeholder="Select Areas" [multiple]="true" class="w-100">
         </ng-select>
       </div>
       <!-- Button -->
@@ -33,11 +33,12 @@
     <div class="d-flex align-items-center mb-3 gap-3">
       <!-- Filter select Role -->
       <ng-select [items]="allRoles" id="roleFilter" bindLabel="name" bindValue="name" class="w-50"
-        [(ngModel)]="selectedRole" placeholder="Filter by Role" (change)="onRoleChange()">
+        [(ngModel)]="selectedRole" placeholder="Filter by Role"  (ngModelChange)="onRoleChange()">
       </ng-select>
+      
       <!-- Filter select claims -->
       <ng-select [items]="claimsList" id="claimFilter" bindLabel="claimName" bindValue="claimName" class="w-50"
-        [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (change)="onClaimChange()">
+        [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (ngModelChange)="onClaimChange()">
       </ng-select>
       <!-- Search input -->
 
@@ -50,6 +51,7 @@
           <th>Role</th>
           <th>Claims</th>
           <th>Areas</th>
+          <th>Actions</th>
 
         </tr>
       </thead>
@@ -72,7 +74,33 @@
             </ng-container>
             <ng-template #noAreas>--</ng-template>
           </td>
+  <td class="">
 
+
+            <button  type="button" class="btn btn-sm text-white bg-edit-primary mx-2"
+              title="Edit">
+              <i class="pi pi-pencil"></i>
+            </button>
+          <button  type="button" class="btn btn-sm text-white bg-delete-primary mx-2"
+              title="Delete" (click)="onDeleteRole(role.roleName)">
+              <i class="pi pi-trash"></i>
+            </button>
+            <!-- <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
+              [style]="{width: '60vw'}">
+              <ng-template pTemplate="content">
+                <ng-container *ngTemplateOutlet="editProfileTpl"></ng-container>
+              </ng-template>
+            </p-dialog>
+
+            <ng-template #editProfileTpl>
+              <app-edit-profile class="hide-navbar" [profileToEdit]="selectedUser" [allClaims]="allClaims"
+                [allAreas]="allAreas" [allRoles]="allRoles">
+              </app-edit-profile>
+            </ng-template> -->
+
+
+
+          </td>
         </tr>
       </tbody>
     </table>
