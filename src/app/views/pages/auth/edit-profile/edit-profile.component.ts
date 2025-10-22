@@ -20,6 +20,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./edit-profile.component.scss'],
 })
 export class EditProfileComponent implements OnInit {
+  data!: UpdateAdminProfile;
+  profile!: IProfile | null;
+  showNavbar: boolean = false;
+  @Input() allAreas: IArea[] = [];
+  @Input() allClaims: Iclamis[] = [];
+  @Input() allRoles: IRole[] = [];
+  @Input() profileToEdit: IProfile | null = null;
+  items: MenuItem[] = [];
+  showCurrentPassword: boolean = false;
+  showNewPassword: boolean = false;
+  profileForm: any;
+  userId: any;
   constructor(
     private _AuthService: AuthService,
     private fb: FormBuilder,
@@ -38,26 +50,7 @@ export class EditProfileComponent implements OnInit {
       claims: [''],
     });
   }
-  data!: UpdateAdminProfile;
-  profile!: IProfile | null;
-  showNavbar: boolean = true;
-  @Input() allAreas: IArea[] = [];
-  @Input() allClaims: Iclamis[] = [];
-  @Input() allRoles: IRole[] = [];
-  @Input() profileToEdit: IProfile | null = null;
-  items: MenuItem[] = [];
-  showCurrentPassword: boolean = false;
-  showNewPassword: boolean = false;
-  profileForm: any;
-  userId: any;
 
-  toggleCurrentPassword() {
-    this.showCurrentPassword = !this.showCurrentPassword;
-  }
-
-  toggleNewPassword() {
-    this.showNewPassword = !this.showNewPassword;
-  }
   ngOnInit(): void {
     // this.onGetAllClaims();
     // this.onGetAreas();
@@ -81,6 +74,7 @@ export class EditProfileComponent implements OnInit {
         error: (err) => console.error(' Error loading self profile:', err),
       });
     }
+    this.updateNavbarVisibility(this._Router.url);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -95,6 +89,21 @@ export class EditProfileComponent implements OnInit {
         claims: this.profileToEdit.claims,
       });
     }
+  }
+  toggleCurrentPassword() {
+    this.showCurrentPassword = !this.showCurrentPassword;
+  }
+  updateNavbarVisibility(url: string): void {
+    if (url.includes('/settings/userMangement')) {
+      this.showNavbar = false;
+    } else if (url.includes('/auth/edit-profile')) {
+      this.showNavbar = true;
+    } else {
+      this.showNavbar = true;
+    }
+  }
+  toggleNewPassword() {
+    this.showNewPassword = !this.showNewPassword;
   }
 
   isEditBySuperAdmin(): boolean {
@@ -130,7 +139,6 @@ export class EditProfileComponent implements OnInit {
     } else if (this.isUserSelf() || this.isSuperAdminSelf()) {
       this.onUpdateUserProfile();
     } else {
-      console.warn('⚠️ No matching condition, nothing called!');
     }
   }
 

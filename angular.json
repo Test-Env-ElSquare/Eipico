@@ -109,7 +109,11 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              {
+                "build": "node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production"
+              }
+            ]
           }
         }
       }

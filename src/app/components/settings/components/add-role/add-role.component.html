@@ -17,7 +17,7 @@
       <div class="col-md-3">
         <label class="mb-2" for="">Areas :</label>
         <ng-select formControlName="AreaIds" [items]="allAreas" bindLabel="text" bindValue="value"
-         placeholder="Select Areas" [multiple]="true" class="w-100">
+          placeholder="Select Areas" [multiple]="true" class="w-100">
         </ng-select>
       </div>
       <!-- Button -->
@@ -33,9 +33,9 @@
     <div class="d-flex align-items-center mb-3 gap-3">
       <!-- Filter select Role -->
       <ng-select [items]="allRoles" id="roleFilter" bindLabel="name" bindValue="name" class="w-50"
-        [(ngModel)]="selectedRole" placeholder="Filter by Role"  (ngModelChange)="onRoleChange()">
+        [(ngModel)]="selectedRole" placeholder="Filter by Role" (ngModelChange)="onRoleChange()">
       </ng-select>
-      
+
       <!-- Filter select claims -->
       <ng-select [items]="claimsList" id="claimFilter" bindLabel="claimName" bindValue="claimName" class="w-50"
         [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (ngModelChange)="onClaimChange()">
@@ -74,17 +74,23 @@
             </ng-container>
             <ng-template #noAreas>--</ng-template>
           </td>
-  <td class="">
+          <td class="">
 
 
-            <button  type="button" class="btn btn-sm text-white bg-edit-primary mx-2"
-              title="Edit">
+            <button type="button" class="btn btn-sm text-white bg-edit-primary mx-2" title="Edit">
               <i class="pi pi-pencil"></i>
             </button>
-          <button  type="button" class="btn btn-sm text-white bg-delete-primary mx-2"
-              title="Delete" (click)="onDeleteRole(role.roleName)">
+
+            <button (click)="openDeleteDialog(role.roleName)" type="button"
+              class="btn btn-sm text-white bg-delete-primary mx-2" title="Delete" [disabled]="false">
               <i class="pi pi-trash"></i>
             </button>
+            <p-dialog [(visible)]="showDeleteDialog" [modal]="true" [closable]="false" [style]="{width: '30vw'}">
+
+              <app-delete-component (confirm)="onDeleteRole()" (cancel)="onCancelDelete()">
+              </app-delete-component>
+
+            </p-dialog>
             <!-- <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
               [style]="{width: '60vw'}">
               <ng-template pTemplate="content">

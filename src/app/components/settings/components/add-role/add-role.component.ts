@@ -21,7 +21,8 @@ export class AddRoleComponent implements OnInit {
   selectedAreas: number[];
   allAreas: IArea[] = [];
   form: FormGroup;
-
+  showDeleteDialog: boolean = false;
+  selectedRoleName: string = '';
   constructor(
     private userManagementService: UserManagementService,
     private toastr: ToastrService,
@@ -42,7 +43,7 @@ export class AddRoleComponent implements OnInit {
       AreaIds: [[]],
     });
   }
-  onGetAreas() { 
+  onGetAreas() {
     this._appService.getAllAreasAndRoles().subscribe({
       next: (res) => {
         this.allAreas = res.areas;
@@ -57,7 +58,6 @@ export class AddRoleComponent implements OnInit {
         this.allRolesDetails = res;
         console.log(res);
         this.onGetRoles();
- 
       },
       error: (err) => {
         console.log(err);
@@ -65,11 +65,10 @@ export class AddRoleComponent implements OnInit {
     });
   }
 
-    onRoleChange() {
-    if(this.selectedRole === 'All'){
+  onRoleChange() {
+    if (this.selectedRole === 'All') {
       this.onGetAllRoles();
-    }
-    else{
+    } else {
       this.onGetAllRoles(this.selectedRole || undefined);
     }
   }
@@ -82,41 +81,40 @@ export class AddRoleComponent implements OnInit {
     }
   }
 
-addRole() {
-  if (this.form.invalid) {
-    this.toastr.error('Please fill all required fields');
-    return;
-  }
+  addRole() {
+    if (this.form.invalid) {
+      this.toastr.error('Please fill all required fields');
+      return;
+    }
 
-  const formValue = this.form.value;
+    const formValue = this.form.value;
 
-
-  const formattedClaims = formValue.Claims.map((id: number) => {
-    const claim = this.claimsList.find((c) => c.id === id);
-    return {
-      type: claim?.claimName,
-      value: claim?.claimName,
-    };
-  });
-
-  this.userManagementService
-    .addRole(formValue.RoleName, formattedClaims, formValue.AreaIds)
-    .subscribe({
-      next: (data) => {
-        this.toastr.success(data.message || 'Role added successfully');
-        this.form.reset({
-          RoleName: '',
-          Claims: [],
-          AreaIds: [],
-        });
-        this.onGetAllRoles();
-      },
-      error: (err) => {
-        console.error('Full error:', err);
-        this.toastr.error(err.error?.title || 'An error occurred');
-      },
+    const formattedClaims = formValue.Claims.map((id: number) => {
+      const claim = this.claimsList.find((c) => c.id === id);
+      return {
+        type: claim?.claimName,
+        value: claim?.claimName,
+      };
     });
-}
+
+    this.userManagementService
+      .addRole(formValue.RoleName, formattedClaims, formValue.AreaIds)
+      .subscribe({
+        next: (data) => {
+          this.toastr.success(data.message || 'Role added successfully');
+          this.form.reset({
+            RoleName: '',
+            Claims: [],
+            AreaIds: [],
+          });
+          this.onGetAllRoles();
+        },
+        error: (err) => {
+          console.error('Full error:', err);
+          this.toastr.error(err.error?.title || 'An error occurred');
+        },
+      });
+  }
 
   onGetAllCalims() {
     this._appService.getAllClaims().subscribe({
@@ -129,30 +127,40 @@ addRole() {
       },
     });
   }
-  onGetRoles(){
+  onGetRoles() {
     this.userManagementService.getRoles().subscribe({
-      next:(res)=>{
+      next: (res) => {
         this.allRoles = res;
-          this.allRoles = [{ name: 'All' }, ...res];
+        this.allRoles = [{ name: 'All' }, ...res];
         console.log(res);
       },
-      error:(err)=>{
+      error: (err) => {
         console.log(err);
-      }
-    })
+      },
+    });
   }
-  
-    onDeleteRole(roleName: string){
+  openDeleteDialog(roleName: string) {
+    this.selectedRoleName = roleName;
+    this.showDeleteDialog = true;
+  }
 
-    this.userManagementService.deleteRole(roleName).subscribe({
+  onCancelDelete() {
+    this.showDeleteDialog = false;
+  }
 
-      next:(res)=>{
-        this.onGetAllRoles();
+  onDeleteRole() {
+    if (!this.selectedRoleName) return;
+
+    this.userManagementService.deleteRole(this.selectedRoleName).subscribe({
+      next: (res) => {
         console.log(res);
+        this.onGetAllRoles();
+        this.showDeleteDialog = false;
       },
-      error:(err)=>{
-        console.log(err);
-      }
-    })
+      error: (err) => {
+        console.error(err);
+        this.showDeleteDialog = false;
+      },
+    });
   }
 }

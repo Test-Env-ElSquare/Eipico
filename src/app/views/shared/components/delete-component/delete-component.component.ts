@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
@@ -12,24 +12,18 @@ export class DeleteComponentComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
+  @Output() confirm = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
   confirm1() {
-    this.showDeleteDialog = false;
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Rejected',
-      detail: 'You have cancelled the action',
-      life: 3000,
-    });
+    // Cancel button
+    this.cancel.emit();
   }
 
   confirm2() {
-    this.showDeleteDialog = false;
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Confirmed',
-      detail: 'Item deleted successfully',
-      life: 3000,
-    });
+    // Delete button
+
+    console.log('✅ confirm2 clicked');
+    this.confirm.emit();
   }
   ngOnInit(): void {}
 }
