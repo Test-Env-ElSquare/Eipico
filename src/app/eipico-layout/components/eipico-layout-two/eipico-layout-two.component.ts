@@ -54,14 +54,17 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       const group = svg.querySelector(
         `[data-machine-name="${machine.machineName}"]`
       );
-      if (!group) return;
+      if (!group) {
+        console.warn('Group not found for', machine.machineName);
+        return;
+      }
 
       const rect = group.querySelector('rect');
       if (!rect) return;
 
       const speed = machine.latest?.speed ?? 0;
       const count = machine.latest?.count ?? machine.totalCountDiff ?? 0;
-      const state = machine.latest?.state ?? 0; //
+      const state = machine.latest?.state ?? 0;
 
       const rectX = parseFloat(rect.getAttribute('x') || '0');
       const rectY = parseFloat(rect.getAttribute('y') || '0');
@@ -69,68 +72,62 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       const rectHeight = parseFloat(rect.getAttribute('height') || '0');
 
       const centerX = rectX + rectWidth / 2;
-      const speedY = rectY + rectHeight / 4 - 10;
-      const countY = speedY + 20;
+      const labelY = rectY + rectHeight / 2 + 6;
+      const speedY = labelY - 25;
+      const countY = labelY + 25;
 
-      // -------- SPEED TEXT --------
-      let speedText = svg.querySelector(
-        `.speed-overlay[data-machine="${machine.machineName}"]`
-      );
-      if (speedText) speedText.remove();
+      ['speed-overlay', 'count-overlay', 'state-indicator'].forEach((cls) => {
+        const old = group.querySelector(`.${cls}`);
+        if (old) old.remove();
+      });
 
-      speedText = document.createElementNS(
+      // -------- SPEED --------
+      const speedText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
       );
       speedText.setAttribute('x', `${centerX}`);
       speedText.setAttribute('y', `${speedY}`);
       speedText.setAttribute('text-anchor', 'middle');
-      speedText.setAttribute('fill', 'blue');
-      speedText.setAttribute('font-size', '18px');
+      speedText.setAttribute('fill', 'dodgerblue');
+      speedText.setAttribute('font-size', '20');
+      speedText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
+      speedText.setAttribute('font-weight', 'bold');
       speedText.classList.add('speed-overlay');
-      speedText.setAttribute('data-machine', machine.machineName);
       speedText.textContent = `S: ${speed}`;
-      svg.appendChild(speedText);
+      group.appendChild(speedText);
 
-      // -------- COUNT TEXT --------
-      let countText = svg.querySelector(
-        `.count-overlay[data-machine="${machine.machineName}"]`
-      );
-      if (countText) countText.remove();
-
-      countText = document.createElementNS(
+      // -------- COUNT --------
+      const countText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
       );
       countText.setAttribute('x', `${centerX}`);
       countText.setAttribute('y', `${countY}`);
       countText.setAttribute('text-anchor', 'middle');
-      countText.setAttribute('fill', 'green');
-      countText.setAttribute('font-size', '18px');
+      countText.setAttribute('fill', '#28a745');
+      countText.setAttribute('font-size', '20');
+      countText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
       countText.classList.add('count-overlay');
-      countText.setAttribute('data-machine', machine.machineName);
       countText.textContent = `C: ${count}`;
-      svg.appendChild(countText);
+      group.appendChild(countText);
 
-      let stateCircle = svg.querySelector(
-        `.state-indicator[data-machine="${machine.machineName}"]`
-      );
-      if (stateCircle) stateCircle.remove();
+      // -------- STATE CIRCLE --------
+      const circleX = rectX + rectWidth - 15;
+      const circleY = rectY + 15;
 
-      const circleX = rectX + rectWidth - 10;
-      const circleY = rectY + 10;
-
-      stateCircle = document.createElementNS(
+      const stateCircle = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'circle'
       );
       stateCircle.setAttribute('cx', `${circleX}`);
       stateCircle.setAttribute('cy', `${circleY}`);
-      stateCircle.setAttribute('r', '10'); //
-      stateCircle.setAttribute('fill', state === 1 ? 'green' : 'red');
+      stateCircle.setAttribute('r', '8');
+      stateCircle.setAttribute('stroke', 'black');
+      stateCircle.setAttribute('stroke-width', '1');
+      stateCircle.setAttribute('fill', state === 1 ? '#28a745' : '#dc3545');
       stateCircle.classList.add('state-indicator');
-      stateCircle.setAttribute('data-machine', machine.machineName);
-      svg.appendChild(stateCircle);
+      group.appendChild(stateCircle);
     });
   }
 

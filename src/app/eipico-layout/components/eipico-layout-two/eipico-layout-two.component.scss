@@ -1,3 +1,21 @@
-g {
-  font-size: 30px !important;
+#factory-svg {
+  width: 2000px !important;
+  height: auto;
 }
+#factory-svg text {
+  font-size: 28px !important;
+}
+#factory-svg rect {
+  font-size: 28px !important;
+}
+#factory-svg g {
+  font-size: 28px !important;
+}
+#factory-svg span {
+  font-size: 28px !important;
+}
+#factory-svg foreignObject div {
+  font-size: 28px !important;
+}
+
+/* Specific size increases for headers */
