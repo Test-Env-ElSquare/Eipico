@@ -81,7 +81,6 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
         if (old) old.remove();
       });
 
-      // -------- SPEED --------
       const speedText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
@@ -97,7 +96,6 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       speedText.textContent = `S: ${speed}`;
       group.appendChild(speedText);
 
-      // -------- COUNT --------
       const countText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
@@ -112,7 +110,6 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       countText.textContent = `C: ${count}`;
       group.appendChild(countText);
 
-      // -------- STATE CIRCLE --------
       const circleX = rectX + rectWidth - 15;
       const circleY = rectY + 15;
 
@@ -130,78 +127,6 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       group.appendChild(stateCircle);
     });
   }
-
-  // private updateMachinesOnSvg(data: any[]) {
-  //   const svg = this.mySvg.nativeElement.querySelector('svg');
-  //   if (!svg || !Array.isArray(data)) return;
-
-  //   data.forEach((machine) => {
-  //     const name = machine.machineName?.trim();
-  //     if (!name) return;
-
-  //     const latest = machine.latest || {};
-  //     const speed = latest.speed ?? 0;
-  //     const count = latest.count ?? machine.totalCountDiff ?? 0;
-  //     const stateValue = latest.state ?? 0;
-
-  //     let color = '#cccccc';
-  //     let stateText = 'Idle';
-  //     if (stateValue === 1) {
-  //       color = '#00ff00';
-  //       stateText = 'Running';
-  //     } else if (stateValue === 0) {
-  //       color = '#ff0000';
-  //       stateText = 'Stopped';
-  //     }
-
-  //     const group = svg.querySelector(`g[data-cell-id="${name}"]`);
-  //     if (!group) {
-  //       console.warn(`⚠️ لم يتم العثور على ${name} داخل SVG`);
-  //       return;
-  //     }
-
-  //     const rect = group.querySelector('rect');
-  //     if (rect) rect.setAttribute('fill', color);
-
-  //     let x = 0,
-  //       y = 0;
-  //     if (rect) {
-  //       x =
-  //         parseFloat(rect.getAttribute('x')) +
-  //         parseFloat(rect.getAttribute('width')) / 2;
-  //       y =
-  //         parseFloat(rect.getAttribute('y')) +
-  //         parseFloat(rect.getAttribute('height')) / 2;
-  //     } else {
-  //       x = 1500;
-  //       y = 1400;
-  //     }
-
-  //     group.querySelectorAll('.machine-info').forEach((el: any) => el.remove());
-
-  //     const info = [
-  //       `Speed: ${speed}`,
-  //       `Count: ${count}`,
-  //       `State: ${stateText}`,
-  //     ];
-
-  //     info.forEach((line, index) => {
-  //       const textEl = document.createElementNS(
-  //         'http://www.w3.org/2000/svg',
-  //         'text'
-  //       );
-  //       textEl.setAttribute('class', 'machine-info');
-  //       textEl.setAttribute('x', x.toString());
-
-  //       textEl.setAttribute('y', (y + 25 + index * 20).toString());
-  //       textEl.setAttribute('font-size', '14');
-  //       textEl.setAttribute('text-anchor', 'middle');
-  //       textEl.setAttribute('fill', '#000');
-  //       textEl.textContent = line;
-  //       group.appendChild(textEl);
-  //     });
-  //   });
-  // }
 
   // control on fonts and disable go to link
   ngAfterViewInit() {

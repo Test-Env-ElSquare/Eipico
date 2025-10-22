@@ -81,7 +81,6 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
         if (old) old.remove();
       });
 
-      // -------- SPEED --------
       const speedText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
@@ -97,7 +96,6 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
       speedText.textContent = `S: ${speed}`;
       group.appendChild(speedText);
 
-      // -------- COUNT --------
       const countText = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text'
@@ -112,7 +110,6 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
       countText.textContent = `C: ${count}`;
       group.appendChild(countText);
 
-      // -------- STATE CIRCLE --------
       const circleX = rectX + rectWidth - 15;
       const circleY = rectY + 15;
 
