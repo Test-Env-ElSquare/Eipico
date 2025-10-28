@@ -93,7 +93,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       speedText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
       speedText.setAttribute('font-weight', 'bold');
       speedText.classList.add('speed-overlay');
-      speedText.textContent = `S: ${speed}`;
+      speedText.textContent = `Speed: ${speed}`;
       group.appendChild(speedText);
 
       const countText = document.createElementNS(
@@ -107,7 +107,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
       countText.setAttribute('font-size', '20');
       countText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
       countText.classList.add('count-overlay');
-      countText.textContent = `C: ${count}`;
+      countText.textContent = `Count: ${count}`;
       group.appendChild(countText);
 
       const circleX = rectX + rectWidth - 15;
