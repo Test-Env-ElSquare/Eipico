@@ -8,7 +8,7 @@ export class LayoutService {
   constructor() {}
   public startConnection(): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://192.168.1.25:21576/signalsHub', {
+      .withUrl('http://10.1.1.240/Eipico/signalsHub', {
         skipNegotiation: false,
         transport: signalR.HttpTransportType.WebSockets,
       })

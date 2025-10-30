@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { LayoutService } from '../../layout.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-eipico-layout-one',
@@ -15,10 +16,38 @@ import { LayoutService } from '../../layout.service';
 export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
   @ViewChild('mySvg') mySvg!: ElementRef;
   public hubConnection!: signalR.HubConnection;
+  showDialog: boolean = false;
   receivedData: any;
-  constructor(private _LayoutService: LayoutService) {}
+  // eyeDrops = [
+  //   { machineName: 'E1_Eye_L1_Fill', state: 0 },
+  //   { machineName: 'E1_Eye_L1_Label', state: 0 },
+  //   { machineName: 'E1_Eye_L1_Cart', state: 0 },
+  // ];
+  // eyeDropsLineTwo = [
+  //   { machineName: 'E1_Eye_L2_Fill', state: 0 },
+  //   { machineName: 'E1_Eye_L2_Labl', state: 0 },
+  //   { machineName: 'E1_Eye_L2_Cart', state: 0 },
+  // ];
+  // eyeDropsLineThree = [
+  //   { machineName: 'E1_Eye_L3_Fill', state: 0 },
+  //   { machineName: 'E1_Eye_L3_Labl', state: 0 },
+  //   { machineName: 'E1_Eye_L3_Cart', state: 0 },
+  // ];
+
+  constructor(private _LayoutService: LayoutService, private _router: Router) {}
   ngOnInit(): void {
     this.onStartConnection();
+  }
+  goToMachineDetails() {
+    this.showDialog = true;
+  }
+  getLineFillColor(machines: any[]): string {
+    const allZero = machines.every((m) => m.state === 0);
+    return allZero ? '#dc3545' : '#28a745';
+  }
+  getPulseClass(machines: any[]): string {
+    const allZero = machines.every((m) => m.state === 0);
+    return allZero ? 'pulse-red' : 'pulse-green';
   }
 
   onStartConnection() {
@@ -46,89 +75,138 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
         console.error(' Error starting or joining SignalR', err);
       });
   }
-  updateMachinesData(machines: any[]) {
+  updateMachinesData(lines: any[]) {
+    this.receivedData = lines;
+
     const svg = document.getElementById('factory-svg');
     if (!svg) return;
 
-    machines.forEach((machine) => {
-      const group = svg.querySelector(
-        `[data-machine-name="${machine.machineName}"]`
-      );
-      if (!group) {
-        console.warn('Group not found for', machine.machineName);
-        return;
-      }
+    lines.forEach((line) => {
+      line.machines.forEach((machine: any) => {
+        const group = svg.querySelector(
+          `[data-machine-name="${machine.machineName}"]`
+        );
+        if (!group) return;
 
-      const rect = group.querySelector('rect');
-      if (!rect) return;
+        const rect = group.querySelector('rect');
+        if (!rect) return;
 
-      const speed = machine.latest?.speed ?? 0;
-      const count = machine.latest?.count ?? machine.totalCountDiff ?? 0;
-      const state = machine.latest?.state ?? 0;
+        rect.classList.remove('pulse-green', 'pulse-red');
 
-      const rectX = parseFloat(rect.getAttribute('x') || '0');
-      const rectY = parseFloat(rect.getAttribute('y') || '0');
-      const rectWidth = parseFloat(rect.getAttribute('width') || '0');
-      const rectHeight = parseFloat(rect.getAttribute('height') || '0');
-
-      const centerX = rectX + rectWidth / 2;
-      const labelY = rectY + rectHeight / 2 + 6;
-      const speedY = labelY - 25;
-      const countY = labelY + 25;
-
-      ['speed-overlay', 'count-overlay', 'state-indicator'].forEach((cls) => {
-        const old = group.querySelector(`.${cls}`);
-        if (old) old.remove();
+        const fillColor = machine.state === 1 ? '#28a745' : '#dc3545';
+        rect.setAttribute('fill', fillColor);
+        rect.classList.add(
+          fillColor === '#28a745' ? 'pulse-green' : 'pulse-red'
+        );
       });
 
-      const speedText = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'text'
-      );
-      speedText.setAttribute('x', `${centerX}`);
-      speedText.setAttribute('y', `${speedY}`);
-      speedText.setAttribute('text-anchor', 'middle');
-      speedText.setAttribute('fill', 'dodgerblue');
-      speedText.setAttribute('font-size', '16');
-      speedText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
-      speedText.setAttribute('font-weight', 'bold');
-      speedText.classList.add('speed-overlay');
-      speedText.textContent = `S: ${speed}`;
-      group.appendChild(speedText);
+      const allZero = line.machines.every((m: any) => m.state === 0);
+      const fillColor = allZero ? '#dc3545' : '#28a745';
+      const pulseClass = allZero ? 'pulse-red' : 'pulse-green';
 
-      const countText = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'text'
-      );
-      countText.setAttribute('x', `${centerX}`);
-      countText.setAttribute('y', `${countY}`);
-      countText.setAttribute('text-anchor', 'middle');
-      countText.setAttribute('fill', '#28a745');
-      countText.setAttribute('font-size', '18');
-      countText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
-      countText.classList.add('count-overlay');
-      countText.textContent = `C: ${count}`;
-      group.appendChild(countText);
-
-      const circleX = rectX + rectWidth - 15;
-      const circleY = rectY + 15;
-
-      const stateCircle = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'circle'
-      );
-      stateCircle.setAttribute('cx', `${circleX}`);
-      stateCircle.setAttribute('cy', `${circleY}`);
-      stateCircle.setAttribute('r', '8');
-      stateCircle.setAttribute('stroke', 'black');
-      stateCircle.setAttribute('stroke-width', '1');
-      stateCircle.setAttribute('fill', state === 1 ? '#28a745' : '#dc3545');
-      stateCircle.classList.add('state-indicator');
-      group.appendChild(stateCircle);
+      const lineRect = svg.querySelector(`[data-line-id="${line.lineId}"]`);
+      if (lineRect) {
+        lineRect.classList.remove('pulse-green', 'pulse-red');
+        lineRect.setAttribute('fill', fillColor);
+        lineRect.classList.add(pulseClass);
+      }
     });
   }
 
-  // control on fonts and disable go to link
+  // updateMachinesData(machines: any[], data: any) {
+  //   this.eyeDrops.forEach((machine) => {
+  //     const updated = data.find(
+  //       (d: { machineName: string }) => d.machineName === machine.machineName
+  //     );
+  //     if (updated) machine.state = updated.state;
+  //   });
+
+  //   const svg = document.getElementById('factory-svg');
+  //   if (!svg) return;
+
+  //   machines.forEach((machine) => {
+  //     const group = svg.querySelector(
+  //       `[data-machine-name="${machine.machineName}"]`
+  //     );
+  //     if (!group) return;
+
+  //     const rect = group.querySelector('rect');
+  //     if (!rect) return;
+
+  //     rect.classList.remove('pulse-green', 'pulse-red');
+
+  //     const fillColor = machine.state === 1 ? '#28a745' : '#dc3545';
+  //     rect.setAttribute('fill', fillColor);
+
+  //     rect.setAttribute(
+  //       'class',
+  //       fillColor === '#28a745' ? 'pulse-green' : 'pulse-red'
+  //     );
+
+  //     const rectX = parseFloat(rect.getAttribute('x') || '0');
+  //     const rectY = parseFloat(rect.getAttribute('y') || '0');
+  //     const rectWidth = parseFloat(rect.getAttribute('width') || '0');
+  //     const rectHeight = parseFloat(rect.getAttribute('height') || '0');
+  //     const centerX = rectX + rectWidth / 2;
+  //     const labelY = rectY + rectHeight / 2;
+
+  //     ['speed-overlay', 'count-overlay', 'state-indicator'].forEach(
+  //       (cls) => {}
+  //     );
+  //   });
+  // }
+  // updateMachinesData(machines: any[], data: any) {
+
+  //   this.eyeDrops.forEach((machine) => {
+  //     const updated = data.find(
+  //       (d: { machineName: string }) => d.machineName === machine.machineName
+  //     );
+  //     if (updated) machine.state = updated.state;
+  //   });
+  //   this.eyeDropsLineTwo.forEach((machine) => {
+  //     const updated = data.find(
+  //       (d: { machineName: string }) => d.machineName === machine.machineName
+  //     );
+  //     if (updated) machine.state = updated.state;
+  //   });
+  //   this.eyeDropsLineThree.forEach((machine) => {
+  //     const updated = data.find(
+  //       (d: { machineName: string }) => d.machineName === machine.machineName
+  //     );
+  //     if (updated) machine.state = updated.state;
+  //   });
+  //   const svg = document.getElementById('factory-svg');
+  //   if (!svg) return;
+
+  //   // Update individual machine rectangles
+  //   machines.forEach((machine) => {
+  //     const group = svg.querySelector(
+  //       `[data-machine-name="${machine.machineName}"]`
+  //     );
+  //     if (!group) return;
+
+  //     const rect = group.querySelector('rect');
+  //     if (!rect) return;
+  //     rect.classList.remove('pulse-green', 'pulse-red');
+  //     const fillColor = machine.state === 1 ? '#28a745' : '#dc3545';
+  //     rect.setAttribute('fill', fillColor);
+
+  //     rect.classList.add(fillColor === '#28a745' ? 'pulse-green' : 'pulse-red');
+  //   });
+
+  //   const lineRect = svg.querySelector('[data-line-rect]') as SVGElement;
+  //   if (lineRect) {
+  //     const fillColor = this.getLineFillColor(this.eyeDrops);
+  //     const pulseClass = this.getPulseClass(this.eyeDrops);
+
+  //     // Remove existing classes
+  //     lineRect.classList.remove('pulse-green', 'pulse-red');
+
+  //     lineRect.setAttribute('fill', fillColor);
+  //     lineRect.classList.add(pulseClass);
+  //   }
+  // }
+
   ngAfterViewInit() {
     const el = this.mySvg.nativeElement as HTMLElement;
     const svg = el.querySelector('svg');
