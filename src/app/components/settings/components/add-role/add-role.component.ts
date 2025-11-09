@@ -16,6 +16,7 @@ export class AddRoleComponent implements OnInit {
   filteredClaims: any;
   claimsList: Iclamis[];
   allRolesDetails: any;
+  originalRolesDetails: any[] = [];
   allRoles: IRole[] = [];
   selectedRole: string | undefined = undefined;
   selectedAreas: number[];
@@ -23,6 +24,8 @@ export class AddRoleComponent implements OnInit {
   form: FormGroup;
   showDeleteDialog: boolean = false;
   selectedRoleName: string = '';
+  visible: boolean = false;
+
   constructor(
     private userManagementService: UserManagementService,
     private toastr: ToastrService,
@@ -35,6 +38,9 @@ export class AddRoleComponent implements OnInit {
     this.onGetAllCalims();
     this.onGetAllRoles();
     this.onGetAreas();
+  }
+  showDialog() {
+    this.visible = true;
   }
   initForm() {
     this.form = this.fb.group({
@@ -56,6 +62,7 @@ export class AddRoleComponent implements OnInit {
     this.userManagementService.getRolesDetails(roleName, claims).subscribe({
       next: (res) => {
         this.allRolesDetails = res;
+        this.originalRolesDetails = [...res];
         console.log(res);
         this.onGetRoles();
       },
@@ -65,19 +72,32 @@ export class AddRoleComponent implements OnInit {
     });
   }
 
-  onRoleChange() {
-    if (this.selectedRole === 'All') {
+  onRoleChange(selectedRole?: string) {
+    if (selectedRole === 'All' || !selectedRole) {
       this.onGetAllRoles();
     } else {
-      this.onGetAllRoles(this.selectedRole || undefined);
+      this.userManagementService.getRolesDetails().subscribe({
+        next: (res) => {
+          this.allRoles = res.filter(
+            (role: any) => role.roleName === selectedRole
+          );
+        },
+        error: (err) => console.error(err),
+      });
     }
   }
-  onClaimChange() {
-    if (this.filteredClaims === 'All') {
-      // All
-      this.onGetAllRoles();
+
+  onClaimChange(selectedClaim?: string) {
+    if (!selectedClaim || selectedClaim === 'All') {
+      this.allRolesDetails = [...this.originalRolesDetails];
     } else {
-      this.onGetAllRoles(this.filteredClaims || undefined);
+      this.allRolesDetails = this.originalRolesDetails.filter((role: any) =>
+        role.claims.some(
+          (claim: any) =>
+            claim.value.toLowerCase() === selectedClaim.toLowerCase() ||
+            claim.type.toLowerCase() === selectedClaim.toLowerCase()
+        )
+      );
     }
   }
 

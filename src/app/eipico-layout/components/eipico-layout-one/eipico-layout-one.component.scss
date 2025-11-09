@@ -1,29 +1,29 @@
 @keyframes pulse-red-bg {
   0% {
-    fill: #dc3545;
+    fill: #f37d7d;
     fill-opacity: 0.6;
   }
   50% {
-    fill: #ff4444;
+    fill: #f37d7d;
     fill-opacity: 0.9;
   }
   100% {
-    fill: #dc3545;
+    fill: #f37d7d;
     fill-opacity: 0.6;
   }
 }
 
 @keyframes pulse-green-bg {
   0% {
-    fill: #28a745;
+    fill: #acf3bde0;
     fill-opacity: 0.3;
   }
   50% {
-    fill: #34ce57;
+    fill: #acf3bde0;
     fill-opacity: 0.9;
   }
   100% {
-    fill: #28a745;
+    fill: #acf3bde0;
     fill-opacity: 0.6;
   }
 }

@@ -15,7 +15,12 @@ import { LayoutService } from '../../layout.service';
 export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
   @ViewChild('mySvg') mySvg!: ElementRef;
   public hubConnection!: signalR.HubConnection;
+  showDialog: boolean = false;
   receivedData: any;
+  lineStats: any;
+  machines: any[] = [];
+  filteredMachines: any[] = [];
+
   constructor(private _LayoutService: LayoutService) {}
   ngOnInit(): void {
     this.onStartConnection();
@@ -46,143 +51,207 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
         console.error(' Error starting or joining SignalR', err);
       });
   }
-  updateMachinesData(machines: any[]) {
-    const svg = document.getElementById('factory-svg');
-    if (!svg) return;
+  //popup
+  goToMachineDetails(lineId: string | null) {
+    if (!lineId) {
+      this.machines = [];
+      this.showDialog = false;
+      return;
+    }
 
-    machines.forEach((machine) => {
-      const group = svg.querySelector(
-        `[data-machine-name="${machine.machineName}"]`
+    if (Array.isArray(this.receivedData) && this.receivedData.length > 0) {
+      const selectedLine = this.receivedData.find(
+        (line) => line.lineId == lineId
       );
-      if (!group) {
-        console.warn('Group not found for', machine.machineName);
+
+      if (selectedLine) {
+        const order = ['fill', 'labl', 'cart'];
+        const validMachines = selectedLine.machines.filter(
+          (m: { machineName: string }) =>
+            order.some((key) => m.machineName.toLowerCase().includes(key))
+        );
+
+        this.machines = validMachines.sort(
+          (a: { machineName: string }, b: { machineName: string }) => {
+            const aKey = order.find((key) =>
+              a.machineName.toLowerCase().includes(key)
+            );
+            const bKey = order.find((key) =>
+              b.machineName.toLowerCase().includes(key)
+            );
+
+            const aIndex = aKey ? order.indexOf(aKey) : order.length;
+            const bIndex = bKey ? order.indexOf(bKey) : order.length;
+
+            return aIndex - bIndex;
+          }
+        );
+      } else {
+        this.machines = [];
+      }
+    } else {
+      this.machines = [];
+    }
+
+    this.showDialog = true;
+  }
+
+  getPulseClass(machines: any[]): string {
+    const allZero = machines.every((m) => m.state === 0);
+    return allZero ? 'pulse-red' : 'pulse-green';
+  }
+
+  updateMachinesData(lines: any[]): void {
+    console.log('updateMachinesData called');
+    this.receivedData = lines;
+    const svg = document.getElementById('factory-svg');
+    if (!svg) {
+      console.log(' SVG not found in DOM!');
+      return;
+    }
+
+    this.lineStats = lines.map((line: any) => ({
+      lineId: line.lineId,
+      machineCount: line.machineCount ?? 0,
+      lastUpdate: line.machines?.[0]?.latestTimeStamp || 'N/A',
+    }));
+
+    lines.forEach((line: any, index: number) => {
+      console.log(`Processing line ${index}: lineId=${line.lineId}`);
+
+      const machines = line.machines || [];
+      const machineStates = machines.map(
+        (m: any) => m.latestSignal?.state ?? 0
+      );
+
+      const allZero = machineStates.every((s: number) => s === 0);
+      const hasOne = machineStates.some((s: number) => s === 1);
+
+      let fillColor = '#f37d7d';
+      let pulseClass = 'pulse-red';
+
+      if (hasOne) {
+        fillColor = '#acf3bde0';
+        pulseClass = 'pulse-green';
+      }
+
+      const selector = `[data-line-id="${line.lineId}"]`;
+      const lineRect = svg.querySelector(selector);
+
+      if (!lineRect) {
+        console.warn(` No rect found for ${selector}`);
         return;
       }
 
-      const rect = group.querySelector('rect');
-      if (!rect) return;
+      lineRect.classList.remove('pulse-green', 'pulse-red');
+      lineRect.setAttribute('fill', fillColor);
+      lineRect.classList.add(pulseClass);
 
-      const speed = machine.latest?.speed ?? 0;
-      const count = machine.latest?.count ?? machine.totalCountDiff ?? 0;
-      const state = machine.latest?.state ?? 0;
-
-      const rectX = parseFloat(rect.getAttribute('x') || '0');
-      const rectY = parseFloat(rect.getAttribute('y') || '0');
-      const rectWidth = parseFloat(rect.getAttribute('width') || '0');
-      const rectHeight = parseFloat(rect.getAttribute('height') || '0');
-
-      const centerX = rectX + rectWidth / 2;
-      const labelY = rectY + rectHeight / 2 + 6;
-      const speedY = labelY - 25;
-      const countY = labelY + 25;
-
-      ['speed-overlay', 'count-overlay', 'state-indicator'].forEach((cls) => {
-        const old = group.querySelector(`.${cls}`);
-        if (old) old.remove();
-      });
-
-      const speedText = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'text'
-      );
-      speedText.setAttribute('x', `${centerX}`);
-      speedText.setAttribute('y', `${speedY}`);
-      speedText.setAttribute('text-anchor', 'middle');
-      speedText.setAttribute('fill', 'dodgerblue');
-      speedText.setAttribute('font-size', '20');
-      speedText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
-      speedText.setAttribute('font-weight', 'bold');
-      speedText.classList.add('speed-overlay');
-      speedText.textContent = `Speed: ${speed}`;
-      group.appendChild(speedText);
-
-      const countText = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'text'
-      );
-      countText.setAttribute('x', `${centerX}`);
-      countText.setAttribute('y', `${countY}`);
-      countText.setAttribute('text-anchor', 'middle');
-      countText.setAttribute('fill', '#28a745');
-      countText.setAttribute('font-size', '20');
-      countText.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
-      countText.classList.add('count-overlay');
-      countText.textContent = `Count: ${count}`;
-      group.appendChild(countText);
-
-      const circleX = rectX + rectWidth - 15;
-      const circleY = rectY + 15;
-
-      const stateCircle = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'circle'
-      );
-      stateCircle.setAttribute('cx', `${circleX}`);
-      stateCircle.setAttribute('cy', `${circleY}`);
-      stateCircle.setAttribute('r', '8');
-      stateCircle.setAttribute('stroke', 'black');
-      stateCircle.setAttribute('stroke-width', '1');
-      stateCircle.setAttribute('fill', state === 1 ? '#28a745' : '#dc3545');
-      stateCircle.classList.add('state-indicator');
-      group.appendChild(stateCircle);
+      this.updateLineTexts(lineRect, line);
     });
   }
+  //handle date
+  formatDateTime(value: string | Date): string {
+    if (!value) return 'N/A';
+    const date = new Date(value);
 
-  // control on fonts and disable go to link
+    return date.toLocaleString('en-US', {
+      // weekday: 'short',
+      year: 'numeric',
+      month: 'short', // Nov
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  }
+  // show count machines and last update
+  updateLineTexts(lineRect: Element, line: any): void {
+    const parentGroup = lineRect.closest('g[data-cell-id]');
+    if (!parentGroup) return;
+
+    const numOfMachine = line.machineCount;
+    const lastUpdate =
+      line.machines?.[line.machines.length - 1]?.latestTimeStamp ?? 'N/A';
+
+    const rectX = parseFloat(lineRect.getAttribute('x')!);
+    const rectY = parseFloat(lineRect.getAttribute('y')!);
+    const rectWidth = parseFloat(lineRect.getAttribute('width')!);
+
+    const textX = rectX + rectWidth - 240;
+    const countY = rectY + 45;
+    const updateY = rectY + 65;
+
+    let countText = parentGroup.querySelector(
+      '.machine-count'
+    ) as SVGTextElement;
+    if (!countText) {
+      countText = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'text'
+      );
+      countText.classList.add('machine-count');
+      parentGroup.appendChild(countText);
+    }
+    countText.setAttribute('x', textX.toString());
+    countText.setAttribute('y', countY.toString());
+    countText.setAttribute('fill', '#000');
+    countText.setAttribute('font-size', '18px');
+    countText.textContent = `Machines: ${numOfMachine}`;
+
+    let updateText = parentGroup.querySelector(
+      '.last-update'
+    ) as SVGTextElement;
+    if (!updateText) {
+      updateText = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'text'
+      );
+      updateText.classList.add('last-update');
+      parentGroup.appendChild(updateText);
+    }
+    updateText.setAttribute('x', textX.toString());
+    updateText.setAttribute('y', updateY.toString());
+    updateText.setAttribute('fill', '#000');
+    updateText.setAttribute('font-size', '20px');
+    updateText.textContent = ` ${this.formatDateTime(lastUpdate)}`;
+  }
+
+  getMachineCount(lineId: number): number {
+    const line = this.lineStats?.find((l: any) => l.lineId === lineId);
+    return line ? line.machineCount : 0;
+  }
+
+  getLastUpdate(lineId: number): string {
+    const line = this.lineStats?.find((l: any) => l.lineId === lineId);
+    return line ? line.lastUpdate : '—';
+  }
+
   ngAfterViewInit() {
     const el = this.mySvg.nativeElement as HTMLElement;
     const svg = el.querySelector('svg');
 
     if (svg) {
-      ['click', 'mousedown', 'mouseup', 'auxclick', 'contextmenu'].forEach(
-        (evt) => {
-          svg.addEventListener(evt, (e) => {
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            return false;
-          });
-        }
-      );
-
-      svg.querySelectorAll('text').forEach((textEl: any) => {
-        const currentSize = parseFloat(textEl.getAttribute('font-size')) || 12;
-        textEl.setAttribute('font-size', (currentSize * 2).toString());
-        textEl.setAttribute('font-weight', 'bold');
-        textEl.setAttribute('fill', '#000');
-      });
-
-      svg.querySelectorAll('foreignObject, div, span').forEach((el: any) => {
-        el.style.fontSize = '20px';
-        el.style.fontWeight = 'bold';
-        el.style.color = '#000';
-      });
-
-      svg.querySelectorAll('*').forEach((child: any) => {
-        child.addEventListener('click', (e: Event) => {
-          e.stopImmediatePropagation();
-          e.preventDefault();
-          return false;
+      ['mousedown', 'mouseup', 'contextmenu'].forEach((evt) => {
+        svg.addEventListener(evt, (e) => {
+          e.stopPropagation();
         });
       });
 
-      const background = svg.querySelector('rect');
-      if (background) {
-        background.style.pointerEvents = 'none';
-      }
-
-      const bgGroup = svg.querySelector('g');
-      if (bgGroup && bgGroup.getAttribute('transform')?.includes('scale')) {
-        bgGroup.style.pointerEvents = 'none';
-      }
+      setTimeout(() => {
+        const rects = svg.querySelectorAll('rect[data-line-id]');
+        console.log('Found rects:', rects.length);
+        rects.forEach((rect) => {
+          const lineId = rect.getAttribute('data-line-id');
+          rect.addEventListener('click', (e: Event) => {
+            e.stopPropagation();
+            console.log(`Clicked line with ID: ${lineId}`);
+            this.goToMachineDetails(lineId);
+          });
+        });
+      }, 1500);
     }
-
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    });
   }
-
   ngOnDestroy(): void {
     this._LayoutService.stopConnection();
   }

@@ -33,12 +33,12 @@
     <div class="d-flex align-items-center mb-3 gap-3">
       <!-- Filter select Role -->
       <ng-select [items]="allRoles" id="roleFilter" bindLabel="name" bindValue="name" class="w-50"
-        [(ngModel)]="selectedRole" placeholder="Filter by Role" (ngModelChange)="onRoleChange()">
+        [(ngModel)]="selectedRole" placeholder="Filter by Role" (change)="onRoleChange($event)">
       </ng-select>
 
       <!-- Filter select claims -->
       <ng-select [items]="claimsList" id="claimFilter" bindLabel="claimName" bindValue="claimName" class="w-50"
-        [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (ngModelChange)="onClaimChange()">
+        [(ngModel)]="filteredClaims" placeholder="Filter by Claim" (change)="onClaimChange($event)">
       </ng-select>
       <!-- Search input -->
 
@@ -77,9 +77,45 @@
           <td class="">
 
 
-            <button type="button" class="btn btn-sm text-white bg-edit-primary mx-2" title="Edit">
+            <button type="button" (click)="showDialog()" class="btn btn-sm text-white bg-edit-primary mx-2"
+              title="Edit">
               <i class="pi pi-pencil"></i>
             </button>
+
+            <p-dialog header="Edit Role" [modal]="true" [(visible)]="visible"
+              [style]="{ width: '60rem', height: '40%' }">
+              <hr>
+              <div class="form-section padding">
+                <div class="field">
+                  <p class="label text-start">Role Name</p>
+                  <!-- <input pInputText id="roleName" autocomplete="off" /> -->
+                  <ng-select [items]="allRoles" id="roleFilter" bindLabel="name" bindValue="name" class="w-100"
+                    placeholder="Filter by Role" (ngModelChange)="onRoleChange()">
+                  </ng-select>
+                </div>
+                <div class="field">
+                  <p class="label text-start">Claims</p>
+                  <!-- <input pInputText id="claims" autocomplete="off" /> -->
+                  <ng-select formControlName="RoleName" [items]="claimsList" id="claimFilter" bindLabel="claimName"
+                    bindValue="claimName" placeholder="Filter by Claim" [multiple]="true"
+                    (ngModelChange)="onClaimChange()" class="w-100">
+                  </ng-select>
+                </div>
+                <div class="field">
+                  <p class="label text-start">Area</p>
+                  <!-- <input pInputText id="area" autocomplete="off" /> -->
+                  <ng-select formControlName="AreaIds" [items]="allAreas" bindLabel="text" bindValue="value"
+                    placeholder="Select Areas" [multiple]="true">
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="actions">
+                <p-button label="Remove" class="remove" severity="secondary" (onClick)="visible = false"></p-button>
+                <p-button label="Edit" class="btn-primary" (onClick)="visible = false"></p-button>
+              </div>
+            </p-dialog>
+
 
             <button (click)="openDeleteDialog(role.roleName)" type="button"
               class="btn btn-sm text-white bg-delete-primary mx-2" title="Delete" [disabled]="false">
