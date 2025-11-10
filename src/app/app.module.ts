@@ -17,6 +17,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './core/services/interceptor.service';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { SortableHeaderDirective } from './core/directives/sortable-header.directive';
+
 @NgModule({
   declarations: [AppComponent, ErrorPageComponent, SortableHeaderDirective],
   imports: [
@@ -47,6 +48,7 @@ import { SortableHeaderDirective } from './core/directives/sortable-header.direc
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService,
   ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

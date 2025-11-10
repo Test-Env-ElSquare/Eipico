@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Claims, Iclamis } from 'src/app/views/pages/auth/models/auth';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -16,12 +17,14 @@ export class UserManagementService {
     );
   }
 
-  addRole(role: string, claims: any): Observable<any> {
-    return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
-      roleName: role,
-      claims: claims,
-    });
-  }
+addRole(role: string, claims: any[], areaIds: number[]): Observable<any> {
+  return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
+    roleName: role,
+    claims: claims,
+    areaIds: areaIds,
+  });
+}
+
 
   getRoles(): Observable<any> {
     return this._http.get<any>(environment.url + 'api/Auth/Roles');
@@ -37,5 +40,20 @@ export class UserManagementService {
     return this._http.get<any>(environment.url + 'api/Auth/GetAllUsers', {
       params,
     });
+  }
+  getRolesDetails(roleName?: string, claimValues?: string): Observable<any> {
+    let params: any = {};
+    if (roleName) {
+      params.roleName = roleName;
+    }
+    if (claimValues) {
+      params.claimValues = claimValues;
+    }
+    return this._http.post<any>(environment.url + 'api/Auth/GetRoleDetails', {
+      params,
+    });
+  }
+  deleteRole(roleName:string):Observable<any>{
+   return this._http.delete<any>(environment.url + 'api/Auth/DeleteRole', {params:{roleName:roleName}})
   }
 }

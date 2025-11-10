@@ -1,5 +1,9 @@
-::ng-deep{
+a {
+  color: #0012d3 !important;
+  font-size: 16px !important;
+}
+::ng-deep {
   .ngx-pagination .current {
     background: #000 !important;
-}
+  }
 }

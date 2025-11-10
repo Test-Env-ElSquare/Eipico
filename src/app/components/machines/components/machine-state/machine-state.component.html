@@ -30,8 +30,8 @@
         </div>
         <div class="col-md-3 d-flex justify-content-between">
           <button type="button" (click)="filterBtn()" [disabled]="FilterForm.invalid"
-            class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
-            <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+            class="btn btn-primary bg-warning tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
+            <!-- <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i> -->
             Search
           </button>
         </div>
@@ -57,10 +57,10 @@
         <tr *ngFor="let machine of MachineStatus">
           <td scope="col">{{machine.machineName}}</td>
           <td><span class="badge text-uppercase "
-              [ngClass]="{'bg-danger':machine.machine_State == 'Off' ,'bg-success': machine.machine_State== 'On','bg-secondary': machine.machine_State == 'N/A'}">
+              [ngClass]="{'bg-custom rounded-4':machine.machine_State == 'Off' ,'bg-success rounded-4': machine.machine_State== 'On','bg-secondary rounded-4': machine.machine_State == 'N/A'}">
               {{machine.machine_State}}</span></td>
           <td><span class="badge text-uppercase "
-              [ngClass]="{'bg-danger':machine.beacon_Status == 'OffLine' ,'bg-success': machine.beacon_Status== 'OnLine','bg-secondary': machine.beacon_Status == 'N/A'}">
+              [ngClass]="{'bg-custom rounded-4':machine.beacon_Status == 'OffLine' ,'bg-success rounded-4': machine.beacon_Status== 'OnLine','bg-secondary rounded-4': machine.beacon_Status == 'N/A'}">
               {{machine.beacon_Status}}</span></td>
           <td scope="col">{{machine.timeStamp | date : 'medium' }}</td>
           <!-- <td *ngIf="machine.fault == -1">
@@ -73,7 +73,7 @@
             Fault
           </td> -->
           <td>
-            <button class="btn btn-outline-primary tw-bg-searchBtn btn-sm tw-text-white"
+            <button class="btn btn-primary bg-warning tw-bg-searchBtn btn-sm tw-text-white"
               (click)="TagsBasicModal(Tags,machine.machineName,machine.machineName)" type="button">Tags</button>
           </td>
         </tr>
@@ -104,7 +104,7 @@
       <div id="TagsSpeedChart"></div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger tw-bg-btnDelete"
+      <button type="button" class="btn btn-danger bg-danger  tw-bg-btnDelete"
         (click)="modal.close('by: close button')">Close</button>
     </div>
   </ng-template>

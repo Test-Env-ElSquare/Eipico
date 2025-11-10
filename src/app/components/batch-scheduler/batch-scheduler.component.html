@@ -20,8 +20,8 @@
           </div>
           <div class="col-md-3 d-flex justify-content-between">
             <button type="submit" [disabled]="FilterForm.invalid" (click)="search()"
-              class="btn btn-primary tw-bg-searchBtn btn-icon-text mb-2 mb-md-0">
-              <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
+              class="btn btn-danger  col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1">
+              <!-- <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i> -->
               Search
             </button>
           </div>
@@ -42,7 +42,7 @@
                     <input type="text" class="tw-mr-1 form-control" id="Search" placeholder="BATCH NAME"
                       [(ngModel)]="searchText">
                   </div>
-                  <button for="Search" class="btn btn-success   col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
+                  <button for="Search" class="btn btn-danger  col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
                     (click)="getBatches(searchText)">Search</button>
                 </div>
               </div>
@@ -78,7 +78,7 @@
                               class="btn tw-bg-sky-500 btn-sm tw-text-white me-2  hover:tw-bg-sky-950 hover:tw-text-white">
                               Activate
                             </button>
-                            <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
+                            <button type="button" class="btn btn-sm btn-primary mx-1"
                               (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
                           </td>
                         </tr>

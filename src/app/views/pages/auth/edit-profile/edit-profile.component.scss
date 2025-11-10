@@ -77,3 +77,6 @@
   border-radius: 8px;
   background: transparent;
 }
+.hide-navbar app-navbar {
+  display: none !important;
+}

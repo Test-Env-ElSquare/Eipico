@@ -1,0 +1,55 @@
+<div class="parent">
+  <div class="grid-container" *ngIf="machines?.length">
+    <div class="grid-item" *ngIf="machines && machines[0]">
+      <div class="card" [ngClass]="{
+          'running': machines[0].latestSignal?.state === 1,
+          'stopped': machines[0].latestSignal?.state === 0
+        }">
+        <h4>{{ machines[0].machineName }}</h4>
+        <p class="text-center">Filling</p>
+      </div>
+      <div class="machine-data vertical">
+        <p>Speed: {{ machines[0].latestSignal?.speed }}</p>
+        <p>Count: {{ machines[0].latestSignal?.count }}</p>
+        <p>TotalCountDiff: {{ machines[0].totalCountDiff }}</p>
+
+      </div>
+    </div>
+    <!-- → -->
+    <div class="arrow" *ngIf="machines.length > 1"></div>
+
+    <div class="grid-item" *ngIf="machines && machines[1]">
+      <div class="card" [ngClass]="{
+          'running': machines[1].latestSignal?.state === 1,
+          'stopped': machines[1].latestSignal?.state === 0
+        }">
+        <h4>{{ machines[1].machineName }}</h4>
+        <p class="text-center">Label</p>
+      </div>
+      <div class="machine-data vertical">
+        <p>Speed: {{ machines[1].latestSignal?.speed }}</p>
+        <p>Count: {{ machines[1].latestSignal?.count }}</p>
+        <p>TotalCountDiff: {{ machines[1].totalCountDiff }}</p>
+
+      </div>
+    </div>
+
+    <div class="arrow" *ngIf="machines.length > 2"></div>
+
+    <div class="grid-item" *ngIf="machines && machines[2]">
+      <div class="card" [ngClass]="{
+          'running': machines[2].latestSignal?.state === 1,
+          'stopped': machines[2].latestSignal?.state === 0
+        }">
+        <h4>{{ machines[2].machineName }}</h4>
+        <p class="text-center">Carton</p>
+      </div>
+      <div class="machine-data vertical">
+        <p>Speed: {{ machines[2].latestSignal?.speed }}</p>
+        <p>Count: {{ machines[2].latestSignal?.count }}</p>
+        <p>TotalCountDiff: {{ machines[2].totalCountDiff }}</p>
+
+      </div>
+    </div>
+  </div>
+</div>

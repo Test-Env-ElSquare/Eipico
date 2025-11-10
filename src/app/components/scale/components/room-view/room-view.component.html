@@ -3,13 +3,13 @@
     <div class="col-xl-6 stretch-card grid-margin tw-mt-8" *ngFor="let room of scaleRoom">
       <div
         class="card tw-relative tw-my-3 tw-mx-auto hover:tw-bg-gray-200 hover:tw-cursor-pointer hover:tw-ease-in-out">
-        <div class="tw-flex tw-flex-col tw-items-center tw-pb-10 tw-relative">
+        <!-- <div class="tw-flex tw-flex-col tw-items-center tw-pb-10 tw-relative">
           <img class="tw-w-16 -tw-top-8 tw-absolute tw-bg-white tw-p-1" src="assets/images/weighing-machine.png"
             alt="" />
-        </div>
+        </div> -->
         <a (click)="openXl(content , room.scalename)"
-          class="tw-my-3 tw-text-center tw-block tw-font-bold tw-text-2xl tw-text-gray-900 tw-mx-auto">
-          {{room.scalename}}
+          class="tw-my-3 tw-text-center  tw-font-bold tw-text-2xl tw-mx-auto">
+          <img src="../../../../../assets/images/room-scale.png" class="d-inline-block ps-1"> {{room.scalename}}
         </a>
       </div>
     </div>

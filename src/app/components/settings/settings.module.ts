@@ -25,6 +25,10 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/views/shared/shared.module';
 import { AuthModule } from 'src/app/views/pages/auth/auth.module';
+import { EditRoleComponent } from './components/edit-role/edit-role.component';
+
+import { ButtonModule } from 'primeng/button';
+
 @NgModule({
   declarations: [
     MachineSettingsComponent,
@@ -34,12 +38,15 @@ import { AuthModule } from 'src/app/views/pages/auth/auth.module';
     UserManagementComponent,
     AddRoleComponent,
     ShiftComponent,
+    EditRoleComponent,
   ],
   imports: [
     CommonModule,
     SettingsRoutingModule,
     ReactiveFormsModule,
     NgbModule,
+    DialogModule,
+    ButtonModule,
     FormsModule,
     InputTextModule,
     NgSelectModule,

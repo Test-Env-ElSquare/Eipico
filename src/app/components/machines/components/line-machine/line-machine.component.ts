@@ -5,6 +5,8 @@ import { AppService } from 'src/app/core/services/app-Service.service';
 import { MachinesService } from '../../services/machines.service';
 import { GetLineMachines } from '../../models/lineMachineModel';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
+import { Permission } from 'src/app/core/models/permission';
 
 @Component({
   selector: 'app-line-machine',
@@ -24,7 +26,8 @@ export class LineMachineComponent implements OnInit {
     private _appService: AppService,
     private _fb: FormBuilder,
     private _machinebyLine: MachinesService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private Permission: PermissionService
   ) {}
 
   createForm() {
@@ -38,8 +41,9 @@ export class LineMachineComponent implements OnInit {
   //equal FactoriesDropDown with response to fill the dropdown select option
   GetAllFactories() {
     if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
+      // this._authService.isHasAccessToE2() &&
+      // this._authService.isHasAccessToE1()
+      this.Permission.hasAll([Permission.E1, Permission.E2])
     ) {
       this._appService.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;

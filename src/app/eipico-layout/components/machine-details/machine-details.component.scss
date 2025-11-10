@@ -1,0 +1,94 @@
+// .parent {
+//   display: flex;
+//   justify-content: space-around;
+// }
+// .card {
+//   border: black solid 2px;
+//   padding: 35px;
+//   border-radius: 5px;
+//   width: 25%;
+// }
+.arrow {
+  width: 40px;
+  height: 2px;
+  background-color: black;
+  position: relative;
+  margin-top: 40px;
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 100%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+}
+.parent {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.grid-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.card {
+  border: 1px solid #000;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  min-width: 200px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.machine-data {
+  margin-top: 0.8rem;
+  text-align: center;
+}
+.machine-data.vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 15px;
+}
+
+.machine-data.vertical p {
+  margin: 0;
+}
+.machine-data p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+.card.running {
+  background-color: #d4edda;
+  box-shadow: 0 0 10px #4caf50;
+  border-color: #4caf50;
+}
+
+.card.stopped {
+  background-color: #f8d7da;
+  box-shadow: 0 0 10px #f44336;
+  border-color: #f44336;
+}
+
+// .arrow {
+//   align-self: center;
+//   font-size: 1.5rem;
+// }

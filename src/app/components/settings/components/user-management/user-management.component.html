@@ -1,60 +1,58 @@
 <form [formGroup]="form">
+  <div class="card p-4">
+    <div class="row">
 
-  <div class="row">
-    <div class="col-md-2 my-2">
-      <label>Username</label>
-      <input formControlName="username" class="form-control" />
-      <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')">
-        Required
-      </p>
-      <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('pattern')">
-        Shouldn't have spaces
-      </p>
-    </div>
-
-    <div class="col-md-2 my-2">
-      <label>Email</label>
-      <input formControlName="email" class="form-control" type="email" />
-      <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
-        Required
-      </p>
-      <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-        Please enter a valid email
-      </p>
-    </div>
-
-    <div class="col-md-2 my-2">
-      <label>Password</label>
-      <input formControlName="password" class="form-control" type="text" />
-      <p class="required" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
-        Required
-      </p>
-      <div class="required" *ngIf="form.get('password')?.hasError('pattern')">
-        Password must be at least 8 characters long, and include an uppercase letter, a number, and a special character.
+      <div class="col-md-2 my-2">
+        <label class="mb-2">Username</label>
+        <input formControlName="username" class="form-control" placeholder="Enter your name" />
+        <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')">
+          Required
+        </p>
+        <p class="required" *ngIf="form.get('username')?.touched && form.get('username')?.hasError('pattern')">
+          Shouldn't have spaces
+        </p>
       </div>
+
+      <div class="col-md-2 my-2">
+        <label class="mb-2">Email</label>
+        <input formControlName="email" class="form-control" type="email" placeholder="Enter your email" />
+        <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+          Required
+        </p>
+        <p class="required" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+          Please enter a valid email
+        </p>
+      </div>
+
+      <div class="col-md-2 my-2">
+        <label class="mb-2">Password</label>
+        <input formControlName="password" class="form-control" type="text" placeholder="Enter your password" />
+        <p class="required" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          Required
+        </p>
+        <div class="required" *ngIf="form.get('password')?.hasError('pattern')">
+          Password must be at least 8 characters long, and include an uppercase letter, a number, and a special
+          character.
+        </div>
+      </div>
+
+      <div class="col-md-2 my-2">
+        <label class="mb-2">Roles</label>
+        <ng-select [items]="allRoles" bindLabel="text" bindValue="text" placeholder="Select role"
+          formControlName="roleName">
+        </ng-select>
+        <p class="required" *ngIf="form.get('roleName')?.touched && form.get('roleName')?.hasError('required')">
+          Required
+        </p>
+      </div>
+
+      <div class="col-md-2 my-2 d-flex align-items-center justify-content-center">
+        <button class="btn btn-primary w-100" [disabled]="form.invalid" (click)="addUser()">Add User</button>
+      </div>
+
     </div>
-
-    <div class="col-md-2 my-2">
-      <label>Roles</label>
-      <ng-select [items]="roles" bindLabel="name" bindValue="name" placeholder="Select Role" formControlName="roleName">
-      </ng-select>
-      <p class="required" *ngIf="form.get('roleName')?.touched && form.get('roleName')?.hasError('required')">
-        Required
-      </p>
-    </div>
-
-    <!-- <div class="col-md-4 my-2" *ngIf="isRoleAdmin">
-      <label>Factory</label>
-      <ng-select [items]="factoryList" placeholder="Select Factory" bindLabel="type" formControlName="claims">
-      </ng-select>
-    </div> -->
-
-    <div class="col-md-2 my-2">
-      <br>
-      <button class="btn btn-primary" [disabled]="form.invalid" (click)="addUser()">Add User</button>
-    </div>
-
   </div>
+
 
 </form>
 
@@ -63,8 +61,8 @@
   <div class="card-body table-responsive">
     <div class="d-flex align-items-center mb-3 gap-3">
       <!-- Filter select -->
-      <ng-select [items]="allRoles" id="roleFilter" class="w-50" [(ngModel)]="selectedRole" placeholder="Filter by Role"
-        (change)="onRoleChange()">
+      <ng-select [items]="allRoles" id="roleFilter" bindLabel="text" bindValue="text" class="w-50"
+        [(ngModel)]="selectedRole" placeholder="Filter by Role" (change)="onRoleChange()">
       </ng-select>
 
       <!-- Search input -->
@@ -99,10 +97,17 @@
 
             <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
               [style]="{width: '60vw'}">
-              <app-edit-profile [allClaims]="allClaims" [allAreas]="allAreas" [allRoles]="allRoles"
-                [profileToEdit]="selectedUser">
-              </app-edit-profile>
+              <ng-template pTemplate="content">
+                <ng-container *ngTemplateOutlet="editProfileTpl"></ng-container>
+              </ng-template>
             </p-dialog>
+
+            <ng-template #editProfileTpl>
+              <app-edit-profile class="hide-navbar" [profileToEdit]="selectedUser" [allClaims]="allClaims"
+                [allAreas]="allAreas" [allRoles]="allRoles">
+              </app-edit-profile>
+            </ng-template>
+
 
 
           </td>

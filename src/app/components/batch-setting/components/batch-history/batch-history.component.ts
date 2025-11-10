@@ -4,6 +4,7 @@ import {
   pariedBatchesData,
   machineLoadDetails,
   scaleDetails,
+  Batch,
 } from '../../models/model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BatchService } from '../../services/batch.service';
@@ -15,6 +16,8 @@ import { BatchService } from '../../services/batch.service';
 })
 export class BatchHistoryComponent implements OnInit {
   batchArr: pariedBatchesData[];
+  searchText: string = '';
+  searchWord: string;
   machineLoadDetails: machineLoadDetails;
   batchMatarialsArr: BatchMatarials[];
   batchName: string | undefined;
@@ -23,19 +26,27 @@ export class BatchHistoryComponent implements OnInit {
   page: number = 1;
   pagesize: number = 10;
   totalCount: number | undefined;
+  batchArrForSort: Batch[];
 
   constructor(
     private _batchService: BatchService,
     private _modalService: NgbModal
   ) {}
 
-  getAll(page: number) {
-    this._batchService.pairedBatches(page, this.pagesize).subscribe((data) => {
-      this.batchArr = data[0].batches;
-      this.totalCount = data[0].count;
-    });
+  getAll(page: number = 1, searchtext: string | null = null) {
+    this._batchService
+      .pairedBatches(page, this.pagesize, searchtext)
+      .subscribe((data) => {
+        this.batchArr = data.batches;
+        this.totalCount = data.count;
+        // this.batchArrForSort = data.batches;
+      });
   }
-
+  search(searchText: string) {
+    this.page = 1;
+    this.searchWord = searchText;
+    this.getAll(this.page, searchText);
+  }
   openLg(content: any, batchname: string | undefined) {
     this._batchService
       .getBatchMatarials(String(batchname))
@@ -60,7 +71,7 @@ export class BatchHistoryComponent implements OnInit {
 
   pageChange(event: number) {
     this.page = event;
-    this.getAll(this.page);
+    this.getAll(this.page, this.searchWord || null);
   }
 
   GetScaleDetails(

@@ -108,9 +108,22 @@ export class BatchService {
 
   pairedBatches(
     pagenum: number,
-    pagesize: number
-  ): Observable<PairedBatches[]> {
-    return this._http.get<PairedBatches[]>(
+    pagesize: number,
+    filter?: string | null
+  ): Observable<PairedBatches> {
+    if (filter != null) {
+      return this._http.get<PairedBatches>(
+        environment.url + 'api/Batch/PairedBatches',
+        {
+          params: {
+            pagenum: pagenum,
+            pagesize: pagesize,
+            filter: filter,
+          },
+        }
+      );
+    }
+    return this._http.get<PairedBatches>(
       environment.url + 'api/Batch/PairedBatches',
       {
         params: {

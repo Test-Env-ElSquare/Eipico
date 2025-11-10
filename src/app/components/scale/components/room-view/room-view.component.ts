@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ScaleService } from '../../services/scale.service';
 import { Rooms, ScaleReads, ScalereadData } from '../../model/model';
@@ -10,9 +10,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./room-view.component.scss'],
 })
 export class RoomViewComponent implements OnInit {
-  id: number;
-  factoryId: number;
-  scaleRoom: Rooms[];
+  @Input() factoryId: number;
+  @Input() id!: number;
+  @Input() scaleRoom: Rooms[];
   scaleReads: ScalereadData[];
   scaleName: string;
   page: number = 1;
@@ -26,10 +26,11 @@ export class RoomViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = this._route.snapshot.params['id'];
-    this.factoryId = this._route.snapshot.params['factoryId'];
-    this.GetRoomScales();
-    this.getGetScaleReads(this.page);
+    if (this.id && this.factoryId) {
+      this.GetRoomScales();
+    }
+    // this.GetRoomScales();
+    // this.getGetScaleReads(this.page);
   }
 
   GetRoomScales() {

@@ -24,7 +24,6 @@ export class ViewProfileComponent implements OnInit {
       },
       error: (err) => {
         console.log('error', err);
-        console.log('>???????? test github');
       },
     });
   }
