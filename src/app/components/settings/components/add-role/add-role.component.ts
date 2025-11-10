@@ -39,14 +39,21 @@ export class AddRoleComponent implements OnInit {
     this.onGetAllRoles();
     this.onGetAreas();
   }
-  showDialog() {
-    this.visible = true;
-  }
+
   initForm() {
     this.form = this.fb.group({
       RoleName: [''],
       Claims: [[]],
       AreaIds: [[]],
+    });
+  }
+  showDialog(role: any) {
+    this.selectedRole = role;
+    this.visible = true;
+    this.form.patchValue({
+      RoleName: role.roleName,
+      Claims: role.claims,
+      AreaIds: role.areas?.map((a: any) => a.areaId) || [],
     });
   }
   onGetAreas() {
@@ -183,4 +190,5 @@ export class AddRoleComponent implements OnInit {
       },
     });
   }
+  onEditRole() {}
 }
