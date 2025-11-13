@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { IArea, Iclamis, IRole } from 'src/app/views/pages/auth/models/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-add-role',
   templateUrl: './add-role.component.html',
@@ -15,6 +15,7 @@ export class AddRoleComponent implements OnInit {
   selectedClaims: any;
   filteredClaims: any;
   claimsList: Iclamis[];
+  claims: any[] = [];
   allRolesDetails: any;
   originalRolesDetails: any[] = [];
   allRoles: IRole[] = [];
@@ -25,7 +26,8 @@ export class AddRoleComponent implements OnInit {
   showDeleteDialog: boolean = false;
   selectedRoleName: string = '';
   visible: boolean = false;
-
+  addForm!: FormGroup;
+  editForm!: FormGroup;
   constructor(
     private userManagementService: UserManagementService,
     private toastr: ToastrService,
@@ -41,21 +43,53 @@ export class AddRoleComponent implements OnInit {
   }
 
   initForm() {
-    this.form = this.fb.group({
+    this.addForm = this.fb.group({
+      RoleName: [''],
+      Claims: [[]],
+      AreaIds: [[]],
+    });
+
+    this.editForm = this.fb.group({
       RoleName: [''],
       Claims: [[]],
       AreaIds: [[]],
     });
   }
+
   showDialog(role: any) {
     this.selectedRole = role;
     this.visible = true;
-    this.form.patchValue({
+
+    this.editForm.patchValue({
       RoleName: role.roleName,
-      Claims: role.claims,
+      Claims: role.claims?.map((c: any) => c.value) || [],
       AreaIds: role.areas?.map((a: any) => a.areaId) || [],
     });
+    this.editForm.get('RoleName')?.disable();
   }
+  onEditRole() {
+    const formData = this.editForm.getRawValue();
+
+    const claimsPayload = formData.Claims.map((claim: string) => ({
+      type: claim,
+      value: claim,
+    }));
+
+    this.userManagementService
+      .updateRole(formData.RoleName, claimsPayload, formData.AreaIds)
+      .subscribe({
+        next: (res) => {
+          this.visible = false;
+          this.onGetAllRoles();
+          this.toastr.success(res.message || 'Role updated successfully');
+        },
+        error: (err) => {
+          console.error('Full error:', err);
+          this.toastr.error('Role updated failed');
+        },
+      });
+  }
+
   onGetAreas() {
     this._appService.getAllAreasAndRoles().subscribe({
       next: (res) => {
@@ -79,42 +113,45 @@ export class AddRoleComponent implements OnInit {
     });
   }
 
-  onRoleChange(selectedRole?: string) {
-    if (selectedRole === 'All' || !selectedRole) {
-      this.onGetAllRoles();
+  onRoleChange(selectedRole: any) {
+    const roleName =
+      typeof selectedRole === 'string' ? selectedRole : selectedRole?.name;
+
+    if (!roleName || roleName === 'All') {
+      this.allRolesDetails = [...this.originalRolesDetails];
     } else {
-      this.userManagementService.getRolesDetails().subscribe({
-        next: (res) => {
-          this.allRoles = res.filter(
-            (role: any) => role.roleName === selectedRole
-          );
-        },
-        error: (err) => console.error(err),
-      });
+      this.allRolesDetails = this.originalRolesDetails.filter(
+        (role) => role.roleName.toLowerCase() === roleName.toLowerCase()
+      );
     }
   }
 
-  onClaimChange(selectedClaim?: string) {
-    if (!selectedClaim || selectedClaim === 'All') {
+  onClaimChange(selectedClaim: any) {
+    const claimName =
+      typeof selectedClaim === 'string'
+        ? selectedClaim
+        : selectedClaim?.claimName;
+
+    if (!claimName || claimName === 'All') {
       this.allRolesDetails = [...this.originalRolesDetails];
     } else {
-      this.allRolesDetails = this.originalRolesDetails.filter((role: any) =>
-        role.claims.some(
-          (claim: any) =>
-            claim.value.toLowerCase() === selectedClaim.toLowerCase() ||
-            claim.type.toLowerCase() === selectedClaim.toLowerCase()
+      this.allRolesDetails = this.originalRolesDetails.filter((role) =>
+        role.claims?.some(
+          (claim: { value: string; type: string }) =>
+            claim.value.toLowerCase() === claimName.toLowerCase() ||
+            claim.type.toLowerCase() === claimName.toLowerCase()
         )
       );
     }
   }
 
   addRole() {
-    if (this.form.invalid) {
+    if (this.addForm.invalid) {
       this.toastr.error('Please fill all required fields');
       return;
     }
 
-    const formValue = this.form.value;
+    const formValue = this.addForm.value;
 
     const formattedClaims = formValue.Claims.map((id: number) => {
       const claim = this.claimsList.find((c) => c.id === id);
@@ -129,7 +166,7 @@ export class AddRoleComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.toastr.success(data.message || 'Role added successfully');
-          this.form.reset({
+          this.addForm.reset({
             RoleName: '',
             Claims: [],
             AreaIds: [],
@@ -183,12 +220,13 @@ export class AddRoleComponent implements OnInit {
         console.log(res);
         this.onGetAllRoles();
         this.showDeleteDialog = false;
+        this.toastr.success(res.message || 'Role deleted successfully');
       },
       error: (err) => {
         console.error(err);
         this.showDeleteDialog = false;
+        this.toastr.error('Role deleted failed');
       },
     });
   }
-  onEditRole() {}
 }

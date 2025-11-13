@@ -16,7 +16,7 @@ export class MainDashboardService {
   //get GetMainDashobard
   GetMainDashobard(duration: number): Observable<MainDashBoard[]> {
     return this._http.get<MainDashBoard[]>(
-      environment.baseUrl + 'api/Dashboards/MainDashboard',
+      environment.url + 'api/Dashboards/MainDashboard',
       {
         params: {
           duration: duration,
@@ -28,14 +28,14 @@ export class MainDashboardService {
   //get GetOEEDashobard
   GetOEEDashobard(): Observable<OEEDashobard[]> {
     return this._http.get<OEEDashobard[]>(
-      environment.baseUrl + 'api/Dashboards/OEEDashobard'
+      environment.url + 'api/Dashboards/OEEDashobard'
     );
   }
 
   //get EnergyConsumption
   GetEnergyConsumption(): Observable<GetPartsPerDays[]> {
     return this._http.get<GetPartsPerDays[]>(
-      environment.baseUrl + 'api/Dashboards/GetPartsPerDays'
+      environment.url + 'api/Dashboards/GetPartsPerDays'
     );
   }
 }

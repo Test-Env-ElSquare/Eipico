@@ -242,12 +242,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             showSubItems:
               fullAccess || this.perms.has(Permission.UserManagement),
           },
-          {
-            label: 'Machines',
-            link: '/settings/machine-settings',
-            showSubItems:
-              fullAccess || this.perms.has(Permission.UserManagement),
-          },
+          // {
+          //   label: 'Machines',
+          //   link: '/settings/machine-settings',
+          //   showSubItems:
+          //     fullAccess || this.perms.has(Permission.UserManagement),
+          // },
           {
             label: 'Profile',
             link: '/auth/view-profile',

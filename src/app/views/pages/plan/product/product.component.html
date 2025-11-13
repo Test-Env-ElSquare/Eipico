@@ -13,17 +13,9 @@
             <div class="col-md-3 py-3">
               <div class="form-floating">
                 <h3>Select Plant</h3>
-                <ng-select
-                  [items]="FactoriesDropDown"
-                  [loading]="!FactoriesDropDown"
-                  [searchable]="false"
-                  bindLabel="location"
-                  bindValue="id"
-                  placeholder="Select Plant"
-                  formControlName="factoryId"
-                  [(ngModel)]="selectedplant"
-                  (click)="lineID(selectedplant)"
-                >
+                <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false"
+                  bindLabel="location" bindValue="id" placeholder="Select Plant" formControlName="factoryId"
+                  [(ngModel)]="selectedplant" (click)="lineID(selectedplant)">
                 </ng-select>
               </div>
             </div>
@@ -32,15 +24,8 @@
               <div class="form-floating">
                 <h3>Select Line</h3>
 
-                <ng-select
-                  [items]="LineDropDown"
-                  [searchable]="false"
-                  bindLabel="name"
-                  bindValue="id"
-                  placeholder="Select line"
-                  formControlName="line"
-                  [(ngModel)]="selectedLine"
-                >
+                <ng-select [items]="LineDropDown" [searchable]="false" bindLabel="name" bindValue="id"
+                  placeholder="Select line" formControlName="line" [(ngModel)]="selectedLine">
                 </ng-select>
               </div>
             </div>
@@ -49,15 +34,8 @@
               <div class="form-floating">
                 <h3>Select Shift</h3>
 
-                <ng-select
-                  [items]="ShiftArr"
-                  [searchable]="false"
-                  bindLabel="name"
-                  bindValue="id"
-                  placeholder="Select Shift"
-                  formControlName="Shift"
-                  [(ngModel)]="selectedShift"
-                >
+                <ng-select [items]="ShiftArr" [searchable]="false" bindLabel="name" bindValue="id"
+                  placeholder="Select Shift" formControlName="Shift" [(ngModel)]="selectedShift">
                 </ng-select>
               </div>
             </div>
@@ -65,43 +43,22 @@
             <div class="col-md-3 py-3">
               <div class="form-floating">
                 <h3>Select SKU</h3>
-                <ng-select
-                  [items]="SkudropDown"
-                  [searchable]="false"
-                  bindLabel="productName"
-                  bindValue="technicalSKU"
-                  placeholder="Select SKU"
-                  formControlName="sku"
-                  (click)="GetSKUsByFactoryLine(selectedLine)"
-                >
+                <ng-select [items]="SkudropDown" [searchable]="false" bindLabel="productName" bindValue="technicalSKU"
+                  placeholder="Select SKU" formControlName="sku" (click)="GetSKUsByFactoryLine(selectedLine)">
                 </ng-select>
               </div>
             </div>
             <!--  -->
             <div class="col-md-3 py-3">
               <h3>Cases Count</h3>
-              <input
-                formControlName="Target"
-                class="form-control"
-                type="number"
-                [(ngModel)]="Target"
-              />
+              <input formControlName="Target" class="form-control" type="number" [(ngModel)]="Target" />
             </div>
             <div class="col-md-3 py-3">
               <h3>Select Start Time</h3>
-              <input
-                formControlName="shiftStartTime"
-                class="form-control"
-                type="date"
-                [(ngModel)]="Starttime"
-              />
+              <input formControlName="shiftStartTime" class="form-control" type="date" [(ngModel)]="Starttime" />
             </div>
             <div class="col-md-3 py-3 d-flex align-items-end">
-              <button
-                class="btn btn-primary"
-                [disabled]="addNewPostForm.invalid"
-                (click)="postform()"
-              >
+              <button class="btn btn-primary" [disabled]="addNewPostForm.invalid" (click)="postform()">
                 Submit
               </button>
             </div>
@@ -115,41 +72,26 @@
       <div class="card-header">
         <div class="col-md-3 py-3 w-100">
           <div class="form-floating">
-            <ng-select
-              [items]="FactoriesDropDown"
-              [loading]="!FactoriesDropDown"
-              [searchable]="false"
-              bindLabel="location"
-              bindValue="id"
-              placeholder="Select Plant"
-              [(ngModel)]="selectedplantFilter"
-            >
+            <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false"
+              bindLabel="location" bindValue="id" placeholder="Select Plant" [(ngModel)]="selectedplantFilter">
             </ng-select>
           </div>
         </div>
       </div>
       <div class="card-body">
         <div class="d-flex justify-content-center">
-          <ngb-datepicker
-            #dp
-            [(ngModel)]="selectedDate"
-            (navigate)="date = $event.next"
-            (click)="
+          <ngb-datepicker #dp [(ngModel)]="selectedDate" (navigate)="date = $event.next" (click)="
               GetPlanShiftMaterialConsumptionsBySpecificDate(
                 selectedDate,
                 selectedplantFilter
               )
-            "
-          ></ngb-datepicker>
+            "></ngb-datepicker>
         </div>
       </div>
     </div>
   </div>
   <!--  -->
-  <div
-    class="col-xl-9 stretch-card grid-margin"
-    style="height: 500px; overflow: scroll"
-  >
+  <div class="col-xl-9 stretch-card grid-margin" style="height: 500px; overflow: scroll">
     <div class="card" *ngIf="planeLoader">
       <!-- <div class="card-header">
         <h6>Line chart</h6>
@@ -178,22 +120,14 @@
               <td>{{ item?.sku }}</td>
               <td>{{ item?.target }}</td>
               <td class="d-flex">
-                <button
-                  type="button"
-                  class="btn btn-primary mx-1"
-                  (click)="openBasicModal(edit, item)"
-                >
-                  <i class="icon feather icon-edit"></i>
+                <button type="button" class="btn btn-primary mx-1" (click)="openBasicModal(edit, item)">
+                  <i class="pi pi-pencil"></i>
                 </button>
                 <div class="example">
                   <ng-template #edit let-modal>
                     <div class="modal-header">
-                      <button
-                        type="button"
-                        class="btn-close"
-                        (click)="modal.close('by: close icon')"
-                        aria-label="Close"
-                      ></button>
+                      <button type="button" class="btn-close" (click)="modal.close('by: close icon')"
+                        aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <form [formGroup]="addNewPostForm">
@@ -202,17 +136,9 @@
                           <div class="col-md-3 py-3">
                             <div class="form-floating">
                               <h3>Select Plant</h3>
-                              <ng-select
-                                [items]="FactoriesDropDown"
-                                [loading]="!FactoriesDropDown"
-                                [searchable]="false"
-                                bindLabel="location"
-                                bindValue="id"
-                                placeholder="Select Plant"
-                                formControlName="factoryId"
-                                [(ngModel)]="selectedplant"
-                                (click)="lineID(selectedplant)"
-                              >
+                              <ng-select [items]="FactoriesDropDown" [loading]="!FactoriesDropDown" [searchable]="false"
+                                bindLabel="location" bindValue="id" placeholder="Select Plant"
+                                formControlName="factoryId" [(ngModel)]="selectedplant" (click)="lineID(selectedplant)">
                               </ng-select>
                             </div>
                           </div>
@@ -221,15 +147,8 @@
                             <div class="form-floating">
                               <h3>Select Line</h3>
 
-                              <ng-select
-                                [items]="LineDropDown"
-                                [searchable]="false"
-                                bindLabel="name"
-                                bindValue="id"
-                                placeholder="Select line"
-                                formControlName="line"
-                                [(ngModel)]="selectedLine"
-                              >
+                              <ng-select [items]="LineDropDown" [searchable]="false" bindLabel="name" bindValue="id"
+                                placeholder="Select line" formControlName="line" [(ngModel)]="selectedLine">
                               </ng-select>
                             </div>
                           </div>
@@ -238,15 +157,8 @@
                             <div class="form-floating">
                               <h3>Select Shift</h3>
 
-                              <ng-select
-                                [items]="ShiftArr"
-                                [searchable]="false"
-                                bindLabel="name"
-                                bindValue="id"
-                                placeholder="Select Shift"
-                                formControlName="Shift"
-                                [(ngModel)]="selectedShift"
-                              >
+                              <ng-select [items]="ShiftArr" [searchable]="false" bindLabel="name" bindValue="id"
+                                placeholder="Select Shift" formControlName="Shift" [(ngModel)]="selectedShift">
                               </ng-select>
                             </div>
                           </div>
@@ -254,58 +166,35 @@
                           <div class="col-md-3 py-3">
                             <div class="form-floating">
                               <h3>Select SKU</h3>
-                              <ng-select
-                                [items]="SkudropDown"
-                                [searchable]="false"
-                                bindLabel="productName"
-                                bindValue="technicalSKU"
-                                placeholder="Select SKU"
-                                formControlName="sku"
-                                (click)="GetSKUsByFactoryLine(selectedLine)"
-                              >
+                              <ng-select [items]="SkudropDown" [searchable]="false" bindLabel="productName"
+                                bindValue="technicalSKU" placeholder="Select SKU" formControlName="sku"
+                                (click)="GetSKUsByFactoryLine(selectedLine)">
                               </ng-select>
                             </div>
                           </div>
                           <div class="col-md-3 py-3">
                             <h3>Cases Count</h3>
-                            <input
-                              formControlName="Target"
-                              class="form-control"
-                              type="number"
-                              [(ngModel)]="Target"
-                            />
+                            <input formControlName="Target" class="form-control" type="number" [(ngModel)]="Target" />
                           </div>
                           <div class="col-md-3 py-3">
                             <h3>Select Start Time</h3>
-                            <input
-                              formControlName="shiftStartTime"
-                              class="form-control"
-                              type="date"
-                              [(ngModel)]="Starttime"
-                            />
+                            <input formControlName="shiftStartTime" class="form-control" type="date"
+                              [(ngModel)]="Starttime" />
                           </div>
                         </div>
                       </form>
                     </div>
                     <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        (click)="modal.close('by: save button')"
-                      >
+                      <button type="button" class="btn btn-primary" (click)="modal.close('by: save button')">
                         Save changes
                       </button>
                     </div>
                   </ng-template>
                   <!-- Close result -->
                 </div>
-                <button
-                  type="button"
-                  class="btn btn-danger mx-1"
-                  [disabled]="loadonDelete"
-                  (click)="delete(item?.id, selectedDate)"
-                >
-                  <i class="icon feather icon-delete"></i>
+                <button type="button" class="btn btn-danger mx-1" [disabled]="loadonDelete"
+                  (click)="delete(item?.id, selectedDate)">
+                  <i class="pi pi-trash"></i>
                 </button>
               </td>
             </tr>

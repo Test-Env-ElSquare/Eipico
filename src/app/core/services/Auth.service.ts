@@ -436,7 +436,7 @@ export class AuthService {
   }
   forgetPassword(formatDate: object): Observable<string> {
     return this.http.post(
-      environment.baseUrl + 'api/Auth/forgot-password',
+      environment.url + 'api/Auth/forgot-password',
       formatDate,
       { responseType: 'text' }
     );
@@ -444,14 +444,14 @@ export class AuthService {
 
   sendOtp(formatDate: object): Observable<string> {
     return this.http.post(
-      environment.baseUrl + 'api/Auth/validate-otp',
+      environment.url + 'api/Auth/validate-otp',
       formatDate,
       { responseType: 'text' }
     );
   }
   resetPassword(formatDate: object): Observable<string> {
     return this.http.post(
-      environment.baseUrl + 'api/Auth/reset-password',
+      environment.url + 'api/Auth/reset-password',
       formatDate,
       { responseType: 'text' }
     );
