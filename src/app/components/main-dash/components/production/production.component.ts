@@ -29,7 +29,15 @@ export class ProductionComponent implements OnInit {
     this.shiftFilterid = duration;
 
     this._mainDashboard.GetMainDashobard(duration).subscribe((res) => {
+      this.totalEnergy = res[0].factoryProduction[0].toalenergy;
       this.numOfPartsandtotalEnergy = res[0].factoryProduction;
+      DrilDownChartModelRefactor({
+        id: this.DrilDownChart,
+        factory: res[0].factoryProduction,
+        line: res[0].lineProduction,
+        Name: 'Parts',
+      });
+      this.EUR.emit(res[0].factoryProduction);
     });
   }
 
@@ -42,7 +50,6 @@ export class ProductionComponent implements OnInit {
       });
     });
   }
-
 
   ngOnInit(): void {
     this.GetMainDashobard(0);

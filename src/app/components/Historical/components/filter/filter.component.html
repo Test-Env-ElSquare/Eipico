@@ -43,6 +43,7 @@
   <div class="row g-3">
     <div class="col-md-3" *ngIf="accessToFactories">
       <!-- FactoriesDropDown -->
+
       <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
         placeholder="Select Plant" formControlName="factoryId" (change)="GetFactoryLines(selectedFactory)"
         [(ngModel)]="selectedFactory">
@@ -56,8 +57,7 @@
     </div>
     <div class="col-md-3 d-flex justify-content-between">
       <button type="button" (click)="filterBTN(selectedFactory,selectedLine,shiftFilterid,lastDay,toDate)"
-        [disabled]="FilterForm.invalid || disableSearchBtn"
-        class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+        [disabled]="FilterForm.invalid || disableSearchBtn" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
         <i class="btn-icon-prepend" data-feather="filter" appFeatherIcon></i>
         Search
       </button>

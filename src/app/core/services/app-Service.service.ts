@@ -17,12 +17,16 @@ import {
 export class AppService {
   constructor(private _http: HttpClient) {}
 
+  // GetAllFactories(): Observable<factory[]> {
+  //   return this._http.get<factory[]>(
+  //     environment.url + 'api/Factory/GetUserFactories'
+  //   );
+  // }
   GetAllFactories(): Observable<factory[]> {
     return this._http.get<factory[]>(
-      environment.url + 'api/Factory/GetUserFactories'
+      environment.url + 'api/Factory/GetAllFactories'
     );
   }
-
   GetFactoryLines(factoryId: number): Observable<Line[]> {
     return this._http.get<Line[]>(
       environment.url + 'api/Factory/GetFactoryLines',
@@ -33,7 +37,16 @@ export class AppService {
       }
     );
   }
-
+  // GetFactoryLines(factoryId: number): Observable<Line[]> {
+  //   return this._http.get<Line[]>(
+  //     environment.url + 'api/Factory/GetAllFactories',
+  //     {
+  //       params: {
+  //         factoryId: factoryId,
+  //       },
+  //     }
+  //   );
+  // }
   public getDurationDropDown() {
     return [
       {

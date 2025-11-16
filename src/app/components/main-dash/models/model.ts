@@ -8,25 +8,22 @@ export interface factoryProduction {
   name: string;
   y: number;
   drilldown: string;
-  toalenergy:number;
-  eur:number;
+  toalenergy: number;
+  eur: number;
 }
 
 //interface for lineProduction
 export interface lineProduction {
   name: string;
   id: string;
-  data: [string,number][]
+  data: [string, number][];
 }
-
 
 //interface for OEEDashobard
 export interface OEEDashobard {
   days: string[];
   oee: number[];
 }
-
-
 
 //energy EnergyConsumption
 // export interface EnergyConsumption {
@@ -35,8 +32,8 @@ export interface OEEDashobard {
 //   totalEnergyConsumption : number
 // }
 export interface GetPartsPerDays {
-  fillersSeries: number[]
-  fillersTimeSeries: string[]
-  totalFillersCount: number
+  fillersSeries: number[];
+  fillersTimeSeries: string[];
+  totalFillersCount: number;
+  factoryProduction: factoryProduction[];
 }
-

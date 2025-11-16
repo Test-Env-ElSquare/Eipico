@@ -88,16 +88,18 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
           (x) => this.selectedFactory == x.id
         )?.name;
       });
+    } else if (this._authService.isHasAccessToE1()) {
+      this.selectedFactory = 2;
+      this.factorybreadcrumb = 'EIPICO1';
+      this.accessToFactories = false;
     } else if (this._authService.isHasAccessToE2()) {
       this.selectedFactory = 3;
       this.selectedLine = 29;
       this.factorybreadcrumb = 'EIPICO2';
       this.accessToFactories = false;
-    } else if (this._authService.isHasAccessToE1()) {
-      this.selectedFactory = 2;
-      this.factorybreadcrumb = 'EIPICO1';
-      this.accessToFactories = false;
     }
+
+    console.log('factory');
   }
 
   searchByCustomDuration() {
