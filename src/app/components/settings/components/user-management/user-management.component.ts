@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -36,6 +36,7 @@ export class UserManagementComponent implements OnInit {
   profileToEdit: IProfile | null = null;
   allAreas: IArea[] = [];
   selectedUser: any;
+
   constructor(
     private fb: FormBuilder,
     private userManagementService: UserManagementService,
@@ -48,6 +49,11 @@ export class UserManagementComponent implements OnInit {
     this.onGetAllUsers();
     this.loadAllStaticData();
   }
+  handleUserUpdated() {
+    this.onGetAllUsers();
+    this.showEditDialog = false;
+  }
+
   loadAllStaticData(): void {
     // Get All Claims
     this._appService.getAllClaims().subscribe((res) => {
@@ -128,5 +134,4 @@ export class UserManagementComponent implements OnInit {
     this.selectedUser = user;
     this.showEditDialog = true;
   }
-
 }

@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import {
   IArea,
@@ -14,6 +22,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { Lines } from 'src/app/core/models/lines';
 import { Router } from '@angular/router';
+import { UserManagementService } from 'src/app/components/settings/services/user-management.service';
+import { IAllUSers } from 'src/app/components/settings/models/model';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -23,20 +33,27 @@ export class EditProfileComponent implements OnInit {
   data!: UpdateAdminProfile;
   profile!: IProfile | null;
   showNavbar: boolean = false;
+
   @Input() allAreas: IArea[] = [];
   @Input() allClaims: Iclamis[] = [];
   @Input() allRoles: IRole[] = [];
+
   @Input() profileToEdit: IProfile | null = null;
+  tableOfUsers: IAllUSers[];
   items: MenuItem[] = [];
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
+  // showEditDialog: boolean = false;
   profileForm: any;
   userId: any;
+  @Output() usersUpdated: EventEmitter<void> = new EventEmitter<void>();
   constructor(
     private _AuthService: AuthService,
     private fb: FormBuilder,
     private _appService: AppService,
-    private _Router: Router
+    private _Router: Router,
+    private userManagementService: UserManagementService,
+    private cdr: ChangeDetectorRef
   ) {
     this.profileForm = this.fb.group({
       userId: [''],
@@ -168,28 +185,22 @@ export class EditProfileComponent implements OnInit {
 
     const data: updateUserProfileByAdmin = {
       userId: this.profileToEdit?.id ?? '',
-      roles: this.profileForm.value.roleName
-        ? [this.profileForm.value.roleName]
-        : [],
-      claims: (this.profileForm.value.claims || []).map((c: any) =>
-        typeof c === 'string' ? c : c.claimName
-      ),
-      areaIds: this.profileForm.value.areas
-        ? Array.isArray(this.profileForm.value.areas)
-          ? this.profileForm.value.areas
-          : [this.profileForm.value.areas]
-        : [],
+      role: this.profileForm.value.roleName,
+      // ? [this.profileForm.value.roleName]
+      // : [],
     };
 
     console.log('Final Request Data:', data);
 
     this._AuthService.editUserProfileByAdmin(data).subscribe({
       next: (res) => {
-        console.log('✅ Admin updated user profile:', res);
-        this._Router.navigate(['auth/login']);
+        console.log(' Admin updated user profile:', res);
       },
       error: (err) => {
         console.error(' Error while updating:', err);
+      },
+      complete: () => {
+        this.usersUpdated.emit();
       },
     });
   }

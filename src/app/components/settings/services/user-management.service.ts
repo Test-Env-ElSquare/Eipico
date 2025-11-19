@@ -61,7 +61,7 @@ export class UserManagementService {
     return this._http.post<any>(environment.url + 'api/Auth/UpdateRole', {
       roleName: roleName,
       claims: claims,
-      areaIds: areaIds,
+      areas: areaIds,
     });
   }
 }

@@ -21,6 +21,7 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
   lineStats: any;
   machines: any[] = [];
   filteredMachines: any[] = [];
+  currentOpenedLineId: string | null = null;
   constructor(private _LayoutService: LayoutService, private _router: Router) {}
   ngOnInit(): void {
     this.onStartConnection();
@@ -57,7 +58,7 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
       this.showDialog = false;
       return;
     }
-
+    this.currentOpenedLineId = lineId;
     if (Array.isArray(this.receivedData) && this.receivedData.length > 0) {
       const selectedLine = this.receivedData.find(
         (line) => line.lineId == lineId
@@ -102,7 +103,12 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
 
   updateMachinesData(lines: any[]): void {
     console.log('updateMachinesData called');
+
     this.receivedData = lines;
+    if (this.showDialog && this.currentOpenedLineId) {
+      this.goToMachineDetails(this.currentOpenedLineId);
+    }
+
     const svg = document.getElementById('factory-svg');
     if (!svg) {
       console.log(' SVG not found in DOM!');

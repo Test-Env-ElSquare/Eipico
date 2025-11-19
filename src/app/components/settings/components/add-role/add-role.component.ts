@@ -1,3 +1,4 @@
+import { Area } from './../../../../views/pages/auth/models/auth';
 import { Component, OnInit } from '@angular/core';
 import { UserManagementService } from '../../services/user-management.service';
 import { ToastrService } from 'ngx-toastr';
@@ -63,7 +64,7 @@ export class AddRoleComponent implements OnInit {
     this.editForm.patchValue({
       RoleName: role.roleName,
       Claims: role.claims?.map((c: any) => c.value) || [],
-      AreaIds: role.areas?.map((a: any) => a.areaId) || [],
+      AreaIds: role.areas?.map((a: any) => a.areaId || a.value) || [],
     });
     this.editForm.get('RoleName')?.disable();
   }
@@ -74,7 +75,7 @@ export class AddRoleComponent implements OnInit {
       type: claim,
       value: claim,
     }));
-
+    // debugger;
     this.userManagementService
       .updateRole(formData.RoleName, claimsPayload, formData.AreaIds)
       .subscribe({

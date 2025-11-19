@@ -20,6 +20,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
   lineStats: any;
   machines: any[] = [];
   filteredMachines: any[] = [];
+  currentOpenedLineId: string | null = null;
 
   constructor(private _LayoutService: LayoutService) {}
   ngOnInit(): void {
@@ -33,7 +34,8 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
         console.log(' Connected to SignalR Hub');
         this._LayoutService.onAllMachineUpdate((data) => {
           console.log(' Received Data:', data);
-          this.receivedData = data;
+          this.receivedData = JSON.parse(JSON.stringify(data));
+
           this.updateMachinesData(data);
         });
 
@@ -55,10 +57,12 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
   goToMachineDetails(lineId: string | null) {
     if (!lineId) {
       this.machines = [];
+      // this.currentOpenedLineId = lineId;
+
       this.showDialog = false;
       return;
     }
-
+    this.currentOpenedLineId = lineId;
     if (Array.isArray(this.receivedData) && this.receivedData.length > 0) {
       const selectedLine = this.receivedData.find(
         (line) => line.lineId == lineId
@@ -71,7 +75,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
             order.some((key) => m.machineName.toLowerCase().includes(key))
         );
 
-        this.machines = validMachines.sort(
+        this.machines = [...validMachines].sort(
           (a: { machineName: string }, b: { machineName: string }) => {
             const aKey = order.find((key) =>
               a.machineName.toLowerCase().includes(key)
@@ -103,7 +107,13 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
 
   updateMachinesData(lines: any[]): void {
     console.log('updateMachinesData called');
-    this.receivedData = lines;
+    this.receivedData = JSON.parse(JSON.stringify(lines));
+    // aw kda m4 lazem ahwol
+    // this.receivedData = lines;
+    if (this.showDialog && this.currentOpenedLineId) {
+      this.goToMachineDetails(this.currentOpenedLineId);
+    }
+
     const svg = document.getElementById('factory-svg');
     if (!svg) {
       console.log(' SVG not found in DOM!');

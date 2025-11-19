@@ -1,5 +1,5 @@
 <!-- filter by shift -->
-<div class="btn-group mb-4" role="group" aria-label="Basic radio toggle button group">
+<!-- <div class="btn-group mb-4" role="group" aria-label="Basic radio toggle button group">
   <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
     [checked]="shiftFilterid==0" autocomplete="off" [value]="0" (change)="customBtnClicked = false"
     (click)="this._historicalService.dashboardTime.emit(shiftFilterid)">
@@ -36,7 +36,7 @@
         [ngModel]="toDate | date : 'yyyy-MM-dd'" (ngModelChange)="toDate = $event" />
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- searchBar -->
 <form [formGroup]="FilterForm" class="mb-4">
@@ -45,14 +45,13 @@
       <!-- FactoriesDropDown -->
 
       <ng-select [items]="FactoriesDropDown" bindLabel="name" bindValue="id" [searchable]="false"
-        placeholder="Select Plant" formControlName="factoryId" (change)="GetFactoryLines(selectedFactory)"
-        [(ngModel)]="selectedFactory">
+        placeholder="Select Plant" formControlName="factoryId" (change)="GetFactoryLines(selectedFactory)">
       </ng-select>
     </div>
     <div class="col-md-3">
       <!-- LineDropDown -->
       <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false" placeholder="Select Line"
-        formControlName="lineID" (change)="stopCon()" [(ngModel)]="selectedLine">
+        formControlName="lineID" (change)="stopCon()">
       </ng-select>
     </div>
     <div class="col-md-3 d-flex justify-content-between">

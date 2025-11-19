@@ -38,9 +38,9 @@ export interface Claims {
 }
 export interface updateUserProfileByAdmin {
   userId: string;
-  roles: string[];
-  claims: string[];
-  areaIds: number[];
+  role: string[];
+  // claims: string[];
+  // areaIds: number[];
 }
 export interface IRole {
   id: number;

@@ -21,8 +21,6 @@ import { AuthService } from 'src/app/core/services/Auth.service';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
-  //output event that pass to the parent
-  //@Output() filterEvent = new EventEmitter<Historical>();
   @Output() parts = new EventEmitter<number | boolean>();
   @Output() filterValues = new EventEmitter<{
     shiftFilterid: number;
@@ -38,6 +36,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   shiftFilterid: number = 0;
   liveConnected: boolean = false;
   FactoriesDropDown: factory[];
+  factoriesList: factory[];
   LineDropDown: Line[];
   DurationDropDown: { name: string; id: number }[];
   selectedDuration: string = '0';
@@ -51,7 +50,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   customBtnClicked: boolean = false;
   toDate: string = '';
 
-  disableSearchBtn: boolean = false; //true
+  disableSearchBtn: boolean = false;
 
   constructor(
     public _historicalService: HistoricalDashboardService,
@@ -61,7 +60,14 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     private _toastr: ToastrService,
     private _cdr: ChangeDetectorRef
   ) {}
+  ngOnInit(): void {
+    this.createForm();
 
+    this.onGetAllFactories();
+    this.getDurationDropDown();
+    this.setDefault();
+    this.filterBTN(this.selectedFactory, this.selectedLine, this.shiftFilterid);
+  }
   createForm() {
     this.FilterForm = this._fb.group({
       factoryId: [, [Validators.required]],
@@ -76,53 +82,71 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   //get all factories
-  GetAllFactories() {
-    if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
-    ) {
-      this._appService.GetAllFactories().subscribe((data) => {
-        this.FactoriesDropDown = data;
-        this.accessToFactories = true;
-        this.factorybreadcrumb = this.FactoriesDropDown.find(
-          (x) => this.selectedFactory == x.id
-        )?.name;
-      });
-    } else if (this._authService.isHasAccessToE1()) {
-      this.selectedFactory = 2;
-      this.factorybreadcrumb = 'EIPICO1';
-      this.accessToFactories = false;
-    } else if (this._authService.isHasAccessToE2()) {
-      this.selectedFactory = 3;
-      this.selectedLine = 29;
-      this.factorybreadcrumb = 'EIPICO2';
-      this.accessToFactories = false;
-    }
+  onGetAllFactories() {
+    this._appService.GetAllFactories().subscribe((data) => {
+      this.FactoriesDropDown = data;
+      console.log('facroriesDropDown:', this.FactoriesDropDown);
+      this.accessToFactories = true;
 
-    console.log('factory');
+      // default factory
+      if (!this.selectedFactory) {
+        this.selectedFactory = data[0].id;
+      }
+
+      // patch form now (AFTER items loaded)
+      this.FilterForm.patchValue({
+        factoryId: this.selectedFactory,
+      });
+
+      // load lines for default factory
+      this.GetFactoryLines(this.selectedFactory);
+
+      // listen to changes on factory select
+      this.FilterForm.get('factoryId')?.valueChanges.subscribe(
+        (factoryId: number) => {
+          console.log('Factory changed to:', factoryId);
+          this.selectedFactory = factoryId;
+
+          this.GetFactoryLines(factoryId);
+
+          this.factorybreadcrumb = this.FactoriesDropDown.find(
+            (f) => f.id === factoryId
+          )?.name;
+
+          // emit filter values
+          this.filterValues.emit({
+            shiftFilterid: this.shiftFilterid,
+            selectedFactory: this.selectedFactory,
+            selectedLine: this.selectedLine,
+          });
+        }
+      );
+
+      // update breadcrumb for default
+      this.factorybreadcrumb = this.FactoriesDropDown.find(
+        (f) => f.id === this.selectedFactory
+      )?.name;
+    });
   }
 
   searchByCustomDuration() {
     this.customBtnClicked = !this.customBtnClicked;
   }
 
-  //get Duration
-  //equal DurationDropDown with response to fill the dropdown select option
   getDurationDropDown() {
     this.DurationDropDown = this._appService.getDurationDropDown();
   }
 
-  //get line by selected factory id
-  //equal LineDropDown with response to fill the dropdown select option
   GetFactoryLines(factoryId: number) {
-    this._appService.GetFactoryLines(+factoryId).subscribe((data) => {
-      this.LineDropDown = data;
-      this.Linebreadcrumb = this.LineDropDown.find(
-        (x) => this.selectedLine == x.id
-      )?.name;
+    this._appService.GetFactoryLines(factoryId).subscribe({
+      next: (res) => {
+        this.LineDropDown = res;
+      },
+      error: (err) => {
+        console.log(err);
+      },
     });
   }
-
   filterBTN(
     selectedFactory: number,
     selectedLine: number,
@@ -152,7 +176,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       (x) => Duration == x.id
     )?.name;
     startWith(null);
-    //this.disableSearchBtn = true
+
     if (Duration === 0) {
       this.liveConnected = true;
     } else if (Duration !== 0 && this.liveConnected) {
@@ -174,14 +198,6 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       factoryId: this.selectedFactory,
       lineID: this.selectedLine,
     });
-  }
-
-  ngOnInit(): void {
-    this.createForm();
-    this.GetAllFactories();
-    this.getDurationDropDown();
-    this.setDefault();
-    this.filterBTN(this.selectedFactory, this.selectedLine, this.shiftFilterid);
   }
 
   ngAfterViewInit(): void {
