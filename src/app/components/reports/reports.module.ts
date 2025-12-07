@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports.component';
 import { DailyReportsComponent } from './components/daily-reports/daily-reports.component';
@@ -10,8 +10,9 @@ import { BeconReportComponent } from './components/becon-report/becon-report.com
 import { MatIconModule } from '@angular/material/icon';
 import { EnergyReportComponent } from './components/energy-report/energy-report.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { TableModule } from 'primeng/table';
+
 import { share } from 'rxjs';
+import { TableModule } from 'primeng/table';
 import { SharedModule } from 'src/app/views/shared/shared.module';
 
 @NgModule({
@@ -24,6 +25,7 @@ import { SharedModule } from 'src/app/views/shared/shared.module';
   imports: [
     CommonModule,
     ReportsRoutingModule,
+    SelectButtonModule,
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,

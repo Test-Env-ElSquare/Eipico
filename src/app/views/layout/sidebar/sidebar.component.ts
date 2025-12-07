@@ -277,11 +277,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           //   link: '/reports/dailyReports',
           //   showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
           // },
-          {
-            label: ' Daily reports',
-            link: '/reports/dailyReports',
-            showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
-          },
+          // {
+          //   label: ' Daily reports',
+          //   link: '/reports/dailyReports',
+          //   showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
+          // },
         ],
       },
       {
@@ -296,22 +296,22 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
-      {
-        label: 'Scada',
-        isTitle: true,
-      },
-      {
-        label: 'Scada',
-        icon: 'sliders',
-        showSubItems: fullAccess || this.perms.has(Permission.Scada),
-        subItems: [
-          {
-            label: 'Main Scada',
-            link: '/Scada/mainScada',
-            showSubItems: fullAccess || this.perms.has(Permission.Scada),
-          },
-        ],
-      },
+      // {
+      //   label: 'Scada',
+      //   isTitle: true,
+      // },
+      // {
+      //   label: 'Scada',
+      //   icon: 'sliders',
+      //   showSubItems: fullAccess || this.perms.has(Permission.Scada),
+      //   subItems: [
+      //     {
+      //       label: 'Main Scada',
+      //       link: '/Scada/mainScada',
+      //       showSubItems: fullAccess || this.perms.has(Permission.Scada),
+      //     },
+      //   ],
+      // },
       {
         label: 'Layout',
         isTitle: true,

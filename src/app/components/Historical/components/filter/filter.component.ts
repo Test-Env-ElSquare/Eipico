@@ -36,6 +36,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   shiftFilterid: number = 0;
   liveConnected: boolean = false;
   FactoriesDropDown: factory[];
+  factoriesListDown: factory[];
   factoriesList: factory[];
   LineDropDown: Line[];
   DurationDropDown: { name: string; id: number }[];
@@ -63,11 +64,20 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.createForm();
 
-    this.onGetAllFactories();
+    // this.onGetAllFactories();
+    this.getAllFactories();
     this.getDurationDropDown();
     this.setDefault();
-    this.filterBTN(this.selectedFactory, this.selectedLine, this.shiftFilterid);
+    this.FilterForm.get('factoryId')?.valueChanges.subscribe((value) => {
+      this.selectedFactory = value;
+    });
+
+    this.FilterForm.get('lineID')?.valueChanges.subscribe((value) => {
+      this.selectedLine = value;
+    });
+    this.filterBTN(this.shiftFilterid);
   }
+
   createForm() {
     this.FilterForm = this._fb.group({
       factoryId: [, [Validators.required]],
@@ -82,63 +92,62 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   //get all factories
-  onGetAllFactories() {
-    this._appService.GetAllFactories().subscribe((data) => {
-      this.FactoriesDropDown = data;
-      console.log('facroriesDropDown:', this.FactoriesDropDown);
-      this.accessToFactories = true;
+  // onGetAllFactories() {
+  //   this._appService.GetAllFactories().subscribe((data) => {
+  //     this.FactoriesDropDown = data;
+  //     console.log('facroriesDropDown:', this.FactoriesDropDown);
+  //     this.accessToFactories = true;
 
-      // default factory
-      if (!this.selectedFactory) {
-        this.selectedFactory = data[0].id;
-      }
+  //     // default factory
+  //     // if (!this.selectedFactory) {
+  //     //   this.selectedFactory = data[0].id;
+  //     // }
 
-      // patch form now (AFTER items loaded)
-      this.FilterForm.patchValue({
-        factoryId: this.selectedFactory,
-      });
+  //     // patch form now (AFTER items loaded)
+  //     this.FilterForm.patchValue({
+  //       factoryId: this.selectedFactory,
+  //     });
 
-      // load lines for default factory
-      this.GetFactoryLines(this.selectedFactory);
+  //     // load lines for default factory
+  //     this.GetFactoryLines(this.selectedFactory);
 
-      // listen to changes on factory select
-      this.FilterForm.get('factoryId')?.valueChanges.subscribe(
-        (factoryId: number) => {
-          console.log('Factory changed to:', factoryId);
-          this.selectedFactory = factoryId;
+  //     // listen to changes on factory select
+  //     this.FilterForm.get('factoryId')?.valueChanges.subscribe(
+  //       (factoryId: number) => {
+  //         console.log('Factory changed to:', factoryId);
+  //         this.selectedFactory = factoryId;
 
-          this.GetFactoryLines(factoryId);
+  //         this.GetFactoryLines(factoryId);
 
-          this.factorybreadcrumb = this.FactoriesDropDown.find(
-            (f) => f.id === factoryId
-          )?.name;
+  //         this.factorybreadcrumb = this.FactoriesDropDown.find(
+  //           (f) => f.id === factoryId
+  //         )?.name;
 
-          // emit filter values
-          this.filterValues.emit({
-            shiftFilterid: this.shiftFilterid,
-            selectedFactory: this.selectedFactory,
-            selectedLine: this.selectedLine,
-          });
-        }
-      );
+  //         // emit filter values
+  //         this.filterValues.emit({
+  //           shiftFilterid: this.shiftFilterid,
+  //           selectedFactory: this.selectedFactory,
+  //           selectedLine: this.selectedLine,
+  //         });
+  //       }
+  //     );
 
-      // update breadcrumb for default
-      this.factorybreadcrumb = this.FactoriesDropDown.find(
-        (f) => f.id === this.selectedFactory
-      )?.name;
+  //     // update breadcrumb for default
+  //     this.factorybreadcrumb = this.FactoriesDropDown.find(
+  //       (f) => f.id === this.selectedFactory
+  //     )?.name;
+  //   });
+  // }
+  getAllFactories() {
+    this._appService.GetAllFactories().subscribe({
+      next: (res) => {
+        this.factoriesListDown = res;
+        console.log(res);
+      },
     });
   }
-
-  searchByCustomDuration() {
-    this.customBtnClicked = !this.customBtnClicked;
-  }
-
-  getDurationDropDown() {
-    this.DurationDropDown = this._appService.getDurationDropDown();
-  }
-
   GetFactoryLines(factoryId: number) {
-    this._appService.GetFactoryLines(factoryId).subscribe({
+    this._appService.GetFactoryLines(+factoryId).subscribe({
       next: (res) => {
         this.LineDropDown = res;
       },
@@ -147,13 +156,18 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
   }
-  filterBTN(
-    selectedFactory: number,
-    selectedLine: number,
-    Duration: number,
-    from?: string,
-    to?: string
-  ) {
+  searchByCustomDuration() {
+    this.customBtnClicked = !this.customBtnClicked;
+  }
+
+  getDurationDropDown() {
+    this.DurationDropDown = this._appService.getDurationDropDown();
+  }
+
+  filterBTN(Duration: number, from?: string, to?: string) {
+    const selectedFactory = this.FilterForm.get('factoryId')?.value;
+    const selectedLine = this.FilterForm.get('lineID')?.value;
+
     let filterObj = {
       shiftFilterid: Duration,
       selectedFactory: selectedFactory,
@@ -161,6 +175,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       from: from,
       to: to,
     };
+
     if (this.liveConnected) {
       this._historicalService.hubConnection.stop();
     }
@@ -175,6 +190,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.Durationbreadcrumb = this.DurationDropDown?.find(
       (x) => Duration == x.id
     )?.name;
+
     startWith(null);
 
     if (Duration === 0) {

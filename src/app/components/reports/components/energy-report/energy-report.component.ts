@@ -5,10 +5,12 @@ import { Transformars, TransformersRead } from '../../model/model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // import { start } from 'repl';
 import { end } from '@popperjs/core';
+
 import * as FileSaver from 'file-saver';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { factory } from 'src/app/core/models/filter';
+import { SignalREnergyService } from '../../services/signal-R-energy/signal-r-energy.service';
 // import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-energy-report',
@@ -19,16 +21,18 @@ export class EnergyReportComponent implements OnInit {
   form: FormGroup;
   selectedtransformer: string;
   transformers: Transformars[];
+  sizes!: any[];
+  selectedSize: any = '';
   page: number = 1;
   totalCount: number;
   tranformerRead: TransformersRead[] = [];
+  tranformerReadCustom: any;
   totalEnergyConsumption: number;
-
+  receivedData: any;
   lastDay: string = '';
   minDate: string = '';
   today: string = '';
   nextDay: string = '';
-  // fromDate = new Date();
   lastYearTotal: number;
   thisYearTotal: number;
   selectedFactory: number;
@@ -42,60 +46,66 @@ export class EnergyReportComponent implements OnInit {
   accessToFactories: boolean = true;
   private intervalId: any;
   factoryId: number;
+  isCustomSearch = false;
+  selectedName: string = 'lineToNeutral';
+
+  selectOptions = [
+    { name: 'lineToNeutral' },
+    { name: 'lineToLine' },
+    { name: 'currents' },
+    { name: 'powerFactor' },
+    { name: 'activePower' },
+    { name: 'apparentPower' },
+  ];
+  object: any = {
+    lineToNeutral: ['v1', 'v2', 'v3'],
+    lineToLine: ['v1', 'v2', 'v3'],
+    currents: ['i1', 'i2', 'i3'],
+    powerFactor: ['pf1', 'pf2', 'pf3'],
+    activePower: ['p1', 'p2', 'p3'],
+    apparentPower: ['p1', 'p2', 'p3'],
+  };
+
+  get selectedItem() {
+    return this.object[this.selectedName] || [];
+  }
   constructor(
     private _reportServices: ReportsService,
     private _fb: FormBuilder,
     public _authService: AuthService,
-    private _appService: AppService
+    private _appService: AppService,
+    private _energyService: SignalREnergyService
   ) {}
 
   ngOnInit(): void {
     this.initFrom();
-    this.GetAllFactories();
-    // this.getTransformers(2);
+    this.getAllFactories();
     let todayDate = new Date();
     todayDate.setDate(todayDate.getDate() - 1);
     this.lastDay = todayDate.toISOString().split('T')[0];
-
     let todayDay = new Date();
     this.today = todayDay.toISOString().split('T')[0];
-
     let tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate());
     this.nextDay = tomorrowDate.toISOString().split('T')[0];
   }
-
-  GetAllFactories() {
-    if (
-      this._authService.isHasAccessToE2() &&
-      this._authService.isHasAccessToE1()
-    ) {
-      this._appService.GetAllFactories().subscribe((data) => {
-        this.FactoriesDropDown = data;
-        this.accessToFactories = true;
-        // this.factorybreadcrumb = this.FactoriesDropDown.find(
-        //   (x) => this.selectedFactory == x.id
-        // )?.name;
-      });
-    } else if (this._authService.isHasAccessToE2()) {
-      this.selectedFactory = 3;
-      // this.selectedLine = 29;
-      // this.factorybreadcrumb = 'EIPICO2';
-      this.accessToFactories = false;
-    } else if (this._authService.isHasAccessToE1()) {
-      this.selectedFactory = 2;
-      // this.factorybreadcrumb = 'EIPICO1';
-      this.accessToFactories = false;
-    }
-  }
-
   initFrom() {
     this.form = this._fb.group({
       from: new Date(),
       to: new Date(),
     });
   }
-
+  getAllFactories() {
+    this._appService.GetAllFactories().subscribe({
+      next: (res) => {
+        this.FactoriesDropDown = res;
+        console.log(this.FactoriesDropDown);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
   getTransformersPerFatory(factoryId: number) {
     this._reportServices.GetAllTransformars(factoryId).subscribe((data) => {
       console.log(factoryId);
@@ -103,72 +113,58 @@ export class EnergyReportComponent implements OnInit {
       console.log(this.transformers);
     });
   }
+  initializeSignalR(sourceId: string) {
+    this._energyService.startConnection(sourceId).then(() => {
+      this._energyService.energyUpdate((data) => {
+        console.log('Received SignalR Data:', data);
 
-  // getTransformers(factoryId: number) {
-  //   this._reportServices.GetAllTransformars(factoryId).subscribe((data) => {
+        this.tranformerRead = [data];
+      });
+    });
+  }
 
-  //     this.transformers = data;
-  //   });
-  // }
+  liveData() {
+    const sourceId = this.selectedtransformer;
+    this._energyService.startConnection(sourceId).then(() => {
+      this._energyService.energyUpdate((data) => {
+        this.tranformerRead = [data];
+        this.customBtnClicked = false;
+        this.isCustomSearch = false;
+        this.tranformerReadCustom = [];
+      });
+    });
+  }
 
   getTransformerReads() {
+    this.customBtnClicked = true;
+    this.isCustomSearch = true;
     const start = this.form.get('from')?.value;
     const end = this.form.get('to')?.value;
     const page = this.page;
+    const pagesize = 10;
     this._reportServices
-      .TransformersReads(this.selectedtransformer, page, 20, start, end)
+      .TransformersReads(this.selectedtransformer, 1, 10, start, end)
       .subscribe((data) => {
-        this.tranformerRead = data.consumption;
-        this.totalCount = data.totalCount;
-        this.totalEnergyConsumption = data.totalEnergyConsumption;
+        this.tranformerReadCustom = data.consumption;
+        console.log(this.tranformerReadCustom);
+        this.totalEnergyConsumption = data.totalEnergyConsumption || 0;
+        this.tranformerRead = [];
       });
   }
 
   customDate() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    this.customBtnClicked = !this.customBtnClicked;
-    if (this.customBtnClicked) {
-      this.form.get('start')?.setValidators(Validators.required);
-      this.form.get('to')?.setValidators(Validators.required);
-    } else {
-      this.form.get('start')?.clearValidators();
-      this.form.get('to')?.clearValidators();
-      this.form.get('start')?.reset();
-      this.form.get('to')?.reset();
-    }
+    this.customBtnClicked = true;
+    this.isCustomSearch = false;
+    this.tranformerReadCustom = [];
   }
 
-  liveData() {
-    this.form.patchValue({
-      from: this.today,
-      to: this.today,
-    });
-    this.getTransformerReads();
-    this.intervalId = setInterval(() => {
-      this.getTransformerReads();
-    }, 30000);
-  }
+  // onTableDataChange(event: any): void {
+  //   this.page = event;
 
-  ngOnDestroy() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-  }
-
-  onTableDataChange(event: any): void {
-    this.page = event;
-    this.getTransformerReads();
-  }
+  // }
 
   exportExcel() {
     import('xlsx').then((xlsx) => {
-      // let report = this.validationReport;
-      // report = report.map(({ checked, ...rest }) => {
-      //   const { description, ...restWithoutTHV } = rest;
-      //   return restWithoutTHV;
-      // });
       const worksheet = xlsx.utils.json_to_sheet(this.tranformerRead);
       const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, {
@@ -179,10 +175,10 @@ export class EnergyReportComponent implements OnInit {
     });
   }
 
-  loadLazy(event: any) {
-    this.page = event.first / event.rows + 1;
-    this.onTableDataChange(this.page);
-  }
+  // loadLazy(event: any) {
+  //   this.page = event.first / event.rows + 1;
+  //   this.onTableDataChange(this.page);
+  // }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
     let EXCEL_TYPE =
@@ -199,5 +195,8 @@ export class EnergyReportComponent implements OnInit {
 
   onFromDateChange(selectedDate: string): void {
     this.lastDay = selectedDate;
+  }
+  ngOnDestroy() {
+    this._energyService.stopConnection();
   }
 }

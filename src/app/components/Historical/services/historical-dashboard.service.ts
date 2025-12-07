@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -23,6 +23,7 @@ export class HistoricalDashboardService {
   public hubConnection: signalR.HubConnection;
   private _factory: number;
   private _line: number;
+
   part?: number | boolean;
   filterObj: {
     shiftFilterid: number;
@@ -32,7 +33,7 @@ export class HistoricalDashboardService {
     to?: any;
   };
 
-  constructor(private _http: HttpClient) {
+  constructor(private _http: HttpClient, private ngZone: NgZone) {
     this.duration = new BehaviorSubject<number>(
       JSON.parse(localStorage.getItem('duration')!)
     );
@@ -120,8 +121,15 @@ export class HistoricalDashboardService {
       console.error(' selectedFactory selectedLine undefined');
       return;
     }
-
     const groupName = `MainDashboard${filterObj.selectedFactory}${filterObj.selectedLine}`;
+
+    if (this.hubConnection) {
+      try {
+        await this.hubConnection.stop();
+      } catch (err) {
+        console.error('Error stopping connection:', err);
+      }
+    }
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('http://10.1.1.240:80/MES/mainDashboard', {
@@ -134,35 +142,25 @@ export class HistoricalDashboardService {
 
     try {
       await this.hubConnection.start();
-      console.log('SignalR connection started');
-
+      console.log(' SignalR connection started');
       await this.hubConnection.invoke(
         'JoinGroup',
         groupName,
         parseInt(filterObj.selectedFactory.toString()),
         parseInt(filterObj.selectedLine.toString())
       );
-      console.log('✅ Joined group:', groupName);
-
+      console.log(' Joined group:', groupName);
       this.hubConnection.on(groupName, (data) => {
-        this.part = data;
-        console.log(' Received data:', data);
+        this.ngZone.runOutsideAngular(() => {
+          this.part = data;
+          console.log('Received data:', data);
+        });
       });
     } catch (err) {
-      console.error(' Error while starting connection or joining group: ', err);
+      console.error(' Error starting or joining SignalR', err);
     }
   }
 
-  // startConnection() {
-  //   this.hubConnection.on(
-  //     `MainDashboard${this.filterObj.selectedFactory}${this.filterObj.selectedLine}`,
-  //     (data) => {
-  //       this.part = data;
-  //       console.log(data);
-  //     }
-  //   );
-  // }
-  ////////refactoring from backend
   getFillerRefactor(
     factoryId: number,
     lineId: number,

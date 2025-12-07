@@ -64,7 +64,7 @@ export class MachineStateComponent implements OnInit {
       form: [, [Validators.required]],
       to: [, [Validators.required]],
     });
-    this.GetAllFactories();
+    this.onGetAllFactories();
     // debugger;
     // if (
     //   localStorage.getItem('MachineStatefactoryId') &&
@@ -84,12 +84,18 @@ export class MachineStateComponent implements OnInit {
     //   this.GetMachineState(+this.selectedLine);
     // }
   }
-
+  onGetAllFactories() {
+    this._appService.GetAllFactories().subscribe({
+      next: (res) => {
+        this.FactoriesDropDown = res;
+      },
+    });
+  }
   GetAllFactories() {
     if (
-      // this._authService.isHasAccessToE2() &&
-      // this._authService.isHasAccessToE1()
-      this.Permission.hasAll([Permission.E1, Permission.E2])
+      (this._authService.isHasAccessToE2() &&
+        this._authService.isHasAccessToE1(),
+      this.Permission.hasAll([Permission.E1, Permission.E2]))
     ) {
       this._appService.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;

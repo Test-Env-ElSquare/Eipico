@@ -1,5 +1,7 @@
-<div *ngIf="!loading; else skeleton" class="bg-white rounded-3 shadow-sm h-100 d-flex align-items-center justify-content-center">
+<div *ngIf="!loading; else skeleton"
+  class="bg-white rounded-3 shadow-sm h-100 d-flex align-items-center justify-content-center">
   <div class="row">
+
     <div class="col-lg-6">
       <apx-chart [series]="radialChartOptions2.series" [chart]="radialChartOptions2.chart"
         [plotOptions]="radialChartOptions2.plotOptions" [labels]="radialChartOptions2.labels"></apx-chart>

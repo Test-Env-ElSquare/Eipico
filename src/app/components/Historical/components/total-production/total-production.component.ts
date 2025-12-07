@@ -135,16 +135,6 @@ export class TotalProductionComponent
     this.liveConnected = true;
   }
 
-  // startConnection() {
-  //   this._historicalDashboardService.hubConnection.on(
-  //     `MainDashboard${this.filterObj.selectedFactory}${this.filterObj.selectedLine}`,
-  //     (data) => {
-  //       this.part = data;
-  //       console.log(data);
-  //     }
-  //   );
-  // }
-
   ngOnChanges(changes: SimpleChanges): void {
     this._cdr.detectChanges();
     this.EnergyRefactor();

@@ -93,11 +93,11 @@ export class BeconReportComponent implements OnInit {
     this.updatePagination();
   }
 
-  get paginatedProductionMachines(): MachineState[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredProductionMachines.slice(start, end);
-  }
+  // get paginatedProductionMachines(): MachineState[] {
+  //   const start = (this.currentPage - 1) * this.itemsPerPage;
+  //   const end = start + this.itemsPerPage;
+  //   return this.filteredProductionMachines.slice(start, end);
+  // }
 
   sortProduction(field: keyof MachineState) {
     if (this.sortProductionField === field) {
@@ -194,11 +194,11 @@ export class BeconReportComponent implements OnInit {
     this.updatePaginationUtilities();
   }
 
-  get paginatedUtilitiesMachines(): EnergyMachineState[] {
-    const start = (this.currentPageUtilities - 1) * this.itemsPerPageUtilities;
-    const end = start + this.itemsPerPageUtilities;
-    return this.filteredUtilitiesMachines.slice(start, end);
-  }
+  // get paginatedUtilitiesMachines(): EnergyMachineState[] {
+  //   const start = (this.currentPageUtilities - 1) * this.itemsPerPageUtilities;
+  //   const end = start + this.itemsPerPageUtilities;
+  //   return this.filteredUtilitiesMachines.slice(start, end);
+  // }
 
   sortUtilities(field: keyof EnergyMachineState) {
     if (this.sortUtilitiesField === field) {

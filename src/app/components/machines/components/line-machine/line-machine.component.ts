@@ -39,11 +39,18 @@ export class LineMachineComponent implements OnInit {
 
   //get all factories
   //equal FactoriesDropDown with response to fill the dropdown select option
+  onGetAllFactories() {
+    this._appService.GetAllFactories().subscribe({
+      next: (res) => {
+        this.FactoriesDropDown = res;
+      },
+    });
+  }
   GetAllFactories() {
     if (
-      // this._authService.isHasAccessToE2() &&
-      // this._authService.isHasAccessToE1()
-      this.Permission.hasAll([Permission.E1, Permission.E2])
+      (this._authService.isHasAccessToE2() &&
+        this._authService.isHasAccessToE1(),
+      this.Permission.hasAny([Permission.Everything]))
     ) {
       this._appService.GetAllFactories().subscribe((data) => {
         this.FactoriesDropDown = data;
@@ -77,6 +84,7 @@ export class LineMachineComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    this.GetAllFactories();
+    this.onGetAllFactories();
+    // this.GetAllFactories(); by premission
   }
 }

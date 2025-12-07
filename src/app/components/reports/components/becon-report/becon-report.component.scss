@@ -202,6 +202,15 @@
     line-height: 1.2;
   }
 }
+.table-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 // Dark mode support
 .dark-theme {
