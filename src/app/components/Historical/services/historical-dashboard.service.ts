@@ -96,20 +96,6 @@ export class HistoricalDashboardService {
     this._line = line;
   }
 
-  // public startConnection = () => {
-  //   this.hubConnection = new signalR.HubConnectionBuilder()
-  //     .withUrl('http://10.1.1.240:80/MES/mainDashboard', {
-  //       skipNegotiation: true,
-  //       transport: signalR.HttpTransportType.WebSockets,
-  //     })
-  //     .withAutomaticReconnect()
-  //     .configureLogging(signalR.LogLevel.Information)
-  //     .build();
-  //   this.hubConnection
-  //     .start()
-  //     .then(() => console.log('success conected'))
-  //     .catch((err) => console.log('Error while starting connection: ' + err));
-  // };
   public async startConnectionSignalR(filterObj: {
     shiftFilterid: number;
     selectedFactory: number;
@@ -168,18 +154,31 @@ export class HistoricalDashboardService {
     from: string = '',
     to: string = ''
   ): Observable<GetFillerRefactor[]> {
-    return this._http.get<GetFillerRefactor[]>(
-      environment.url + 'api/Dashboards/GetFillerRefactor',
-      {
-        params: {
-          factoryId: factoryId,
-          lineId: lineId,
-          duration: duration,
-          from: from,
-          to: to,
-        },
-      }
-    );
+    if (from && to) {
+      return this._http.get<GetFillerRefactor[]>(
+        environment.url + 'api/Dashboards/GetFillerRefactor',
+        {
+          params: {
+            factoryId: factoryId,
+            lineId: lineId,
+            duration: duration,
+            from: from,
+            to: to,
+          },
+        }
+      );
+    } else {
+      return this._http.get<GetFillerRefactor[]>(
+        environment.url + 'api/Dashboards/GetFillerRefactor',
+        {
+          params: {
+            factoryId: factoryId,
+            lineId: lineId,
+            duration: duration,
+          },
+        }
+      );
+    }
   }
 
   EnergyRefactor(
@@ -188,17 +187,29 @@ export class HistoricalDashboardService {
     from: string = '',
     to: string = ''
   ): Observable<EnergyRefactor> {
-    return this._http.get<EnergyRefactor>(
-      environment.url + 'api/Dashboards/EnergyRefactor',
-      {
-        params: {
-          lineId: lineId,
-          duration: duration,
-          from: from,
-          to: to,
-        },
-      }
-    );
+    if (from && to) {
+      return this._http.get<EnergyRefactor>(
+        environment.url + 'api/Dashboards/EnergyRefactor',
+        {
+          params: {
+            lineId: lineId,
+            duration: duration,
+            from: from,
+            to: to,
+          },
+        }
+      );
+    } else {
+      return this._http.get<EnergyRefactor>(
+        environment.url + 'api/Dashboards/EnergyRefactor',
+        {
+          params: {
+            lineId: lineId,
+            duration: duration,
+          },
+        }
+      );
+    }
   }
 
   TimeLineRefactor(
@@ -207,17 +218,29 @@ export class HistoricalDashboardService {
     from: string = '',
     to: string = ''
   ): Observable<timeline[]> {
-    return this._http.get<timeline[]>(
-      environment.url + 'api/Dashboards/TimeLineRefactor',
-      {
-        params: {
-          lineId: lineId,
-          duration: duration,
-          from: from,
-          to: to,
-        },
-      }
-    );
+    if (from && to) {
+      return this._http.get<timeline[]>(
+        environment.url + 'api/Dashboards/TimeLineRefactor',
+        {
+          params: {
+            lineId: lineId,
+            duration: duration,
+            from: from,
+            to: to,
+          },
+        }
+      );
+    } else {
+      return this._http.get<timeline[]>(
+        environment.url + 'api/Dashboards/TimeLineRefactor',
+        {
+          params: {
+            lineId: lineId,
+            duration: duration,
+          },
+        }
+      );
+    }
   }
 
   GetSkus(

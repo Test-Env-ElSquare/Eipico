@@ -29,13 +29,13 @@
           <div class="col-md-8" *ngIf="customBtnClicked">
             <div class="d-flex align-items-center gap-2">
 
-              <input type="date" class="form-control" max="{{ lastDay }}" [ngModel]="lastDay"
-                (ngModelChange)="onFromDateChange($event)" formControlName="from" />
+              <input type="date" class="form-control" max="{{ lastDay }}" (ngModelChange)="onFromDateChange($event)"
+                formControlName="from" />
 
               <span>:</span>
 
               <input type="date" class="form-control" [min]="lastDay" max="{{ nextDay | date : 'yyyy-MM-dd' }}"
-                [ngModel]="toDate | date : 'yyyy-MM-dd'" (ngModelChange)="toDate = $event" formControlName="to" />
+                (ngModelChange)="toDate = $event" formControlName="to" />
 
 
               <button type="button" (click)="getTransformerReads()" [disabled]="form.invalid"
@@ -50,9 +50,9 @@
         </div>
         <div class="row my-3">
           <div class="col-md-5 d-flex align-items-center" *ngIf="tranformerRead?.length != 0">
-            <p class="fw-bold">
+            <!-- <p class="fw-bold">
               Total Energy Consumption: {{ totalEnergyConsumption }} kWh
-            </p>
+            </p> -->
           </div>
         </div>
       </div>
@@ -108,6 +108,7 @@
             <th>V1</th>
             <th>V2</th>
             <th>V3</th>
+            <th>Total Energy</th>
             <th>Time Stamp</th>
           </tr>
 
@@ -147,7 +148,7 @@
             <td>{{ item?.v2 }}</td>
             <td>{{ item?.v3 }}</td>
 
-            <td>{{ item?.timeStamp }}</td>
+
             <!-- <td>{{ item?.avgPapp2 }}</td>
             <td>{{ item?.minPapp3 }}</td>
             <td>{{ item?.maxPapp3 }}</td>
@@ -162,6 +163,7 @@
             <td>{{ item?.maxPact3 }}</td>
             <td>{{ item?.avgPact3 }}</td> -->
             <td>{{ item?.totalEnergyConsumption }}</td>
+            <td>{{ item?.timeStamp }}</td>
           </tr>
         </ng-template>
       </p-table>

@@ -35,7 +35,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   FilterForm: FormGroup;
   shiftFilterid: number = 0;
   liveConnected: boolean = false;
-  FactoriesDropDown: factory[];
+  // FactoriesDropDown: factory[];
   factoriesListDown: factory[];
   factoriesList: factory[];
   LineDropDown: Line[];
@@ -77,7 +77,10 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.filterBTN(this.shiftFilterid);
   }
-
+  onShiftChange() {
+    this.customBtnClicked = false;
+    this.filterBTN(this.shiftFilterid);
+  }
   createForm() {
     this.FilterForm = this._fb.group({
       factoryId: [, [Validators.required]],
@@ -91,65 +94,20 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastDay = selectedDate;
   }
 
-  //get all factories
-  // onGetAllFactories() {
-  //   this._appService.GetAllFactories().subscribe((data) => {
-  //     this.FactoriesDropDown = data;
-  //     console.log('facroriesDropDown:', this.FactoriesDropDown);
-  //     this.accessToFactories = true;
-
-  //     // default factory
-  //     // if (!this.selectedFactory) {
-  //     //   this.selectedFactory = data[0].id;
-  //     // }
-
-  //     // patch form now (AFTER items loaded)
-  //     this.FilterForm.patchValue({
-  //       factoryId: this.selectedFactory,
-  //     });
-
-  //     // load lines for default factory
-  //     this.GetFactoryLines(this.selectedFactory);
-
-  //     // listen to changes on factory select
-  //     this.FilterForm.get('factoryId')?.valueChanges.subscribe(
-  //       (factoryId: number) => {
-  //         console.log('Factory changed to:', factoryId);
-  //         this.selectedFactory = factoryId;
-
-  //         this.GetFactoryLines(factoryId);
-
-  //         this.factorybreadcrumb = this.FactoriesDropDown.find(
-  //           (f) => f.id === factoryId
-  //         )?.name;
-
-  //         // emit filter values
-  //         this.filterValues.emit({
-  //           shiftFilterid: this.shiftFilterid,
-  //           selectedFactory: this.selectedFactory,
-  //           selectedLine: this.selectedLine,
-  //         });
-  //       }
-  //     );
-
-  //     // update breadcrumb for default
-  //     this.factorybreadcrumb = this.FactoriesDropDown.find(
-  //       (f) => f.id === this.selectedFactory
-  //     )?.name;
-  //   });
-  // }
   getAllFactories() {
     this._appService.GetAllFactories().subscribe({
       next: (res) => {
         this.factoriesListDown = res;
+        this._cdr.detectChanges();
         console.log(res);
       },
     });
   }
   GetFactoryLines(factoryId: number) {
-    this._appService.GetFactoryLines(+factoryId).subscribe({
+    this._appService.GetFactoryLines(factoryId).subscribe({
       next: (res) => {
         this.LineDropDown = res;
+        this._cdr.detectChanges();
       },
       error: (err) => {
         console.log(err);
@@ -158,6 +116,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   searchByCustomDuration() {
     this.customBtnClicked = !this.customBtnClicked;
+    console.log('custom');
   }
 
   getDurationDropDown() {
@@ -175,16 +134,18 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       from: from,
       to: to,
     };
+    this.filterValues.emit(filterObj);
 
-    if (this.liveConnected) {
-      this._historicalService.hubConnection.stop();
+    // Start SignalR connection if not started yet
+    if (!this.liveConnected && selectedFactory && selectedLine) {
+      this._historicalService.startConnectionSignalR(filterObj);
+      this.liveConnected = true;
     }
 
-    this.filterValues.emit(filterObj);
     this.Linebreadcrumb = this.LineDropDown?.find(
       (x) => selectedLine == x.id
     )?.name;
-    this.factorybreadcrumb = this.FactoriesDropDown?.find(
+    this.factorybreadcrumb = this.factoriesListDown?.find(
       (x) => selectedFactory == x.id
     )?.name;
     this.Durationbreadcrumb = this.DurationDropDown?.find(
@@ -192,16 +153,10 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     )?.name;
 
     startWith(null);
-
-    if (Duration === 0) {
-      this.liveConnected = true;
-    } else if (Duration !== 0 && this.liveConnected) {
-      this.stopCon();
-    }
   }
 
   stopCon() {
-    if (this.liveConnected) {
+    if (this.liveConnected && this._historicalService.hubConnection) {
       this._historicalService.hubConnection.stop();
       this.liveConnected = false;
     }
@@ -217,7 +172,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this._cdr.detectChanges();
+    // this._cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

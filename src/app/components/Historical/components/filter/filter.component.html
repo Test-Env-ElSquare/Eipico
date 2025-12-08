@@ -1,26 +1,26 @@
 <!-- filter by shift  -->
 <div class="btn-group mb-4" role="group" aria-label="Basic radio toggle button group">
-  <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
-    [checked]="shiftFilterid==0" autocomplete="off" [value]="0" (change)="customBtnClicked = false"
+  <input [value]="0" type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
+    [checked]="shiftFilterid==0" autocomplete="off" [value]="0" (change)="onShiftChange()"
     (click)="this._historicalService.dashboardTime.emit(shiftFilterid)">
 
   <label class="btn btn-outline-primary" for="btnRadio3">Current
     Shift</label>
 
   <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" [(ngModel)]="shiftFilterid"
-    autocomplete="off" [checked]="shiftFilterid == 1" (change)="customBtnClicked = false" [value]="1">
+    autocomplete="off" [checked]="shiftFilterid == 1" (change)="onShiftChange()" [value]="1">
   <label class="btn btn-outline-primary" for="btnRadio1">Last Shift</label>
 
   <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio2"
-    (change)="customBtnClicked = false" [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
+    (change)="onShiftChange()" [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
   <label class="btn btn-outline-primary" for="btnRadio2">Last Two Shifts</label>
 
   <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio5" [(ngModel)]="shiftFilterid"
-    (change)="customBtnClicked = false" autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
+    (change)="onShiftChange()" autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
   <label class="btn btn-outline-primary" for="btnRadio5">Last 7 Days</label>
 
   <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio4" autocomplete="off"
-    (change)="customBtnClicked = false" [(ngModel)]="shiftFilterid" [checked]="shiftFilterid==4" [value]="4">
+    (change)="onShiftChange()" [(ngModel)]="shiftFilterid" [checked]="shiftFilterid==4" [value]="4">
   <label class="btn btn-outline-primary" for="btnRadio4">Last 30 Days</label>
 
   <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio6" autocomplete="off"
