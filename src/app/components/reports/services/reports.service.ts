@@ -70,8 +70,6 @@ export class ReportsService {
 
   TransformersReads(
     transformer: string,
-    pagenum: number,
-    pagesize: number,
     start: string,
     end: string
   ): Observable<any> {
@@ -82,8 +80,6 @@ export class ReportsService {
           transformer: transformer,
           start: start,
           End: end,
-          pagenum: pagenum,
-          pagesize: pagesize,
         },
       }
     );

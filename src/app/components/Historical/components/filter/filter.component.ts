@@ -77,10 +77,7 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.filterBTN(this.shiftFilterid);
   }
-  onShiftChange() {
-    this.customBtnClicked = false;
-    this.filterBTN(this.shiftFilterid);
-  }
+
   createForm() {
     this.FilterForm = this._fb.group({
       factoryId: [, [Validators.required]],
@@ -89,7 +86,10 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
       // to: [],
     });
   }
-
+  onShiftChange() {
+    this.customBtnClicked = false;
+    this.filterBTN(this.shiftFilterid);
+  }
   onFromDateChange(selectedDate: string): void {
     this.lastDay = selectedDate;
   }

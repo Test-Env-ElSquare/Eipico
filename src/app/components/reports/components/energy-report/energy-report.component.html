@@ -29,13 +29,12 @@
           <div class="col-md-8" *ngIf="customBtnClicked">
             <div class="d-flex align-items-center gap-2">
 
-              <input type="date" class="form-control" max="{{ lastDay }}" (ngModelChange)="onFromDateChange($event)"
-                formControlName="from" />
+              <input type="date" class="form-control" max="{{ lastDay }}" formControlName="from" />
 
               <span>:</span>
 
               <input type="date" class="form-control" [min]="lastDay" max="{{ nextDay | date : 'yyyy-MM-dd' }}"
-                (ngModelChange)="toDate = $event" formControlName="to" />
+                formControlName="to" />
 
 
               <button type="button" (click)="getTransformerReads()" [disabled]="form.invalid"
@@ -60,20 +59,22 @@
   </form>
 </div>
 
-<div class="col-xl-12 stretch-card grid-margin">
+<div class="col-xl-12  grid-margin">
   <div class="card">
-    <div class="card-body table-responsive" *ngIf="!customBtnClicked && tranformerRead?.length">
-      <!-- <p-table [value]="tranformerRead" [paginator]="true" [rows]="30" [totalRecords]="totalCount" [lazy]="true"
-        (onLazyLoad)="loadLazy($event)" styleClass="p-datatable-striped table table-sm"> -->
+    <div class="card-body table-responsive custom-table-wrapper" *ngIf="!customBtnClicked && tranformerRead?.length">
+      <div class="flex justify-content-center mb-4 gap-3">
+
+
+        <button type="button" pButton pRipple (click)="exportExcel()" class="mt-2 mr-2 bg-success rounded-3 p-2"
+          pTooltip="XLS" tooltipPosition="bottom">
+          <i class="pi pi-file-excel text-white"></i>
+        </button>
+
+      </div>
       <p-table [value]="tranformerRead" styleClass="p-datatable-striped table table-sm">
-        <ng-template pTemplate="caption">
-          <div class="flex">
-            <button type="button" pButton pRipple (click)="exportExcel()" class="mr-2 bg-success rounded-3 p-2"
-              pTooltip="XLS" tooltipPosition="bottom">
-              <i class="pi pi-file-excel text-white"></i>
-            </button>
-          </div>
-        </ng-template>
+
+
+
 
         <ng-template pTemplate="header">
           <tr>
@@ -163,15 +164,15 @@
             <td>{{ item?.maxPact3 }}</td>
             <td>{{ item?.avgPact3 }}</td> -->
             <td>{{ item?.totalEnergyConsumption }}</td>
-            <td>{{ item?.timeStamp }}</td>
+            <td>{{ item?.timeStamp| date : 'yyyy-MM-dd' }}</td>
           </tr>
         </ng-template>
       </p-table>
 
     </div>
     <div class="card-body table-responsive custom-table-wrapper"
-      *ngIf="customBtnClicked && isCustomSearch && tranformerReadCustom?.length">
-      <div class="flex justify-content-center mb-4 gap-3">
+      *ngIf="customBtnClicked && isCustomSearch &&tranformerReadCustom?.length">
+      <div class=" flex justify-content-center mb-4 gap-3">
         <p-selectButton [options]="selectOptions" [(ngModel)]="selectedName" optionLabel="name" optionValue="name"
           class="custom-select-btn m-2"></p-selectButton>
 
@@ -190,7 +191,7 @@
             <th colspan="3" class="text-center header-group">Max</th>
             <th colspan="3" class="text-center header-group">Avg</th>
             <th rowspan="3" class=" text-center header-sticky">Total Energy</th>
-            <th rowspan="3" class="text-center header-sticky">Day</th>
+            <th rowspan="3" class="text-center header-sticky">Day </th>
           </tr>
 
           <tr>
@@ -215,7 +216,7 @@
             </td>
 
             <td>{{ energy.totalEnergyConsumption }}</td>
-            <td>{{ energy.startDay }}</td>
+            <td>{{ energy.startDay | date : 'yyyy-MM-dd'}}</td>
           </tr>
         </ng-template>
       </p-table>

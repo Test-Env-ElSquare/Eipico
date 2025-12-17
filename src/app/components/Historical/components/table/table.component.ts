@@ -49,10 +49,10 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges() {
     this._cdr.detectChanges();
-    this.getFillerRefactor();
+    // this.getFillerRefactor();
   }
   ngOnInit(): void {
-    this.getFillerRefactor();
+    // this.getFillerRefactor();
   }
   ngAfterViewInit(): void {
     // this._cdr.detectChanges();

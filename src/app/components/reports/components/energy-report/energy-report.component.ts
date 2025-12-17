@@ -3,15 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { ReportsService } from '../../services/reports.service';
 import { Transformars, TransformersRead } from '../../model/model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// import { start } from 'repl';
-import { end } from '@popperjs/core';
-
 import * as FileSaver from 'file-saver';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import { AppService } from 'src/app/core/services/app-Service.service';
 import { factory } from 'src/app/core/models/filter';
 import { SignalREnergyService } from '../../services/signal-R-energy/signal-r-energy.service';
-// import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-energy-report',
   templateUrl: './energy-report.component.html',
@@ -44,7 +41,6 @@ export class EnergyReportComponent implements OnInit {
   toDate: Date = new Date();
   maxToDate: Date | undefined;
   accessToFactories: boolean = true;
-  private intervalId: any;
   factoryId: number;
   isCustomSearch = false;
   selectedName: string = 'lineToNeutral';
@@ -136,14 +132,10 @@ export class EnergyReportComponent implements OnInit {
   }
 
   getTransformerReads() {
-    this.customBtnClicked = true;
-    this.isCustomSearch = true;
     const start = this.form.get('from')?.value;
     const end = this.form.get('to')?.value;
-    const page = this.page;
-    const pagesize = 10;
     this._reportServices
-      .TransformersReads(this.selectedtransformer, 1, 10, start, end)
+      .TransformersReads(this.selectedtransformer, start, end)
       .subscribe((data) => {
         this.tranformerReadCustom = data.consumption;
         console.log(this.tranformerReadCustom);
@@ -154,14 +146,10 @@ export class EnergyReportComponent implements OnInit {
 
   customDate() {
     this.customBtnClicked = true;
-    this.isCustomSearch = false;
-    this.tranformerReadCustom = [];
+    this.isCustomSearch = true;
+    this._energyService.stopConnection();
+    // this.tranformerReadCustom = [];
   }
-
-  // onTableDataChange(event: any): void {
-  //   this.page = event;
-
-  // }
 
   exportExcel() {
     import('xlsx').then((xlsx) => {
@@ -174,11 +162,6 @@ export class EnergyReportComponent implements OnInit {
       this.saveAsExcelFile(excelBuffer, 'Energy');
     });
   }
-
-  // loadLazy(event: any) {
-  //   this.page = event.first / event.rows + 1;
-  //   this.onTableDataChange(this.page);
-  // }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
     let EXCEL_TYPE =

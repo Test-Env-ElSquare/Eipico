@@ -79,7 +79,7 @@ export class WaterfallComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
     //drew charts
-    this.getFillerRefactor();
+    // this.getFillerRefactor();
   }
   ngAfterViewInit(): void {
     this._cdr.detectChanges();
