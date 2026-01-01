@@ -90,11 +90,20 @@
           <td class="">
 
 
+            <button (click)="openDeleteDialog(user.id)" type="button" class="btn btn-sm text-danger mx-2" title="Delete"
+              [disabled]="false">
+              <i class="pi pi-trash"></i>
+            </button>
+            <p-dialog [(visible)]="showDeleteDialog" [modal]="true" [closable]="false" [style]="{width: '30vw'}">
+
+              <app-delete-component (confirm)="deleteUser()" (cancel)="onCancelDelete()">
+              </app-delete-component>
+
+            </p-dialog>
             <button (click)="openEditDialog(user)" type="button" class="btn btn-sm text-white bg-edit-primary mx-2"
               title="Edit">
               <i class="pi pi-pencil"></i>
             </button>
-
             <p-dialog [(visible)]="showEditDialog" styleClass="edit-dialog" [modal]="false" [closable]="true"
               [style]="{width: '60vw'}">
               <ng-template pTemplate="content">

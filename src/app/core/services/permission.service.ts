@@ -7,6 +7,7 @@ export class PermissionService {
   private readonly granted = new Set<Permission>();
   private readonly subject = new BehaviorSubject<Set<Permission>>(new Set());
   HasAccessToEverything: string;
+  currentRole: string;
   constructor() {}
 
   changes$ = this.subject.asObservable();
@@ -56,5 +57,9 @@ export class PermissionService {
 
   hasAll(permissions: Permission[]): boolean {
     return permissions.every((p) => this.has(p));
+  }
+  isAdminOrSuperAdmin(): boolean {
+    const role = this.currentRole?.toLowerCase();
+    return role === 'admin' || role === 'superadmin';
   }
 }

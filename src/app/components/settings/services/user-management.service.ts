@@ -17,6 +17,12 @@ export class UserManagementService {
     );
   }
 
+  deleteUserById(userId: string) {
+    return this._http.delete<any>(environment.url + 'api/Auth/DeleteUser', {
+      params: { userId },
+    });
+  }
+
   addRole(role: string, claims: any[], areaIds: number[]): Observable<any> {
     return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
       roleName: role,

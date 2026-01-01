@@ -228,20 +228,24 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           {
             label: 'Add Role',
             link: '/settings/addRole',
-            showSubItems: fullAccess || this.perms.has(Permission.AddRole),
+            showSubItems:
+              this.perms.isAdminOrSuperAdmin() &&
+              (fullAccess || this.perms.has(Permission.UserManagement)),
           },
           {
             label: 'User Management',
             link: '/settings/userMangement',
             showSubItems:
-              fullAccess || this.perms.has(Permission.UserManagement),
+              this.perms.isAdminOrSuperAdmin() &&
+              (fullAccess || this.perms.has(Permission.UserManagement)),
           },
-          {
-            label: 'Shift',
-            link: '/settings/shift',
-            showSubItems:
-              fullAccess || this.perms.has(Permission.UserManagement),
-          },
+          //on the feauture
+          // {
+          //   label: 'Shift',
+          //   link: '/settings/shift',
+          //   showSubItems:
+          //     fullAccess || this.perms.has(Permission.UserManagement),
+          // },
           // {
           //   label: 'Machines',
           //   link: '/settings/machine-settings',

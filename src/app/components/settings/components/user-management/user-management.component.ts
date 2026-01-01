@@ -36,7 +36,9 @@ export class UserManagementComponent implements OnInit {
   profileToEdit: IProfile | null = null;
   allAreas: IArea[] = [];
   selectedUser: any;
-
+  deletedUser: string;
+  showDeleteDialog: boolean = false;
+  selectedId: string = '';
   constructor(
     private fb: FormBuilder,
     private userManagementService: UserManagementService,
@@ -106,7 +108,26 @@ export class UserManagementComponent implements OnInit {
       },
     });
   }
+  deleteUser() {
+    if (!this.selectedId) return;
 
+    this.userManagementService.deleteUserById(this.selectedId).subscribe({
+      next: (res: any) => {
+        this.showDeleteDialog = false;
+        this.onGetAllUsers();
+        this.toastr.success(res.message);
+        console.log(this.selectedId);
+      },
+    });
+  }
+  openDeleteDialog(id: string) {
+    this.selectedId = id;
+    this.showDeleteDialog = true;
+  }
+
+  onCancelDelete() {
+    this.showDeleteDialog = false;
+  }
   onGetAllUsers(role?: string, email?: string) {
     this.userManagementService.getAllUSers(role, email).subscribe({
       next: (res) => {

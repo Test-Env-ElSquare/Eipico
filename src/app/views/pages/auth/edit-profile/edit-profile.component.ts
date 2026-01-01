@@ -91,7 +91,7 @@ export class EditProfileComponent implements OnInit {
         error: (err) => console.error(' Error loading self profile:', err),
       });
     }
-    this.updateNavbarVisibility(this._Router.url);
+    // this.updateNavbarVisibility(this._Router.url);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -110,15 +110,15 @@ export class EditProfileComponent implements OnInit {
   toggleCurrentPassword() {
     this.showCurrentPassword = !this.showCurrentPassword;
   }
-  updateNavbarVisibility(url: string): void {
-    if (url.includes('/settings/userMangement')) {
-      this.showNavbar = false;
-    } else if (url.includes('/auth/edit-profile')) {
-      this.showNavbar = true;
-    } else {
-      this.showNavbar = true;
-    }
-  }
+  // updateNavbarVisibility(url: string): void {
+  //   if (url.includes('/settings/userMangement')) {
+  //     this.showNavbar = false;
+  //   } else if (url.includes('/auth/edit-profile')) {
+  //     this.showNavbar = true;
+  //   } else {
+  //     this.showNavbar = true;
+  //   }
+  // }
   toggleNewPassword() {
     this.showNewPassword = !this.showNewPassword;
   }
