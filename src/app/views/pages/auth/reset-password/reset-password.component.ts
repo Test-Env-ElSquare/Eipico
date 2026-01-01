@@ -27,8 +27,9 @@ export class ResetPasswordComponent implements OnInit {
     private messageService: MessageService
   ) {
     this.resetForm = this.fb.group({
-      newPassword: ['', [Validators.required]],
-      confirmPassword: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      otp: ['', [Validators.required]],
+      newPassword: ['', Validators.required],
     });
   }
   ngOnInit(): void {}
@@ -37,20 +38,17 @@ export class ResetPasswordComponent implements OnInit {
       this.resetForm.markAllAsTouched();
       return;
     }
-    const newPassword = this.resetForm.get('newPassword')?.value;
-    const confirmPassword = this.resetForm.get('confirmPassword')?.value;
+    // const newPassword = this.resetForm.get('newPassword')?.value;
+    // const confirmPassword = this.resetForm.get('confirmPassword')?.value;
 
-    if (newPassword !== confirmPassword) {
-      this.passwordMismatch = true;
-      return;
-    }
-    this.passwordMismatch = false;
-    console.log(' Password ready to send:', newPassword);
-    this.passwordMismatch = false;
+    // this.passwordMismatch = false;
+    // console.log(' Password ready to send:', newPassword);
+    // this.passwordMismatch = false;
 
     const payload = {
       email: this.email,
-      newPassword: newPassword,
+      otp: this.resetForm.get('otp')?.value,
+      newPassword: this.resetForm.get('newPassword')?.value,
     };
     this._AuthService.resetPassword(payload).subscribe({
       next: (res) => {

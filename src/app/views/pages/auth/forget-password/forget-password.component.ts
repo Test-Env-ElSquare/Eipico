@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/Auth.service';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-forget-password',
   templateUrl: './forget-password.component.html',
@@ -13,16 +14,15 @@ export class ForgetPasswordComponent implements OnInit {
   @Output() emailCaptured: EventEmitter<string> = new EventEmitter<string>();
 
   @Output() nextStep = new EventEmitter<void>();
-  next() {
-    this.nextStep.emit();
-  }
+
   visible: boolean = false;
   currentStep = 1;
   email: string = '';
   constructor(
     private fb: FormBuilder,
     private _AuthService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private Router: Router
   ) {
     this.forgetForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -30,7 +30,12 @@ export class ForgetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
+  next() {
+    this.nextStep.emit();
+  }
+  goToMain() {
+    this.Router.navigate(['/MainDash']);
+  }
   goToStep(step: number) {
     this.currentStep = step;
   }

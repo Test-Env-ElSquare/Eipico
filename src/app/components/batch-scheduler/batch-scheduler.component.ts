@@ -45,7 +45,7 @@ export class BatchSchedulerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.GetAllFactories();
+    this.onGetAllFactories();
     this.createForm();
   }
 
@@ -56,26 +56,32 @@ export class BatchSchedulerComponent implements OnInit {
   hasAccessToFinisheBatch() {
     return this.Permission.has(Permission.BatchSchedulerViewAndFinish);
   }
-
-  GetAllFactories() {
-    if (
-      // this._authService.isHasAccessToE2() &&
-      // this._authService.isHasAccessToE1()
-      this.Permission.hasAll([Permission.E1, Permission.E2])
-    ) {
-      this._appServices.GetAllFactories().subscribe((data) => {
-        this.FactoriesDropDown = data;
-      });
-    } else if (this._authService.isHasAccessToE2()) {
-      this.selectedFactory = 3;
-      this.GetFactoryLines(3);
-      this.accessToFactories = false;
-    } else if (this._authService.isHasAccessToE1()) {
-      this.selectedFactory = 2;
-      this.GetFactoryLines(2);
-      this.accessToFactories = false;
-    }
+  onGetAllFactories() {
+    this._appServices.GetAllFactories().subscribe({
+      next: (res) => {
+        this.FactoriesDropDown = res;
+      },
+    });
   }
+  // GetAllFactories() {
+  //   if (
+  //     // this._authService.isHasAccessToE2() &&
+  //     // this._authService.isHasAccessToE1()
+  //     this.Permission.hasAll([Permission.E1, Permission.E2])
+  //   ) {
+  //     this._appServices.GetAllFactories().subscribe((data) => {
+  //       this.FactoriesDropDown = data;
+  //     });
+  //   } else if (this._authService.isHasAccessToE2()) {
+  //     this.selectedFactory = 3;
+  //     this.GetFactoryLines(3);
+  //     this.accessToFactories = false;
+  //   } else if (this._authService.isHasAccessToE1()) {
+  //     this.selectedFactory = 2;
+  //     this.GetFactoryLines(2);
+  //     this.accessToFactories = false;
+  //   }
+  // }
 
   GetFactoryLines(factoryId: number) {
     this._appServices.GetFactoryLines(+factoryId).subscribe((data) => {

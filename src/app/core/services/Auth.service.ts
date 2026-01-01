@@ -422,7 +422,7 @@ export class AuthService {
   }
   editUserProfile(data: UpdateUserProfile): Observable<UpdateUserProfile> {
     return this.http.put<UpdateUserProfile>(
-      environment.url + 'api/Auth/user/update-user',
+      environment.url + 'api/Auth/update-profile',
       data
     );
   }
