@@ -126,6 +126,7 @@ export class LoginComponent implements OnInit {
 
           // store both raw & decoded token separately
           localStorage.setItem('Token', res.token);
+          localStorage.setItem('roles', res.roles);
           localStorage.setItem('TokenDecoded', JSON.stringify(decodedToken));
           console.log('token');
           // optionally store user object if API returns it

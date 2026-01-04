@@ -7,11 +7,11 @@ export class PermissionService {
   private readonly granted = new Set<Permission>();
   private readonly subject = new BehaviorSubject<Set<Permission>>(new Set());
   HasAccessToEverything: string;
-  currentRole: string;
+
   constructor() {}
 
   changes$ = this.subject.asObservable();
-
+  currentRole = localStorage.getItem('role') || '';
   initFromClaims(claims: Record<string, any> | null | undefined): void {
     this.granted.clear();
     if (!claims) {
@@ -59,7 +59,10 @@ export class PermissionService {
     return permissions.every((p) => this.has(p));
   }
   isAdminOrSuperAdmin(): boolean {
-    const role = this.currentRole?.toLowerCase();
+    const currentRole = localStorage.getItem('roles');
+    console.log('Checking admin/superadmin for role:', currentRole);
+
+    const role = currentRole?.toLowerCase();
     return role === 'admin' || role === 'superadmin';
   }
 }

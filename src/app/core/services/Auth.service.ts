@@ -73,15 +73,18 @@ export class AuthService {
   public userClaims: any;
   public currentUserValue: Observable<any>;
   public permissions: any;
+  currentRole: any;
   constructor(
     private http: HttpClient,
     private permissionService: PermissionService
   ) {
     const token = localStorage.getItem('Token');
+    const role = localStorage.getItem('roles');
     if (token) {
       try {
         if (!this.jwtHelper.isTokenExpired(token)) {
-          this.userClaims = this.jwtHelper.decodeToken(token);
+          const decoded = this.decodeToken(token);
+          this.userClaims = decoded;
           this.permissionService.initFromClaims(this.userClaims);
           this.permissions = this.userClaims?.permissions || '';
         } else {
@@ -93,10 +96,7 @@ export class AuthService {
       }
     }
   }
-
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     console.log(this.permissions);
     console.log(
       'this to show if has for every  thing or not >>>>',
@@ -113,10 +113,16 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
+
       this.cureentUserSubject = decoded;
+      this.currentRole = decoded.role?.toLowerCase();
+
+      console.log('Decoded token:', decoded);
+      console.log('Current role:', this.currentRole);
+
       return decoded;
-    } catch (Error) {
-      console.error('Invalid token:', Error);
+    } catch (error) {
+      console.error('Invalid token:', error);
       return null;
     }
   }

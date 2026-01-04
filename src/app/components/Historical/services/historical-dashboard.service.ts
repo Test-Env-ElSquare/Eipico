@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   EnergyRefactor,
-  fillers,
   GetFillerRefactor,
   Historical,
   JobOrderDetails,
@@ -96,7 +95,6 @@ export class HistoricalDashboardService {
   public set line(line: number) {
     this._line = line;
   }
-  filler$ = new BehaviorSubject<fillers | any>(null);
 
   public async startConnectionSignalR(filterObj: {
     shiftFilterid: number;
@@ -139,8 +137,8 @@ export class HistoricalDashboardService {
       );
       console.log(' Joined group:', groupName);
       this.hubConnection.on(groupName, (data) => {
-        this.ngZone.run(() => {
-          this.filler$.next(data);
+        this.ngZone.runOutsideAngular(() => {
+          this.part = data;
           console.log('Received data:', data);
         });
       });
