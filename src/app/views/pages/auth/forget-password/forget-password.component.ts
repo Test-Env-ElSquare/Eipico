@@ -30,6 +30,10 @@ export class ForgetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+  hasToken(): boolean {
+    return !!localStorage.getItem('Token');
+  }
+
   next() {
     this.nextStep.emit();
   }

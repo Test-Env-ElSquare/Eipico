@@ -165,20 +165,19 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Load data only once on init
     this.loadData();
     this.handleConnection();
   }
 
   // Helper method to load all data
-  private loadData(): void {
+  loadData(): void {
     this.EnergyRefactor();
     this.getFillerRefactor();
     this.getSkus();
   }
 
   // Helper method to handle SignalR connection logic
-  private handleConnection(): void {
+  handleConnection(): void {
     if (this.filterObj.shiftFilterid === 0) {
       if (this.liveConnected) {
         this.stopCon();
