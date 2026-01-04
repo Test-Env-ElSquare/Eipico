@@ -136,25 +136,26 @@ export class TotalProductionComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this._cdr.detectChanges();
     this.EnergyRefactor();
-    this.getFillerRefactor();
     this.getSkus();
-    if (this.filterObj.shiftFilterid == 0) {
-      this.StartCon();
-    } else if (this.filterObj.shiftFilterid == 0 && this.liveConnected) {
-      this.stopCon();
+
+    if (this.filterObj.shiftFilterid === 0) {
       this.StartCon();
     } else {
       this.stopCon();
     }
   }
   ngOnInit(): void {
+    this._historicalDashboardService.filler$.subscribe((data) => {
+      if (!data) return;
+      this.filler = data;
+      this.part = data.count;
+    });
     this.EnergyRefactor();
     this.getFillerRefactor();
     this.getSkus();
   }
   ngAfterViewInit(): void {
-    this._cdr.detectChanges();
+    // this._cdr.detectChanges();
   }
 }

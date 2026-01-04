@@ -23,7 +23,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
     to?: any;
   };
   duration: number;
-  filler: GetFillerRefactor;
+  filler: GetFillerRefactor | any;
   loading: boolean = false;
 
   constructor(
@@ -49,10 +49,10 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges() {
     this._cdr.detectChanges();
-    // this.getFillerRefactor();
+    this.getFillerRefactor();
   }
   ngOnInit(): void {
-    // this.getFillerRefactor();
+    this.getFillerRefactor();
   }
   ngAfterViewInit(): void {
     // this._cdr.detectChanges();

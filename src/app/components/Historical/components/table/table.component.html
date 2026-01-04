@@ -18,7 +18,7 @@
           </thead>
           <tbody>
 
-            <tr *ngFor="let data of filler?.filerperday">
+            <tr *ngFor="let data of filler?.filerreads">
               <!-- <ng-container  > -->
 
               <!-- <td *ngIf="duration === 0 || duration === 1 || duration === undefined">
@@ -31,13 +31,13 @@
               </td>
 
               <td>
-                {{data?.parts}}
+                {{data?.count}}
               </td>
               <td>
-                {{data?.pallets}}
+                {{data?.qreject}}
               </td>
               <td>
-                {{data?.eur}}
+                {{data?.total}}
               </td>
               <td>
                 {{(data?.quality! * 100)!.toFixed(2)}} %

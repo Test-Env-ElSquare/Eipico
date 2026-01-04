@@ -67,6 +67,9 @@ export class EditProfileComponent implements OnInit {
       claims: [''],
     });
   }
+  goToMain() {
+    this._Router.navigate(['/MainDash']);
+  }
 
   ngOnInit(): void {
     // this.onGetAllClaims();
