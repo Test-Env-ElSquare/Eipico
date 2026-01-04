@@ -5,8 +5,8 @@ import {
   OnInit,
   SimpleChanges,
   TemplateRef,
-  AfterViewInit,
   ChangeDetectorRef,
+  OnDestroy,
 } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import {
@@ -18,15 +18,14 @@ import {
 import { HistoricalDashboardService } from '../../services/historical-dashboard.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/core/services/app-Service.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-total-production',
   templateUrl: './total-production.component.html',
   styleUrls: ['./total-production.component.scss'],
 })
-export class TotalProductionComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   skusActivated?: skus[];
   part?: number | boolean;
   duration: number;
@@ -45,6 +44,9 @@ export class TotalProductionComponent
   energy: EnergyRefactor;
   filler: fillers;
 
+  // Add subscription to track SignalR updates
+  private fillerSubscription: Subscription;
+
   constructor(
     private modalService: NgbModal,
     private _historicalDashboardService: HistoricalDashboardService,
@@ -53,14 +55,11 @@ export class TotalProductionComponent
     private _appServices: AppService
   ) {}
 
-  //open modal
-  //get skus details by jobid
   openBasicModal(
     content: TemplateRef<any>,
     jobOrderId: string,
     machaineId: number
   ) {
-    // const options: NgbModalOptions ={ centered: true}
     this._historicalDashboardService
       .JobOrderMatairal(jobOrderId)
       .subscribe((data) => {
@@ -102,11 +101,10 @@ export class TotalProductionComponent
       )
       .subscribe((data) => {
         this.filler = data[0]?.filerreads;
-        this.part = this.filler.count;
+        this.part = this.filler?.count;
       });
   }
 
-  //to get activated skus
   getSkus() {
     this._historicalDashboardService
       .GetSkus(
@@ -125,37 +123,73 @@ export class TotalProductionComponent
       this._historicalDashboardService.hubConnection.stop();
       this.part = false;
       this.liveConnected = false;
+
+      // Unsubscribe from SignalR updates
+      if (this.fillerSubscription) {
+        this.fillerSubscription.unsubscribe();
+      }
     }
   }
 
   StartCon() {
     this._historicalDashboardService.startConnectionSignalR(this.filterObj);
-    // this._historicalDashboardService.startConnection();
     this._toastr.success('Connected');
     this.liveConnected = true;
+
+    // Subscribe to SignalR updates
+    this.subscribeToSignalR();
+  }
+
+  // Subscribe to the SignalR data stream
+  subscribeToSignalR() {
+    if (this.fillerSubscription) {
+      this.fillerSubscription.unsubscribe();
+    }
+
+    this.fillerSubscription =
+      this._historicalDashboardService.fillerData$.subscribe((data) => {
+        if (data) {
+          this.filler = data;
+          this.part = data.count;
+          this._cdr.detectChanges();
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.EnergyRefactor();
-    this.getSkus();
+    // Only reload data if filterObj actually changed
+    if (changes['filterObj'] && !changes['filterObj'].firstChange) {
+      this.loadData();
+      this.handleConnection();
+    }
+  }
 
+  ngOnInit(): void {
+    // Load data only once on init
+    this.loadData();
+    this.handleConnection();
+  }
+
+  // Helper method to load all data
+  private loadData(): void {
+    this.EnergyRefactor();
+    this.getFillerRefactor();
+    this.getSkus();
+  }
+
+  // Helper method to handle SignalR connection logic
+  private handleConnection(): void {
     if (this.filterObj.shiftFilterid === 0) {
+      if (this.liveConnected) {
+        this.stopCon();
+      }
       this.StartCon();
     } else {
       this.stopCon();
     }
   }
-  ngOnInit(): void {
-    this._historicalDashboardService.filler$.subscribe((data) => {
-      if (!data) return;
-      this.filler = data;
-      this.part = data.count;
-    });
-    this.EnergyRefactor();
-    this.getFillerRefactor();
-    this.getSkus();
-  }
-  ngAfterViewInit(): void {
-    // this._cdr.detectChanges();
+
+  ngOnDestroy(): void {
+    this.stopCon();
   }
 }

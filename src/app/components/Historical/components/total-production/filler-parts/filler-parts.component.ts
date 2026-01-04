@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { fillers } from '../../../models/model';
 
 @Component({
@@ -11,7 +11,9 @@ export class FillerPartsComponent implements OnChanges {
 
   public chartOptions!: any;
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Current filler:', this.filler);
+
     if (
       !this.filler ||
       this.filler.count == null ||

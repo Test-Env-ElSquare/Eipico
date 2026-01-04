@@ -9,6 +9,7 @@ import {
   JobOrderMatairal,
   skus,
   timeline,
+  fillers,
 } from '../models/model';
 import { environment } from 'src/environments/environment';
 import * as signalR from '@microsoft/signalr';
@@ -21,6 +22,10 @@ export class HistoricalDashboardService {
   public duration: BehaviorSubject<number>;
   public currentDurationValue: Observable<number>;
   public hubConnection: signalR.HubConnection;
+
+  // Add BehaviorSubject for filler data to share SignalR updates
+  public fillerData$ = new BehaviorSubject<fillers | null>(null);
+
   private _factory: number;
   private _line: number;
 
@@ -65,7 +70,6 @@ export class HistoricalDashboardService {
     );
   }
 
-  //get skus details by jobid
   JobOrderMatairal(jobid: string): Observable<JobOrderMatairal[]> {
     return this._http.get<JobOrderMatairal[]>(
       environment.url + 'api/Dashboards/JobOrderMatairal',
@@ -104,7 +108,7 @@ export class HistoricalDashboardService {
     to?: any;
   }) {
     if (!filterObj?.selectedFactory || !filterObj?.selectedLine) {
-      console.error(' selectedFactory selectedLine undefined');
+      console.error('selectedFactory or selectedLine undefined');
       return;
     }
     const groupName = `MainDashboard${filterObj.selectedFactory}${filterObj.selectedLine}`;
@@ -128,24 +132,42 @@ export class HistoricalDashboardService {
 
     try {
       await this.hubConnection.start();
-      console.log(' SignalR connection started');
+      console.log('SignalR connection started');
       await this.hubConnection.invoke(
         'JoinGroup',
         groupName,
         parseInt(filterObj.selectedFactory.toString()),
         parseInt(filterObj.selectedLine.toString())
       );
-      console.log(' Joined group:', groupName);
+      console.log('Joined group:', groupName);
+
       this.hubConnection.on(groupName, (data) => {
-        this.ngZone.runOutsideAngular(() => {
+        this.ngZone.run(() => {
           this.part = data;
-          console.log('Received data:', data);
+          // covert data to fillers type
+          const fillerData: fillers = {
+            count: data.results || 0,
+            qreject: 0,
+            availability: 0,
+            performance: 0,
+            quality: 0,
+            oee: 0,
+            avgSpeed: 0,
+            total: data.results || 0,
+            weightedavgspeed: 0,
+            equevilantAVGSpeed: 0,
+          };
+
+          this.part = data.results;
+          this.fillerData$.next(fillerData);
         });
       });
     } catch (err) {
-      console.error(' Error starting or joining SignalR', err);
+      console.error('Error starting or joining SignalR', err);
     }
   }
+
+  // Method to send fake data for testing
 
   getFillerRefactor(
     factoryId: number,
