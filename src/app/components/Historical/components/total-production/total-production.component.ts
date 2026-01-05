@@ -157,7 +157,6 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Only reload data if filterObj actually changed
     if (changes['filterObj'] && !changes['filterObj'].firstChange) {
       this.loadData();
       this.handleConnection();
