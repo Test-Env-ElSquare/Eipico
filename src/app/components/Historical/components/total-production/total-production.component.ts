@@ -157,15 +157,20 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['filterObj'] && !changes['filterObj'].firstChange) {
+    if (
+      changes['filterObj'] &&
+      this.filterObj &&
+      this.filterObj.from &&
+      this.filterObj.to
+    ) {
       this.loadData();
       this.handleConnection();
     }
   }
 
   ngOnInit(): void {
-    this.loadData();
-    this.handleConnection();
+    // this.loadData();
+    // this.handleConnection();
   }
 
   // Helper method to load all data
