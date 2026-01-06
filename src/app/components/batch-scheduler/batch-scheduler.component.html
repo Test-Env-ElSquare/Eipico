@@ -74,11 +74,11 @@
                           <td>{{ sku.skuName }}</td>
                           <td>{{ sku.batchId }}</td>
                           <td class="">
-                            <button (click)="activate(sku.batchId)" *ngIf="hasAccessToActivateBatch()"
-                              class="btn tw-bg-sky-500 btn-sm tw-text-white me-2  hover:tw-bg-sky-950 hover:tw-text-white">
+                            <button (click)="activate(sku.batchId)"
+                              class="btn btn-sm btn-primary tw-bg-purple-400 mx-1">
                               Activate
                             </button>
-                            <button type="button" class="btn btn-sm btn-primary mx-1"
+                            <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
                               (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
                           </td>
                         </tr>
@@ -112,8 +112,8 @@
                           <td>{{ sku.skuName }}</td>
                           <td>{{ sku.batchId }}</td>
                           <td class="">
-                            <button (click)="Finished(sku.batchId)" *ngIf="hasAccessToFinisheBatch()"
-                              class="btn tw-bg-green-600 btn-sm tw-text-white me-2 hover:tw-bg-green-800 hover:tw-text-white">
+                            <button (click)="Finished(sku.batchId)"
+                              class="btn btn-sm btn-primary tw-bg-purple-400 mx-1">
                               Finish
                             </button>
                             <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
