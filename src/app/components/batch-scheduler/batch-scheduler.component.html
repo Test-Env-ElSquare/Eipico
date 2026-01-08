@@ -80,6 +80,36 @@
                             </button>
                             <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
                               (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
+                            <p-button class="" size="small" (onClick)="showDialog(sku.batchId)">Update</p-button>
+                            <!-- <p-button (onClick)="showDialog(sku.batchId)" label="Update"></p-button> -->
+
+                            <p-dialog header="Change Batch" [(visible)]="visible" [style]="{ width: '70rem' }">
+
+
+
+                              <form class="form-row" [formGroup]="batchForm">
+
+                                <div class="form-group">
+                                  <label for="batch">Batch</label>
+                                  <input readonly pInputText id="batch" formControlName="BatchId" autocomplete="off" />
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="line">Line</label>
+                                  <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+                                    placeholder="Select Line" formControlName="lineId">
+                                  </ng-select>
+                                </div>
+
+                              </form>
+
+
+
+                              <div class="dialog-actions">
+                                <p-button label="Cancel" severity="secondary" (onClick)="visible = false"></p-button>
+                                <p-button label="Save" (onClick)=" updateBatchForm()"></p-button>
+                              </div>
+                            </p-dialog>
                           </td>
                         </tr>
                       </tbody>
@@ -118,6 +148,37 @@
                             </button>
                             <button type="button" class="btn btn-sm btn-primary tw-bg-searchBtn mx-1"
                               (click)="openBasicModal(MaterialYIELD,sku.jobOrderId)">Details</button>
+                            <p-button class="" size="small" (onClick)="showDialog(sku.batchId)">Update</p-button>
+
+                            <p-dialog header="Change Batch" [(visible)]="visible" [style]="{ width: '70rem' }">
+
+
+
+                              <form class="form-row" [formGroup]="batchForm">
+
+                                <div class="form-group">
+                                  <label for="batch">Batch</label>
+                                  <input readonly pInputText id="batch" formControlName="BatchId" autocomplete="off" />
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="line">Line</label>
+                                  <ng-select [items]="LineDropDown" bindLabel="name" bindValue="id" [searchable]="false"
+                                    placeholder="Select Line" formControlName="lineId">
+                                  </ng-select>
+                                </div>
+
+                              </form>
+
+
+
+                              <div class="dialog-actions">
+                                <p-button label="Cancel" severity="secondary" (onClick)="visible = false"></p-button>
+                                <p-button label="Save" (onClick)=" updateBatchForm()"></p-button>
+                              </div>
+                            </p-dialog>
+
+
                           </td>
                         </tr>
                       </tbody>

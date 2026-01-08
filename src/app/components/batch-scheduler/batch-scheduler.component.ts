@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Line, factory } from 'src/app/core/models/filter';
 import { AppService } from 'src/app/core/services/app-Service.service';
+
 import {
   JobOrderDetails,
   JobOrderMatairal,
@@ -14,6 +15,7 @@ import { HistoricalDashboardService } from '../Historical/services/historical-da
 import { AuthService } from 'src/app/core/services/Auth.service';
 import { PermissionService } from 'src/app/core/services/permission.service';
 import { Permission } from 'src/app/core/models/permission';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-batch-scheduler',
@@ -22,6 +24,7 @@ import { Permission } from 'src/app/core/models/permission';
 })
 export class BatchSchedulerComponent implements OnInit {
   FilterForm: FormGroup;
+  batchForm: FormGroup;
   FactoriesDropDown: factory[];
   LineDropDown: Line[];
   selectedFactory: number;
@@ -32,7 +35,14 @@ export class BatchSchedulerComponent implements OnInit {
   basicModalCloseResult: string = '';
   searchText!: string;
   accessToFactories: boolean = true;
+  visible: boolean = false;
 
+  showDialog(batchId: string) {
+    this.visible = true;
+    this.batchForm.patchValue({
+      BatchId: batchId,
+    });
+  }
   constructor(
     private _appServices: AppService,
     private _authService: AuthService,
@@ -47,8 +57,14 @@ export class BatchSchedulerComponent implements OnInit {
   ngOnInit(): void {
     this.onGetAllFactories();
     this.createForm();
+    this.initForm();
   }
-
+  initForm() {
+    this.batchForm = this._fb.group({
+      BatchId: [{ value: '', disabled: true }, Validators.required],
+      lineId: [null, Validators.required],
+    });
+  }
   hasAccessToActivateBatch() {
     return this.Permission.has(Permission.BatchSchedulerViewAndActivate);
   }
@@ -127,7 +143,23 @@ export class BatchSchedulerComponent implements OnInit {
       this.search();
     });
   }
-
+  updateBatchForm() {
+    const { BatchId, lineId } = this.batchForm.getRawValue();
+    this.onUpdateBatch(BatchId, lineId);
+  }
+  onUpdateBatch(batchId: string, lineId: string) {
+    this._batchScheduler.updateBatch(batchId, lineId).subscribe({
+      next: (res) => {
+        console.log('batch:', batchId, lineId);
+        this.visible = false;
+        this._toastrService.success('Batch updated successfully');
+        this.getBatches(this.searchText);
+      },
+      error: (err) => {
+        this._toastrService.error('Error updating batch');
+      },
+    });
+  }
   search() {
     this.getSkus(this.FilterForm.value.lineID, this.isPending);
   }

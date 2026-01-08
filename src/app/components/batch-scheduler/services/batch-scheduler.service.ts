@@ -40,13 +40,25 @@ export class BatchSchedulerService {
     );
   }
 
-  patchFinish(batchNumber: string) {
+  patchFinish(batchNumber: string): Observable<any> {
     return this._http.patch(
       environment.url + 'api/Dashboards/UpdateToFinishingMode',
       {},
       {
         params: {
           batchNumber: batchNumber,
+        },
+      }
+    );
+  }
+  updateBatch(BatchId: string, LineId: string): Observable<any> {
+    return this._http.post(
+      environment.url + 'api/Dashboards/EditBatchLine',
+      {},
+      {
+        params: {
+          batchId: BatchId,
+          lineId: LineId,
         },
       }
     );
