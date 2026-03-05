@@ -1,4 +1,4 @@
-<div class="parent">
+<!-- <div class="parent">
   <div class="grid-container" *ngIf="machines?.length">
     <div class="grid-item" *ngIf="machines && machines[0]">
       <div class="card" [ngClass]="{
@@ -15,7 +15,7 @@
 
       </div>
     </div>
-    <!-- → -->
+
     <div class="arrow" *ngIf="machines.length > 1"></div>
 
     <div class="grid-item" *ngIf="machines && machines[1]">
@@ -51,5 +51,69 @@
 
       </div>
     </div>
+    <div class="arrow" *ngIf="machines.length > 3"></div>
+    <div class="grid-item" *ngIf="machines && machines[3]">
+      <div class="card" [ngClass]="{
+          'running': machines[3].latestSignal?.state === 1,
+          'stopped': machines[3].latestSignal?.state === 0
+        }">
+        <h4>{{ machines[3].machineName }}</h4>
+        <p class="text-center">Blister</p>
+      </div>
+      <div class="machine-data vertical">
+        <p>Speed: {{ machines[3].latestSignal?.speed }}</p>
+        <p>Count: {{ machines[3].latestSignal?.count }}</p>
+        <p>TotalCountDiff: {{ machines[3].totalCountDiff }}</p>
+
+      </div>
+    </div>
+    <div class="arrow" *ngIf="machines.length > 4"></div>
+    <div class="grid-item" *ngIf="machines && machines[4]">
+      <div class="card" [ngClass]="{
+          'running': machines[4].latestSignal?.state === 1,
+          'stopped': machines[4].latestSignal?.state === 0
+        }">
+        <h4>{{ machines[4].machineName }}</h4>
+        <p class="text-center">Shrink</p>
+      </div>
+      <div class="machine-data vertical">
+        <p>Speed: {{ machines[4].latestSignal?.speed }}</p>
+        <p>Count: {{ machines[4].latestSignal?.count }}</p>
+        <p>TotalCountDiff: {{ machines[4].totalCountDiff }}</p>
+
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="parent">
+  <div class="grid-container" *ngIf="machines?.length">
+
+    <ng-container *ngFor="let machine of machines; let i = index">
+
+      <div class="grid-item">
+        <div class="card" [ngClass]="{
+               'running': machine.latestSignal?.state === 1,
+               'stopped': machine.latestSignal?.state === 0
+             }">
+
+          <h4>{{ machine.machineName }}</h4>
+
+          <p class="text-center">
+            {{ getMachineType(machine.machineName) }}
+          </p>
+        </div>
+
+        <div class="machine-data vertical">
+          <p>Speed: {{ machine.latestSignal?.speed }}</p>
+          <p>Count: {{ machine.latestSignal?.count }}</p>
+          <p>TotalCountDiff: {{ machine.totalCountDiff }}</p>
+        </div>
+      </div>
+
+      <!-- Arrow between machines -->
+      <div class="arrow" *ngIf="i < machines.length - 1"></div>
+
+    </ng-container>
+
   </div>
 </div>

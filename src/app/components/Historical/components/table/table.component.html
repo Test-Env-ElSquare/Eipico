@@ -1,122 +1,88 @@
-<div class="row" *ngIf="!loading">
-  <div class="col-xl-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body table-responsive">
-        <table class="table" *ngIf="filler?.filler_per_Hour === null">
-          <thead>
-            <tr>
-              <th scope="col">Day</th>
-              <th scope="col">Count</th>
-              <th scope="col">Pallets</th>
-              <th scope="col">EUR</th>
-              <th scope="col">Quality</th>
-              <th scope="col">Availability</th>
-              <th scope="col">PERFORMANCE</th>
-              <th scope="col">OEE</th>
+<div *ngIf="!loading; else skeleton">
 
-            </tr>
-          </thead>
-          <tbody>
+  <!-- READS -->
+  <table class="table" *ngIf="dataMode === 'READS' || dataMode === 'ALL'">
+    <thead>
+      <tr>
+        <th>Count</th>
+        <th>Q Reject</th>
+        <th>Total</th>
+        <th>Availability</th>
+        <th>Performance</th>
+        <th>Quality</th>
+        <th>OEE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ filler?.filerreads?.count }}</td>
+        <td>{{ filler?.filerreads?.qreject }}</td>
+        <td>{{ filler?.filerreads?.total }}</td>
+        <td>{{ (filler?.filerreads?.availability! * 100).toFixed(2) }}%</td>
+        <td>{{ (filler?.filerreads?.performance! * 100).toFixed(2) }}%</td>
+        <td>{{ (filler?.filerreads?.quality! * 100).toFixed(2) }}%</td>
+        <td>{{ (filler?.filerreads?.oee! * 100).toFixed(2) }}%</td>
+      </tr>
+    </tbody>
+  </table>
 
-            <tr *ngFor="let data of filler?.filerreads">
-              <!-- <ng-container  > -->
+  <!-- PER HOUR -->
+  <table class="table mt-4" *ngIf="dataMode === 'HOUR' || dataMode === 'ALL'">
+    <thead>
+      <tr>
+        <th>Hour</th>
+        <th>Count</th>
+        <th>Q Reject</th>
+        <th>Availability</th>
+        <th>Performance</th>
+        <th>Quality</th>
+        <th>OEE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let h of filler?.filler_per_Hour">
+        <td>{{ h.hour }}:00</td>
+        <td>{{ h.count }}</td>
+        <td>{{ h.qreject }}</td>
+        <td>{{ (h.availability * 100).toFixed(2) }}%</td>
+        <td>{{ (h.performance * 100).toFixed(2) }}%</td>
+        <td>{{ (h.quality * 100).toFixed(2) }}%</td>
+        <td>{{ (h.oee * 100).toFixed(2) }}%</td>
+      </tr>
+    </tbody>
+  </table>
 
-              <!-- <td *ngIf="duration === 0 || duration === 1 || duration === undefined">
-                  {{data?.day | date : 'shortTime'}}
-                </td> -->
+  <!-- PER DAY -->
+  <table class="table mt-4" *ngIf="dataMode === 'DAY' || dataMode === 'ALL'">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Parts</th>
+        <th>Availability</th>
+        <th>Performance</th>
+        <th>Quality</th>
+        <th>OEE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of filler?.filerperday">
+        <td>{{ d.day | date:'mediumDate' }}</td>
+        <td>{{ d.parts }}</td>
+        <td>{{ (d.availability * 100).toFixed(2) }}%</td>
+        <td>{{ (d.performance * 100).toFixed(2) }}%</td>
+        <td>{{ (d.quality * 100).toFixed(2) }}%</td>
+        <td>{{ (d.oee * 100).toFixed(2) }}%</td>
+      </tr>
+    </tbody>
+  </table>
 
-              <td>
-                {{filterObj.shiftFilterid === 0 || filterObj.shiftFilterid === 1 || filterObj.shiftFilterid ===
-                undefined ? ( data?.day | date : 'shortTime') : data?.day | date : 'mediumDate'}}
-              </td>
-
-              <td>
-                {{data?.count}}
-              </td>
-              <td>
-                {{data?.qreject}}
-              </td>
-              <td>
-                {{data?.total}}
-              </td>
-              <td>
-                {{(data?.quality! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.availability! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.performance! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.oee! * 100)!.toFixed(2)}} %
-              </td>
-              <!-- </ng-container> -->
-
-            </tr>
-          </tbody>
-        </table>
-
-        <table class="table" *ngIf="filler?.filerperday === null">
-          <thead>
-            <tr>
-              <th scope="col">Hour</th>
-              <th scope="col">Count</th>
-              <th scope="col">Qreject</th>
-              <th scope="col">Availability</th>
-              <th scope="col">Performance</th>
-              <th scope="col">Quality</th>
-              <th scope="col">OEE</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr *ngFor="let data of filler?.filler_per_Hour">
-
-              <td>
-                {{ data?.hour! > 12 ? data?.hour+':00 PM' : data?.hour+':00 AM'}}
-              </td>
-
-              <td>
-                {{data?.count}}
-              </td>
-              <td>
-                {{data?.qreject}}
-              </td>
-              <td>
-                {{(data?.availability! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.performance! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.quality! * 100)!.toFixed(2)}} %
-              </td>
-              <td>
-                {{(data?.oee! * 100)!.toFixed(2)}} %
-              </td>
-              <!-- </ng-container> -->
-
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
+  <!-- NO DATA -->
+  <div *ngIf="dataMode === 'NONE'" class="text-center text-muted mt-4">
+    No data available
   </div>
+
 </div>
 
-<p-skeleton *ngIf="loading" width="100%" height="482px"></p-skeleton>
-
-
-<!--
-  <td *ngIf="duration === 0">
-                {{data?.day | date : 'shortTime'}}
-              </td>
-              <td *ngIf="duration === 1">
-                {{data?.day | date : 'shortTime'}}
-              </td>
-              <td *ngIf="duration">
-                {{data?.day | date : 'mediumDate'}}
-              </td>
--->
+<ng-template #skeleton>
+  <p-skeleton width="100%" height="482px"></p-skeleton>
+</ng-template>

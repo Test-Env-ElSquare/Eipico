@@ -132,12 +132,10 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   StartCon() {
-    this._historicalDashboardService.startConnectionSignalR(this.filterObj);
-    this._toastr.success('Connected');
-    this.liveConnected = true;
-
-    // Subscribe to SignalR updates
     this.subscribeToSignalR();
+    this._historicalDashboardService.startConnectionSignalR(this.filterObj);
+    this.liveConnected = true;
+    this._toastr.success('Connected');
   }
 
   // Subscribe to the SignalR data stream
@@ -155,22 +153,18 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
   }
-
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['filterObj'] &&
-      this.filterObj &&
-      this.filterObj.from &&
-      this.filterObj.to
-    ) {
+    if (changes['filterObj'] && this.filterObj) {
       this.loadData();
       this.handleConnection();
     }
   }
 
   ngOnInit(): void {
-    // this.loadData();
-    // this.handleConnection();
+    if (this.filterObj) {
+      this.loadData();
+      this.handleConnection();
+    }
   }
 
   // Helper method to load all data

@@ -42,7 +42,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
         const factoryId = 3;
         return this._LayoutService.hubConnection.invoke(
           'JoinFactoryGroup',
-          factoryId
+          factoryId,
         );
       })
       .then(() => {
@@ -65,30 +65,39 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
     this.currentOpenedLineId = lineId;
     if (Array.isArray(this.receivedData) && this.receivedData.length > 0) {
       const selectedLine = this.receivedData.find(
-        (line) => line.lineId == lineId
+        (line) => line.lineId == lineId,
       );
 
       if (selectedLine) {
-        const order = ['fill', 'labl', 'cart'];
+        const order = [
+          'forming',
+          'fill',
+          'labl',
+          'blstr',
+          'shrink',
+          'cart',
+          'rins',
+          'capp',
+        ];
         const validMachines = selectedLine.machines.filter(
           (m: { machineName: string }) =>
-            order.some((key) => m.machineName.toLowerCase().includes(key))
+            order.some((key) => m.machineName.toLowerCase().includes(key)),
         );
 
         this.machines = [...validMachines].sort(
           (a: { machineName: string }, b: { machineName: string }) => {
             const aKey = order.find((key) =>
-              a.machineName.toLowerCase().includes(key)
+              a.machineName.toLowerCase().includes(key),
             );
             const bKey = order.find((key) =>
-              b.machineName.toLowerCase().includes(key)
+              b.machineName.toLowerCase().includes(key),
             );
 
             const aIndex = aKey ? order.indexOf(aKey) : order.length;
             const bIndex = bKey ? order.indexOf(bKey) : order.length;
 
             return aIndex - bIndex;
-          }
+          },
         );
       } else {
         this.machines = [];
@@ -131,7 +140,7 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
 
       const machines = line.machines || [];
       const machineStates = machines.map(
-        (m: any) => m.latestSignal?.state ?? 0
+        (m: any) => m.latestSignal?.state ?? 0,
       );
 
       const allZero = machineStates.every((s: number) => s === 0);
@@ -193,12 +202,12 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
     const updateY = rectY + 65;
 
     let countText = parentGroup.querySelector(
-      '.machine-count'
+      '.machine-count',
     ) as SVGTextElement;
     if (!countText) {
       countText = document.createElementNS(
         'http://www.w3.org/2000/svg',
-        'text'
+        'text',
       );
       countText.classList.add('machine-count');
       parentGroup.appendChild(countText);
@@ -210,12 +219,12 @@ export class EipicoLayoutTwoComponent implements OnInit, AfterViewInit {
     countText.textContent = `Machines: ${numOfMachine}`;
 
     let updateText = parentGroup.querySelector(
-      '.last-update'
+      '.last-update',
     ) as SVGTextElement;
     if (!updateText) {
       updateText = document.createElementNS(
         'http://www.w3.org/2000/svg',
-        'text'
+        'text',
       );
       updateText.classList.add('last-update');
       parentGroup.appendChild(updateText);
