@@ -88,12 +88,12 @@ export class LayoutTwoCopyComponent implements OnInit {
       label: 'Hormone',
       machines: [
         { name: 'Vial', lineId: 24 },
-        { name: 'Ampoule', lineId: 70 },
+        { name: 'Ampoule', lineId: 51 },
       ],
     },
     {
       label: 'Ampole',
-      machines: [{ name: 'Thermoforming 1', lineId: 51 }],
+      machines: [{ name: 'Thermoforming 1', lineId: 70 }],
     },
   ];
 
