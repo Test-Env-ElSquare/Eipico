@@ -1,26 +1,30 @@
-span{
+span {
   font-size: x-large;
 }
 
-.bg-danger{
-  background-color: #e61d2b!important;
+.bg-danger {
+  background-color: #e61d2b !important;
 }
-.btn-primary{
-background-color:   #6a94c6;
-border: #6a94c6;
+.btn-primary {
+  background-color: #6a94c6;
+  border: #6a94c6;
 }
-.pointer{
+.pointer {
   cursor: pointer;
-  }
+}
 
-
-#skus{
+#skus {
   height: 200px;
   overflow-y: scroll;
 }
 
-.modall{
+.modall {
   margin-top: auto !important ;
   margin-bottom: auto !important ;
-
+}
+.text-red-600 {
+  color: #e61d2b !important;
+  background-color: white;
+  padding: 20px 10px;
+  font-size: 25px;
 }

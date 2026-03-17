@@ -1,0 +1,262 @@
+/* factory-floor.component.scss */
+
+:host {
+  display: block;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f4f8;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ── Header ──────────────────────────────────────── */
+.factory-header {
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  padding: 14px 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.factory-title {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+/* ── Body (two-column) ───────────────────────────── */
+.factory-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ── Shared step header (green bar) ──────────────── */
+.step-header {
+  background: #6d8764;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 10px;
+}
+
+/* ── LEFT: Dispensing column ─────────────────────── */
+.dispensing-column {
+  width: 160px;
+  min-width: 160px;
+  flex-shrink: 0;
+  border: 2px dashed #aaa;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  height: 2782px;
+}
+.dispensing-content {
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.room-card {
+  border: 1px solid #ccc;
+  border-radius: 14px;
+  padding: 212px 8px 229px;
+  background: #fff;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.room-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #222;
+}
+.scales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+.scale-item {
+  font-size: 11px;
+  color: #555;
+  text-align: center;
+}
+
+/* ── RIGHT: Production column ────────────────────── */
+.production-column {
+  flex: 1;
+  border: 2px dashed #aaa;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+.production-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Section wrapper ─────────────────────────────── */
+.section-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.section-title {
+  background: #1ba1e2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  padding: 5px 8px;
+}
+
+/* ── Section row (flow layout) ───────────────────── */
+.section-row {
+  display: flex;
+  align-items: stretch;
+  padding: 8px 6px;
+  gap: 4px;
+  background: #fff;
+}
+
+/* ── Room boxes (Input Room / Quarantine) ────────── */
+.room-box {
+  width: 56px;
+  min-width: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  flex-shrink: 0;
+  align-self: stretch;
+
+  &.dashed {
+    border: 1.5px dashed #6c8ebf;
+  }
+  &.solid {
+    border: 1.5px solid #444;
+  }
+}
+.rotated-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  color: #333;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* ── Flow arrows ─────────────────────────────────── */
+.flow-arrows-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-shrink: 0;
+  min-width: 18px;
+}
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: 13px;
+  color: #777;
+  min-height: 40px;
+}
+
+/* ── Machines list ───────────────────────────────── */
+.machines-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── Machine item ────────────────────────────────── */
+.machine-item {
+  border-radius: 8px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  min-height: 40px;
+  border: 1px solid transparent;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+
+  &:hover {
+    opacity: 0.82;
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+
+  /* ── Status colors (driven by SignalR state) ── */
+  &.green {
+    background: #d9ead3;
+    border-color: #b6d7a8;
+  }
+  &.pink {
+    background: #fce4ec;
+    border-color: #f4b8cb;
+  }
+  &.gray {
+    background: #bdbdbd;
+    border-color: #9e9e9e;
+  }
+  &.white {
+    background: #fff;
+    border-color: #ccc;
+  }
+}
+
+.machine-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+.machine-meta {
+  font-size: 11px;
+  color: #444;
+  text-align: right;
+  line-height: 1.6;
+
+  b {
+    font-weight: 700;
+    color: #111;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 900px) {
+  .factory-body {
+    flex-direction: column;
+  }
+  .dispensing-column {
+    width: 100%;
+    min-width: unset;
+  }
+  .dispensing-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .room-card {
+    width: 130px;
+    min-height: auto;
+  }
+  .section-row {
+    overflow-x: auto;
+  }
+}

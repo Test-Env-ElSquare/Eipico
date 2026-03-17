@@ -1,0 +1,107 @@
+<!-- factory-floor.component.html -->
+<div class="factory-container">
+
+  <!-- ── Header ─────────────────────────────── -->
+  <div class="factory-header">
+    <h1 class="factory-title">Eipico 2</h1>
+  </div>
+
+  <div class="factory-body">
+
+    <!-- ════════════════════════════════════════
+         LEFT — Step 1: Dispensing
+         ════════════════════════════════════════ -->
+    <div class="dispensing-column">
+      <div class="step-header">Step 1: Dispensing</div>
+      <div class="dispensing-content">
+        <div class="room-card" *ngFor="let room of dispensingRooms">
+          <div class="room-name">{{ room.name }}</div>
+          <div class="scales-list">
+            <span *ngFor="let scale of room.scales" class="scale-item">{{ scale }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         RIGHT — Step 3: Production
+         ════════════════════════════════════════ -->
+    <div class="production-column">
+      <div class="step-header">Step 2</div>
+      <div class="production-content">
+
+        <!-- ── Loop over all sections ── -->
+        <ng-container *ngFor="let section of productionSections">
+          <div class="section-wrapper">
+
+            <!-- Section title bar (blue) -->
+            <div class="section-title">{{ section.label }}</div>
+
+            <!-- Flow row: Input Room → Preparation → Machines → Quarantine -->
+            <div class="section-row">
+
+              <!-- Input Room box -->
+              <div class="room-box dashed">
+                <span class="rotated-text">Input Room</span>
+              </div>
+
+              <!-- Arrow(s) from Input Room to Preparation -->
+              <div class="flow-arrows-col">
+                <div class="flow-arrow" *ngFor="let m of section.machines">&#9658;</div>
+              </div>
+
+              <!-- Preparation box -->
+              <div class="room-box dashed">
+                <span class="rotated-text">Preparation</span>
+              </div>
+
+              <!-- Arrow(s) from Preparation to Machines -->
+              <div class="flow-arrows-col">
+                <div class="flow-arrow" *ngFor="let m of section.machines">&#9658;</div>
+              </div>
+
+              <!-- Machine rows — color & meta driven by lineStats -->
+              <div class="machines-list">
+                <div class="machine-item" *ngFor="let machine of section.machines"
+                  [ngClass]="getCssClass(machine.lineId)" (click)="goToMachineDetails(machine.lineId.toString())">
+
+                  <span class="machine-name">{{ machine.name }}</span>
+
+                  <span class="machine-meta" *ngIf="getMachineCount(machine.lineId)">
+                    {{ getMachineCount(machine.lineId) }}<br />
+                    <b>{{ getLastUpdate(machine.lineId) }}</b>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Arrow(s) from Machines to Quarantine -->
+              <div class="flow-arrows-col">
+                <div class="flow-arrow" *ngFor="let m of section.machines">&#9658;</div>
+              </div>
+
+              <!-- Quarantine box -->
+              <div class="room-box solid">
+                <span class="rotated-text">Quarantine</span>
+              </div>
+
+            </div><!-- /section-row -->
+          </div><!-- /section-wrapper -->
+        </ng-container>
+
+      </div><!-- /production-content -->
+    </div><!-- /production-column -->
+
+  </div><!-- /factory-body -->
+</div><!-- /factory-container -->
+
+
+<!-- ══════════════════════════════════════════
+     Machine Details Dialog
+     ══════════════════════════════════════════ -->
+<p-dialog [header]="dialogTitle" [(visible)]="showDialog" [modal]="true" [style]="{ width: '80vw', maxWidth: '1100px' }"
+  [draggable]="true" [resizable]="false">
+
+  <app-machine-copy-details [machines]="machines" [filteredMachines]="machines">
+  </app-machine-copy-details>
+
+</p-dialog>

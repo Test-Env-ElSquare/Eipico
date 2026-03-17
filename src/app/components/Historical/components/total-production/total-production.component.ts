@@ -26,13 +26,15 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./total-production.component.scss'],
 })
 export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
-  skusActivated?: skus[];
+  skusActivated: any[] = []; // initialize as empty array
+  isLoading: boolean = true;
   part?: number | boolean;
   duration: number;
   JobOrderMatairal: JobOrderMatairal[];
   basicModalCloseResult: string = '';
   liveConnected: boolean = false;
   lineId: number;
+  noSkuData: boolean = false;
 
   @Input() filterObj: {
     shiftFilterid: number;
@@ -52,13 +54,13 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
     private _historicalDashboardService: HistoricalDashboardService,
     private _cdr: ChangeDetectorRef,
     private _toastr: ToastrService,
-    private _appServices: AppService
+    private _appServices: AppService,
   ) {}
 
   openBasicModal(
     content: TemplateRef<any>,
     jobOrderId: string,
-    machaineId: number
+    machaineId: number,
   ) {
     this._historicalDashboardService
       .JobOrderMatairal(jobOrderId)
@@ -83,7 +85,7 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         this.filterObj.selectedLine,
         this.filterObj.shiftFilterid,
         this.filterObj.from,
-        this.filterObj.to
+        this.filterObj.to,
       )
       .subscribe((data) => {
         this.energy = data;
@@ -97,7 +99,7 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         this.filterObj.selectedLine,
         this.filterObj.shiftFilterid,
         this.filterObj.from,
-        this.filterObj.to
+        this.filterObj.to,
       )
       .subscribe((data) => {
         this.filler = data[0]?.filerreads;
@@ -106,15 +108,24 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getSkus() {
+    this.isLoading = true;
+
     this._historicalDashboardService
       .GetSkus(
         this.filterObj.selectedLine,
         this.filterObj.shiftFilterid,
         this.filterObj.from,
-        this.filterObj.to
+        this.filterObj.to,
       )
-      .subscribe((data) => {
-        this.skusActivated = data;
+      .subscribe({
+        next: (data) => {
+          this.skusActivated = data ?? []; // لو الداتا undefined نتحول لمصفوفة فاضية
+          this.isLoading = false;
+        },
+        error: () => {
+          this.skusActivated = [];
+          this.isLoading = false;
+        },
       });
   }
 

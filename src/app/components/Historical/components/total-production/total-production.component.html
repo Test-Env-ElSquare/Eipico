@@ -4,9 +4,49 @@
   </div>
   <div class="col-lg-4">
     <div class="mb-3"><app-filler-speed [filler]="filler"></app-filler-speed></div>
+
     <app-energy [energy]="energy"></app-energy>
   </div>
-  <div class="col-lg-5">
+  <div class="col-lg-5 d-flex flex-column gap-3">
+
+
+    <div class="card shadow-sm" style="height: 220px;">
+
+      <div class="card-header fw-bold">
+        Activated SKUs
+      </div>
+
+      <div class="card-body p-2" style="overflow-y: auto;">
+
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="text-center text-muted">
+          Loading...
+        </div>
+
+        <!-- Data -->
+        <ng-container *ngIf="!isLoading">
+
+          <div *ngIf="skusActivated.length > 0; else noSkus">
+
+            <div class="border rounded p-2 mb-2" *ngFor="let sku of skusActivated">
+              {{ sku.skuName }}
+            </div>
+
+          </div>
+
+          <ng-template #noSkus>
+            <p class="text-danger fw-bold text-center m-0">
+              No Skus
+            </p>
+          </ng-template>
+
+        </ng-container>
+
+      </div>
+    </div>
+
+
     <app-waterfall [filterObj]="filterObj"></app-waterfall>
+
   </div>
 </div>

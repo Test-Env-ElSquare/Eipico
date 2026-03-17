@@ -1,0 +1,34 @@
+<!-- machine-details.component.html -->
+<div class="parent">
+  <div class="grid-container" *ngIf="machines?.length; else noData">
+
+    <ng-container *ngFor="let machine of machines; let i = index">
+
+      <!-- Machine card -->
+      <div class="grid-item">
+        <div class="card" [ngClass]="{
+               'running': machine.latestSignal?.state === 1,
+               'stopped': machine.latestSignal?.state === 0
+             }">
+          <h4>{{ machine.machineName }}</h4>
+          <p class="machine-type">{{ getMachineType(machine.machineName) }}</p>
+        </div>
+
+        <div class="machine-data">
+          <p><span class="label">Speed</span><span class="value">{{ machine.latestSignal?.speed ?? '—' }}</span></p>
+          <p><span class="label">Count</span><span class="value">{{ machine.latestSignal?.count ?? '—' }}</span></p>
+          <p><span class="label">Total Diff</span><span class="value">{{ machine.totalCountDiff ?? '—' }}</span></p>
+        </div>
+      </div>
+
+      <!-- Arrow between machines -->
+      <div class="arrow" *ngIf="i < machines.length - 1">&#9658;</div>
+
+    </ng-container>
+
+  </div>
+
+  <ng-template #noData>
+    <div class="no-data">No machine data available for this line.</div>
+  </ng-template>
+</div>

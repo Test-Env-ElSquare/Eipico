@@ -40,7 +40,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private perms: PermissionService
+    private perms: PermissionService,
   ) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
@@ -56,7 +56,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.getMenuItems();
     this.cdr.detectChanges();
     const desktopMedium = window.matchMedia(
-      '(min-width:992px) and (max-width: 1199px)'
+      '(min-width:992px) and (max-width: 1199px)',
     );
     desktopMedium.addEventListener('change', () => {
       this.iconSidebar;
@@ -327,12 +327,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         subItems: [
           {
             label: 'Eipico one',
-            link: '/eipico-layout/eipico-one',
+            link: '/eipico-layout/layout-one-copy',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
           },
           {
             label: 'Eipico two',
-            link: '/eipico-layout/eipico-two',
+            link: '/eipico-layout/layout-two',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
           },
         ],
