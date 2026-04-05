@@ -80,14 +80,14 @@ export class LayoutOneCopyComponent implements OnInit {
     {
       label: 'Ampole',
       machines: [
-        { name: 'Thermoforming 1', lineId: 68 },
+        { name: 'IMA 3', lineId: 68 },
         { name: 'Thermoforming 2', lineId: 67 },
         { name: 'Ampole 1', lineId: 95 },
         { name: 'Ampole 2', lineId: 62 },
-        { name: 'Ampole 3', lineId: 63 },
-        { name: 'Ampole 4', lineId: 64 },
-        { name: 'Ampole 5', lineId: 65 },
-        { name: 'Vile', lineId: 66 }, // ampole 6?
+        { name: 'ROTA 5', lineId: 63 },
+        { name: 'ROTA 4', lineId: 64 },
+        { name: 'IMA 2', lineId: 65 },
+        { name: 'IMA 4', lineId: 66 }, // ampole 6?
         { name: 'Combi', lineId: 60 },
       ],
     },
