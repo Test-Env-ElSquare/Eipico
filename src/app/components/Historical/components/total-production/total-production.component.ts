@@ -45,6 +45,7 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   };
   energy: EnergyRefactor;
   filler: fillers;
+  filerreads: any;
 
   // Add subscription to track SignalR updates
   private fillerSubscription: Subscription;
@@ -158,7 +159,22 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
     this.fillerSubscription =
       this._historicalDashboardService.fillerData$.subscribe((data) => {
         if (data) {
-          this.filler = data;
+          this.filler = {
+            ...this.filler,
+            ...data,
+
+            avgSpeed:
+              data.avgSpeed !== 0 ? data.avgSpeed : this.filler?.avgSpeed,
+            weightedavgspeed:
+              data.weightedavgspeed !== 0
+                ? data.weightedavgspeed
+                : this.filler?.weightedavgspeed,
+            equevilantAVGSpeed:
+              data.equevilantAVGSpeed !== 0
+                ? data.equevilantAVGSpeed
+                : this.filler?.equevilantAVGSpeed,
+          };
+
           this.part = data.count;
           this._cdr.detectChanges();
         }
