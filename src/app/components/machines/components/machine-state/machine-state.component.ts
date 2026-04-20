@@ -33,7 +33,7 @@ export class MachineStateComponent implements OnInit {
   today = new Date();
   fromDate = new Date();
   MachineTagPropertiesData: MachineTagProperties[];
-  MachinetagsData: MachineTag[];
+  // MachinetagsData: MachineTag[];
   MachineTagsSpeed: any = [];
   machineName: string;
   count: number;
@@ -47,6 +47,7 @@ export class MachineStateComponent implements OnInit {
   lastDay: string = '';
   minDate: string = '';
   nextDay: string = '';
+  MachinetagsData: any[] = [];
   // today: string = '';
   constructor(
     private _machineService: MachinesService,
@@ -54,7 +55,7 @@ export class MachineStateComponent implements OnInit {
     private _appService: AppService,
     private _authService: AuthService,
     private _modalService: NgbModal,
-    private Permission: PermissionService
+    private Permission: PermissionService,
   ) {}
 
   ngOnInit(): void {
@@ -65,24 +66,6 @@ export class MachineStateComponent implements OnInit {
       to: [, [Validators.required]],
     });
     this.onGetAllFactories();
-    // debugger;
-    // if (
-    //   localStorage.getItem('MachineStatefactoryId') &&
-    //   localStorage.getItem('MachineStatelineID') &&
-    //   localStorage.getItem('MachineStateform') &&
-    //   localStorage.getItem('MachineStateto')
-    // ) {
-    //   this.GetAllLines(Number(localStorage.getItem('MachineStatefactoryId')));
-    //   this.selectedMachine = Number(
-    //     localStorage.getItem('MachineStatefactoryId')
-    //   );
-    //   this.selectedLine = Number(localStorage.getItem('MachineStatelineID'));
-    //   this.fromDate = new Date(
-    //     String(localStorage.getItem('MachineStateform'))
-    //   );
-    //   this.toDate = new Date(String(localStorage.getItem('MachineStateto')));
-    //   this.GetMachineState(+this.selectedLine);
-    // }
   }
   onGetAllFactories() {
     this._appService.GetAllFactories().subscribe({
@@ -121,7 +104,7 @@ export class MachineStateComponent implements OnInit {
   TagsBasicModal(
     content: TemplateRef<any>,
     MachineId: string,
-    machineName: string
+    machineName: string,
   ) {
     this.machineName = machineName;
     this._machineService.MachineTagProperties(MachineId).subscribe((data) => {
@@ -141,7 +124,7 @@ export class MachineStateComponent implements OnInit {
     chartType: string,
     name: string,
     from: string,
-    to: string
+    to: string,
   ) {
     this.columName = name;
     if (name == 'State') {
@@ -149,7 +132,7 @@ export class MachineStateComponent implements OnInit {
         .MachineTag(this.machineName, from, to, 0)
         .subscribe((data) => {
           if (data) {
-            this.MachinetagsData = data[0];
+            this.MachinetagsData = data;
           }
           let Category = this.MachinetagsData?.map((x) => {
             return new Date(x.timeStamp).toLocaleString();
@@ -171,7 +154,7 @@ export class MachineStateComponent implements OnInit {
         .MachineTag(this.machineName, from, to, 1)
         .subscribe((data) => {
           if (data) {
-            this.MachinetagsData = data[0];
+            this.MachinetagsData = data;
           }
           let sum = 0;
           for (let index = 0; index < this.MachinetagsData.length; index++) {
@@ -198,7 +181,7 @@ export class MachineStateComponent implements OnInit {
         .MachineTag(this.machineName, from, to, 2)
         .subscribe((data) => {
           if (data) {
-            this.MachinetagsData = data[0];
+            this.MachinetagsData = data;
           }
           let Category = this.MachinetagsData?.map((x) => {
             return new Date(x.timeStamp).toLocaleString();
@@ -221,15 +204,15 @@ export class MachineStateComponent implements OnInit {
   filterBtn() {
     localStorage.setItem(
       'MachineStatefactoryId',
-      String(this.FilterForm.value.factoryId)
+      String(this.FilterForm.value.factoryId),
     );
     localStorage.setItem(
       'MachineStatelineID',
-      String(this.FilterForm.value.lineID)
+      String(this.FilterForm.value.lineID),
     );
     localStorage.setItem(
       'MachineStateform',
-      String(this.FilterForm.value.form)
+      String(this.FilterForm.value.form),
     );
     localStorage.setItem('MachineStateto', String(this.FilterForm.value.to));
     this.GetMachineState(+this.selectedLine);
