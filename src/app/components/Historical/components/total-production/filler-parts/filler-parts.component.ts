@@ -7,7 +7,7 @@ import { fillers } from '../../../models/model';
   styleUrls: ['./filler-parts.component.scss'],
 })
 export class FillerPartsComponent implements OnChanges {
-  @Input() filler: fillers;
+  @Input() filler: fillers | null;
 
   public chartOptions!: any;
 

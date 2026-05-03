@@ -71,7 +71,7 @@ export class LayoutTwoCopyComponent implements OnInit {
     {
       label: 'Tablet',
       machines: [
-        { name: 'Ulman 300', lineId: 44 },
+        { name: 'Ulman 300 (Standalone)', lineId: 44 },
         { name: 'IMA 1', lineId: 52 },
         { name: 'IMA 2', lineId: 53 },
       ],
@@ -79,22 +79,22 @@ export class LayoutTwoCopyComponent implements OnInit {
     {
       label: 'Effer',
       machines: [
-        { name: 'IMA 1', lineId: 47 },
-        { name: 'IMA 2', lineId: 48 },
-        { name: 'DrySyrup', lineId: 49 },
+        { name: 'DrySyrup', lineId: 47 },
+        { name: 'IMA 1', lineId: 48 },
+        { name: 'IMA 2', lineId: 49 },
       ],
     },
     {
-      label: 'Hormone',
+      label: 'Hormone (Ampole)',
       machines: [
-        { name: 'Vial', lineId: 24 },
-        { name: 'Ampoule', lineId: 51 },
+        { name: 'Ampoule', lineId: 70 },
+        { name: 'Vial', lineId: 51 },
       ],
     },
-    {
-      label: 'Ampole',
-      machines: [{ name: 'Thermoforming 1', lineId: 70 }],
-    },
+    // {
+    //   label: 'Ampole',
+    //   machines: [{ name: 'Thermoforming 1', lineId: 70 }],
+    // },
   ];
 
   // ── Lifecycle ─────────────────────────────────────────────
@@ -138,8 +138,8 @@ export class LayoutTwoCopyComponent implements OnInit {
 
     lines.forEach((line: any) => {
       const machines: any[] = line.machines || [];
-      const states: number[] = machines.map(
-        (m: any) => m.latestSignal?.state ?? 0,
+      const speeds: number[] = machines.map(
+        (m: any) => m.latestSignal?.speed ?? 0,
       );
 
       // Green  → at least one machine has state === 1
@@ -147,7 +147,7 @@ export class LayoutTwoCopyComponent implements OnInit {
       // White  → no data yet
       let cssClass = 'white';
       if (machines.length > 0) {
-        cssClass = states.some((s) => s === 1) ? 'green' : 'pink';
+        cssClass = speeds.some((s) => s > 0) ? 'green' : 'pink';
       }
 
       const lastTimestamp =
@@ -177,14 +177,14 @@ export class LayoutTwoCopyComponent implements OnInit {
       if (selectedLine) {
         // Keep only machines whose name matches known type keywords, sorted by process order
         const order = [
+          'rins',
           'forming',
           'fill',
-          'labl',
           'blstr',
-          'shrink',
-          'cart',
-          'rins',
           'capp',
+          'labl',
+          'cart',
+          'shrink',
         ];
 
         const validMachines = selectedLine.machines.filter(

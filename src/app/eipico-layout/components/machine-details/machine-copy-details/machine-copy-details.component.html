@@ -7,17 +7,40 @@
       <!-- Machine card -->
       <div class="grid-item">
         <div class="card" [ngClass]="{
-               'running': machine.latestSignal?.state === 1,
-               'stopped': machine.latestSignal?.state === 0
-             }">
-          <h4>{{ machine.machineName }}</h4>
-          <p class="machine-type">{{ getMachineType(machine.machineName) }}</p>
+    'running': (machine.latestSignal?.speed ?? 0) > 0,
+    'stopped': (machine.latestSignal?.speed ?? 0) === 0,
+    'flashing-green': flashingMachines.has(machine.machineName) && flashingColor[machine.machineName] === 'green',
+    'flashing-red':   flashingMachines.has(machine.machineName) && flashingColor[machine.machineName] === 'red'
+  }">
+          <h4>{{ getMachineType(machine.machineName) }}</h4>
+          <p class="machine-type">{{ machine.machineName }}</p>
         </div>
 
         <div class="machine-data">
-          <p><span class="label">Speed</span><span class="value">{{ machine.latestSignal?.speed ?? '—' }}</span></p>
-          <p><span class="label">Count</span><span class="value">{{ machine.latestSignal?.count ?? '—' }}</span></p>
-          <p><span class="label">Total Diff</span><span class="value">{{ machine.totalCountDiff ?? '—' }}</span></p>
+          <p>
+            <span class="label">Speed</span>
+            <span class="value text-bold">
+              {{ machine.latestSignal?.speed != null
+              ? (machine.latestSignal.speed | number:'1.0-0')
+              : '—' }}
+            </span>
+            PpH
+          </p>
+          <p>
+            <span class="label">Count</span>
+            <span class="value text-bold">
+              {{ machine.totalCountDiff != null
+              ? (machine.totalCountDiff | number:'1.0-0')
+              : '—' }}
+            </span>
+            Part
+          </p>
+          <p>
+            <span class="label">Last Time</span>
+            <span class="value">
+              {{ machine.latestTimeStamp ? (machine.latestTimeStamp | date:'yyyy-MM-dd HH:mm:ss') : '—' }}
+            </span>
+          </p>
         </div>
       </div>
 
@@ -32,3 +55,10 @@
     <div class="no-data">No machine data available for this line.</div>
   </ng-template>
 </div>
+<!-- <p-dialog [header]="dialogTitle" [(visible)]="showDialog" [modal]="true"
+  [style]="{ width: '100vw', maxWidth: '1100px' }" [draggable]="true" [resizable]="false">
+
+  <app-machine-state-details [machines]="machinesState" [filteredMachines]="machinesState">
+  </app-machine-state-details>
+
+</p-dialog> -->

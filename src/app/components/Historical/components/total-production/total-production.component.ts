@@ -8,7 +8,7 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   EnergyRefactor,
   fillers,
@@ -18,23 +18,29 @@ import {
 import { HistoricalDashboardService } from '../../services/historical-dashboard.service';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/core/services/app-Service.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-total-production',
   templateUrl: './total-production.component.html',
   styleUrls: ['./total-production.component.scss'],
 })
-export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
-  skusActivated: any[] = []; // initialize as empty array
+export class TotalProductionComponent implements OnChanges, OnDestroy {
+  skusActivated: any[] = [];
   isLoading: boolean = true;
-  part?: number | boolean;
+  part?: number | boolean | null;
   duration: number;
   JobOrderMatairal: JobOrderMatairal[];
   basicModalCloseResult: string = '';
   liveConnected: boolean = false;
   lineId: number;
   noSkuData: boolean = false;
+
+  private isLoadingFiller = true;
+
+  private destroy$ = new Subject<void>();
+  private filterChange$ = new Subject<void>();
 
   @Input() filterObj: {
     shiftFilterid: number;
@@ -43,12 +49,12 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
     from?: any;
     to?: any;
   };
+
   energy: EnergyRefactor;
-  filler: fillers;
+  filler: fillers | null = null;
   filerreads: any;
 
-  // Add subscription to track SignalR updates
-  private fillerSubscription: Subscription;
+  private fillerSubscription: Subscription | null = null;
 
   constructor(
     private modalService: NgbModal,
@@ -65,6 +71,7 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
   ) {
     this._historicalDashboardService
       .JobOrderMatairal(jobOrderId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.JobOrderMatairal = data;
         this.modalService
@@ -88,12 +95,15 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         this.filterObj.from,
         this.filterObj.to,
       )
+      .pipe(takeUntil(this.filterChange$))
       .subscribe((data) => {
         this.energy = data;
       });
   }
 
   getFillerRefactor() {
+    this.isLoadingFiller = true;
+
     this._historicalDashboardService
       .getFillerRefactor(
         this.filterObj.selectedFactory,
@@ -102,9 +112,12 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         this.filterObj.from,
         this.filterObj.to,
       )
+      .pipe(takeUntil(this.filterChange$))
       .subscribe((data) => {
         this.filler = data[0]?.filerreads;
         this.part = this.filler?.count;
+
+        this.isLoadingFiller = false;
       });
   }
 
@@ -118,9 +131,10 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
         this.filterObj.from,
         this.filterObj.to,
       )
+      .pipe(takeUntil(this.filterChange$))
       .subscribe({
         next: (data) => {
-          this.skusActivated = data ?? []; // لو الداتا undefined نتحول لمصفوفة فاضية
+          this.skusActivated = data ?? [];
           this.isLoading = false;
         },
         error: () => {
@@ -130,15 +144,20 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  stopCon() {
+  async stopCon() {
     if (this.liveConnected) {
-      this._historicalDashboardService.hubConnection.stop();
+      try {
+        await this._historicalDashboardService.hubConnection.stop();
+      } catch (err) {
+        console.error('Error stopping SignalR connection:', err);
+      }
+
       this.part = false;
       this.liveConnected = false;
 
-      // Unsubscribe from SignalR updates
       if (this.fillerSubscription) {
         this.fillerSubscription.unsubscribe();
+        this.fillerSubscription = null;
       }
     }
   }
@@ -150,19 +169,18 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
     this._toastr.success('Connected');
   }
 
-  // Subscribe to the SignalR data stream
   subscribeToSignalR() {
     if (this.fillerSubscription) {
       this.fillerSubscription.unsubscribe();
+      this.fillerSubscription = null;
     }
 
     this.fillerSubscription =
       this._historicalDashboardService.fillerData$.subscribe((data) => {
-        if (data) {
+        if (data && !this.isLoadingFiller) {
           this.filler = {
-            ...this.filler,
+            ...(this.filler ?? {}),
             ...data,
-
             avgSpeed:
               data.avgSpeed !== 0 ? data.avgSpeed : this.filler?.avgSpeed,
             weightedavgspeed:
@@ -173,47 +191,46 @@ export class TotalProductionComponent implements OnInit, OnChanges, OnDestroy {
               data.equevilantAVGSpeed !== 0
                 ? data.equevilantAVGSpeed
                 : this.filler?.equevilantAVGSpeed,
-          };
-
+          } as fillers;
           this.part = data.count;
           this._cdr.detectChanges();
         }
       });
   }
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes['filterObj'] && this.filterObj) {
+      this.filterChange$.next();
+      await this.handleConnection();
       this.loadData();
-      this.handleConnection();
     }
   }
 
-  ngOnInit(): void {
-    if (this.filterObj) {
-      this.loadData();
-      this.handleConnection();
-    }
-  }
-
-  // Helper method to load all data
   loadData(): void {
     this.EnergyRefactor();
     this.getFillerRefactor();
     this.getSkus();
   }
 
-  // Helper method to handle SignalR connection logic
-  handleConnection(): void {
+  async handleConnection(): Promise<void> {
+    this.filler = null;
+    this.part = null;
+
     if (this.filterObj.shiftFilterid === 0) {
       if (this.liveConnected) {
-        this.stopCon();
+        await this.stopCon();
       }
       this.StartCon();
     } else {
-      this.stopCon();
+      await this.stopCon();
     }
   }
 
   ngOnDestroy(): void {
+    // إلغاء كل الـ subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.filterChange$.next();
+    this.filterChange$.complete();
     this.stopCon();
   }
 }

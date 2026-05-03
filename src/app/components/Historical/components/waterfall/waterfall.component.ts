@@ -30,10 +30,10 @@ export class WaterfallComponent implements OnInit, OnChanges, AfterViewInit {
     to?: any;
   };
   loading: boolean = true;
-  filler: fillers;
+  filler: fillers | null = null;
   constructor(
     private _historicalDashboardService: HistoricalDashboardService,
-    private _cdr: ChangeDetectorRef
+    private _cdr: ChangeDetectorRef,
   ) {}
 
   getFillerRefactor() {
@@ -44,7 +44,7 @@ export class WaterfallComponent implements OnInit, OnChanges, AfterViewInit {
         this.filterObj?.selectedLine,
         this.filterObj?.shiftFilterid,
         this.filterObj.from,
-        this.filterObj.to
+        this.filterObj.to,
       )
       .subscribe((data) => {
         this.filler = data[0]?.filerreads;

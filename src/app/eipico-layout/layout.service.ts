@@ -1,5 +1,7 @@
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -39,7 +41,7 @@ export class LayoutService {
         .stop()
         .then(() => console.log(' SignalR connection stopped'))
         .catch((err) =>
-          console.log(' Error while stopping SignalR connection: ', err)
+          console.log(' Error while stopping SignalR connection: ', err),
         );
     }
   }

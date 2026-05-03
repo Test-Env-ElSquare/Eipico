@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { LayoutOneCopyComponent } from './components/layout-one-copy/layout-one-copy.component';
 import { MachineCopyDetailsComponent } from './components/machine-details/machine-copy-details/machine-copy-details.component';
 import { LayoutTwoCopyComponent } from './components/layout-two-copy/layout-two-copy.component';
+import { MachineStateDetailsComponent } from './components/machine-state-details/machine-state-details.component';
 @NgModule({
   declarations: [
     EipicoLayoutOneComponent,
@@ -17,6 +18,7 @@ import { LayoutTwoCopyComponent } from './components/layout-two-copy/layout-two-
     LayoutOneCopyComponent,
     MachineCopyDetailsComponent,
     LayoutTwoCopyComponent,
+    MachineStateDetailsComponent,
   ],
   imports: [
     CommonModule,

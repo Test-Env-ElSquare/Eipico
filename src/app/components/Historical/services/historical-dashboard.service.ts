@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   EnergyRefactor,
   GetFillerRefactor,
@@ -23,8 +23,8 @@ export class HistoricalDashboardService {
   public currentDurationValue: Observable<number>;
   public hubConnection: signalR.HubConnection;
 
-  // Add BehaviorSubject for filler data to share SignalR updates
-  public fillerData$ = new BehaviorSubject<fillers | null>(null);
+  // BehaviorSubject للـ SignalR data — يبدأ بـ null
+  public fillerData$ = new Subject<fillers>();
 
   private _factory: number;
   private _line: number;
@@ -38,9 +38,12 @@ export class HistoricalDashboardService {
     to?: any;
   };
 
-  constructor(private _http: HttpClient, private ngZone: NgZone) {
+  constructor(
+    private _http: HttpClient,
+    private ngZone: NgZone,
+  ) {
     this.duration = new BehaviorSubject<number>(
-      JSON.parse(localStorage.getItem('duration')!)
+      JSON.parse(localStorage.getItem('duration')!),
     );
     this.currentDurationValue = this.duration.asObservable();
   }
@@ -56,7 +59,7 @@ export class HistoricalDashboardService {
   HistoricalDashobards(
     factoryId: number,
     lineId: number,
-    duration: number
+    duration: number,
   ): Observable<Historical[]> {
     return this._http.get<Historical[]>(
       environment.url + 'api/Dashboards/HistoricalDashobards',
@@ -66,7 +69,7 @@ export class HistoricalDashboardService {
           lineId: lineId,
           duration: duration,
         },
-      }
+      },
     );
   }
 
@@ -77,7 +80,7 @@ export class HistoricalDashboardService {
         params: {
           jobid: jobid,
         },
-      }
+      },
     );
   }
 
@@ -88,7 +91,7 @@ export class HistoricalDashboardService {
         params: {
           jobid: jobid,
         },
-      }
+      },
     );
   }
 
@@ -111,6 +114,7 @@ export class HistoricalDashboardService {
       console.error('selectedFactory or selectedLine undefined');
       return;
     }
+
     const groupName = `MainDashboard${filterObj.selectedFactory}${filterObj.selectedLine}`;
 
     if (this.hubConnection) {
@@ -133,18 +137,19 @@ export class HistoricalDashboardService {
     try {
       await this.hubConnection.start();
       console.log('SignalR connection started');
+
       await this.hubConnection.invoke(
         'JoinGroup',
         groupName,
         parseInt(filterObj.selectedFactory.toString()),
-        parseInt(filterObj.selectedLine.toString())
+        parseInt(filterObj.selectedLine.toString()),
       );
       console.log('Joined group:', groupName);
 
       this.hubConnection.on(groupName, (data) => {
         this.ngZone.run(() => {
-          this.part = data;
-          // covert data to fillers type
+          this.part = data.results;
+
           const fillerData: fillers = {
             count: data.results || 0,
             qreject: 0,
@@ -158,7 +163,6 @@ export class HistoricalDashboardService {
             equevilantAVGSpeed: 0,
           };
 
-          this.part = data.results;
           this.fillerData$.next(fillerData);
         });
       });
@@ -167,14 +171,12 @@ export class HistoricalDashboardService {
     }
   }
 
-  // Method to send fake data for testing
-
   getFillerRefactor(
     factoryId: number,
     lineId: number,
     duration: number,
     from: string = '',
-    to: string = ''
+    to: string = '',
   ): Observable<GetFillerRefactor[]> {
     if (from && to) {
       return this._http.get<GetFillerRefactor[]>(
@@ -187,7 +189,7 @@ export class HistoricalDashboardService {
             from: from,
             to: to,
           },
-        }
+        },
       );
     } else {
       return this._http.get<GetFillerRefactor[]>(
@@ -198,7 +200,7 @@ export class HistoricalDashboardService {
             lineId: lineId,
             duration: duration,
           },
-        }
+        },
       );
     }
   }
@@ -207,7 +209,7 @@ export class HistoricalDashboardService {
     lineId: number,
     duration: number,
     from: string = '',
-    to: string = ''
+    to: string = '',
   ): Observable<EnergyRefactor> {
     if (from && to) {
       return this._http.get<EnergyRefactor>(
@@ -219,7 +221,7 @@ export class HistoricalDashboardService {
             from: from,
             to: to,
           },
-        }
+        },
       );
     } else {
       return this._http.get<EnergyRefactor>(
@@ -229,7 +231,7 @@ export class HistoricalDashboardService {
             lineId: lineId,
             duration: duration,
           },
-        }
+        },
       );
     }
   }
@@ -238,7 +240,7 @@ export class HistoricalDashboardService {
     lineId: number,
     duration: number,
     from: string = '',
-    to: string = ''
+    to: string = '',
   ): Observable<timeline[]> {
     if (from && to) {
       return this._http.get<timeline[]>(
@@ -250,7 +252,7 @@ export class HistoricalDashboardService {
             from: from,
             to: to,
           },
-        }
+        },
       );
     } else {
       return this._http.get<timeline[]>(
@@ -260,7 +262,7 @@ export class HistoricalDashboardService {
             lineId: lineId,
             duration: duration,
           },
-        }
+        },
       );
     }
   }
@@ -269,7 +271,7 @@ export class HistoricalDashboardService {
     lineId: number,
     duration: number,
     from: string = '',
-    to: string = ''
+    to: string = '',
   ): Observable<skus[]> {
     return this._http.get<skus[]>(environment.url + 'api/Dashboards/GetSkus', {
       params: {

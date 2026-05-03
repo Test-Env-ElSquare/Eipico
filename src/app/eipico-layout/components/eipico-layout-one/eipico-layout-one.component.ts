@@ -115,7 +115,7 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
   }
 
   getPulseClass(machines: any[]): string {
-    const allZero = machines.every((m) => m.state === 0);
+    const allZero = machines.every((m) => m.speed === 0);
     return allZero ? 'pulse-red' : 'pulse-green';
   }
 
@@ -144,7 +144,7 @@ export class EipicoLayoutOneComponent implements OnInit, AfterViewInit {
 
       const machines = line.machines || [];
       const machineStates = machines.map(
-        (m: any) => m.latestSignal?.state ?? 0,
+        (m: any) => m.latestSignal?.speed ?? 0,
       );
 
       const allZero = machineStates.every((s: number) => s === 0);
