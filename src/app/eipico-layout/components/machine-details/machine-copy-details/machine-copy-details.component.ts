@@ -22,6 +22,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
   MachinetagsData: any[] = [];
   columName: string = '';
   count: number = 0;
+  timeRange: string = '';
 
   showDialog = false;
   dialogTitle = '';
@@ -65,6 +66,9 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     const dates = this.getFormattedDates();
     const from = dates.from;
     const to = dates.to;
+    
+    // Format for display: From 2024-05-05 08:00 To 2024-05-05 12:00
+    this.timeRange = `Data from ${from.replace('T', ' ')} to ${to.replace('T', ' ')}`;
 
     let type = 0; // Default: State
     if (displayName === 'Count') type = 1;

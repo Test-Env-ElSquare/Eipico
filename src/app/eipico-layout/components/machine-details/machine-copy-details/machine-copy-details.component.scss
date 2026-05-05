@@ -51,18 +51,19 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
   h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 0;
-    color: #1e293b;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 2px 0 0;
+    color: #64748b;
   }
 
   .machine-type {
-    font-size: 0.8rem;
-    color: #64748b;
-    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1e293b;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.025em;
+    display: block;
   }
 
   .status-dot {
@@ -171,6 +172,13 @@
   .subtitle {
     font-size: 0.85rem;
     color: #64748b;
+  }
+
+  .time-range {
+    font-size: 0.75rem;
+    color: #3b82f6;
+    font-weight: 600;
+    margin-top: 4px;
   }
 }
 

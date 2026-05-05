@@ -2,51 +2,64 @@
 <div class="parent">
   <!-- Machines Horizontal Scroll -->
   <div class="grid-container" *ngIf="machines?.length; else noData">
-
     <ng-container *ngFor="let machine of machines; let i = index">
-
       <div class="grid-item" (click)="selectMachine(machine.machineName)">
         <!-- Machine Card -->
-        <div class="card" [ngClass]="{
-          'running': (machine.latestSignal?.speed ?? 0) > 0,
-          'stopped': (machine.latestSignal?.speed ?? 0) === 0,
-          'active': selectedMachineName === machine.machineName,
-          'flashing-green': flashingMachines.has(machine.machineName) && flashingColor[machine.machineName] === 'green',
-          'flashing-red':   flashingMachines.has(machine.machineName) && flashingColor[machine.machineName] === 'red'
-        }">
+        <div
+          class="card"
+          [ngClass]="{
+            running: (machine.latestSignal?.speed ?? 0) > 0,
+            stopped: (machine.latestSignal?.speed ?? 0) === 0,
+            active: selectedMachineName === machine.machineName,
+            'flashing-green':
+              flashingMachines.has(machine.machineName) &&
+              flashingColor[machine.machineName] === 'green',
+            'flashing-red':
+              flashingMachines.has(machine.machineName) &&
+              flashingColor[machine.machineName] === 'red'
+          }"
+        >
           <div class="status-dot"></div>
-          <span class="machine-type">{{ getMachineType(machine.machineName) }}</span>
+          <span class="machine-type">{{
+            getMachineType(machine.machineName)
+          }}</span>
           <h4>{{ machine.machineName }}</h4>
         </div>
 
         <!-- Machine Metrics -->
         <div class="machine-data">
           <div class="data-row">
-            <div class="label-group">
-              <i class="feather-zap"></i> Speed
-            </div>
+            <div class="label-group"><i class="feather-zap"></i> Speed</div>
             <div class="value">
-              {{ machine.latestSignal?.speed != null ? (machine.latestSignal.speed | number:'1.0-0') : '—' }}
+              {{
+                machine.latestSignal?.speed != null
+                  ? (machine.latestSignal.speed | number : "1.0-0")
+                  : "—"
+              }}
               <span class="unit">PpH</span>
             </div>
           </div>
-          
+
           <div class="data-row">
-            <div class="label-group">
-              <i class="feather-hash"></i> Count
-            </div>
+            <div class="label-group"><i class="feather-hash"></i> Count</div>
             <div class="value">
-              {{ machine.totalCountDiff != null ? (machine.totalCountDiff | number:'1.0-0') : '—' }}
+              {{
+                machine.totalCountDiff != null
+                  ? (machine.totalCountDiff | number : "1.0-0")
+                  : "—"
+              }}
               <span class="unit">Part</span>
             </div>
           </div>
 
           <div class="data-row">
-            <div class="label-group">
-              <i class="feather-clock"></i> Time
-            </div>
-            <div class="value" style="font-size: 0.75rem;">
-              {{ machine.latestTimeStamp ? (machine.latestTimeStamp | date:'HH:mm:ss') : '—' }}
+            <div class="label-group"><i class="feather-clock"></i> Time</div>
+            <div class="value" style="font-size: 0.75rem">
+              {{
+                machine.latestTimeStamp
+                  ? (machine.latestTimeStamp | date : "yyyy-MM-dd HH:mm:ss")
+                  : "—"
+              }}
             </div>
           </div>
         </div>
@@ -54,11 +67,21 @@
 
       <!-- Connecting Arrow -->
       <div class="arrow" *ngIf="i < machines.length - 1">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </div>
-
     </ng-container>
-
   </div>
 
   <!-- Trends Analysis Section -->
@@ -66,20 +89,25 @@
     <div class="chart-header">
       <div class="title-box">
         <h3>Performance Analysis</h3>
-        <span class="subtitle">Monitoring trends for {{ selectedMachineName }}</span>
+        <span class="subtitle"
+          >Monitoring trends for {{ selectedMachineName }}</span
+        >
+        <span class="time-range" *ngIf="timeRange">{{ timeRange }}</span>
       </div>
-      
+
       <div class="toggle-group">
-        <button *ngFor="let tag of MachineTagPropertiesData" 
-                type="button" 
-                class="toggle-btn"
-                [class.active]="columName === tag.displayName"
-                (click)="tagsChartBtn(tag.columnName, tag.chartType, tag.displayName)">
+        <button
+          *ngFor="let tag of MachineTagPropertiesData"
+          type="button"
+          class="toggle-btn"
+          [class.active]="columName === tag.displayName"
+          (click)="tagsChartBtn(tag.columnName, tag.chartType, tag.displayName)"
+        >
           {{ tag.displayName }}
         </button>
       </div>
     </div>
-    
+
     <div class="chart-container">
       <div id="LayoutMachineChart"></div>
     </div>
