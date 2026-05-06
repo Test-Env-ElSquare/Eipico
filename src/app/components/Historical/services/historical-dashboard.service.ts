@@ -115,7 +115,7 @@ export class HistoricalDashboardService {
       return;
     }
 
-    const groupName = `MainDashboard${filterObj.selectedFactory}${filterObj.selectedLine}`;
+    const groupName = `dashboard-factory${filterObj.selectedFactory}-line${filterObj.selectedLine}`;
 
     if (this.hubConnection) {
       try {
@@ -136,7 +136,7 @@ export class HistoricalDashboardService {
 
     try {
       await this.hubConnection.start();
-      console.log('SignalR connection started');
+      console.log('SignalR connection started. ConnID:', this.hubConnection.connectionId);
 
       await this.hubConnection.invoke(
         'JoinGroup',
@@ -147,22 +147,44 @@ export class HistoricalDashboardService {
       console.log('Joined group:', groupName);
 
       this.hubConnection.on(groupName, (data) => {
+        console.log('%c SIGNALR_RAW_DATA [Group Event]: ', 'background: #000; color: #00ff00; font-size: 14px; font-weight: bold;', data);
         this.ngZone.run(() => {
-          this.part = data.results;
+          const results = data.results || data;
+          this.part = results.count ?? results.cumulativeCount ?? results;
 
           const fillerData: fillers = {
-            count: data.results || 0,
-            qreject: 0,
-            availability: 0,
-            performance: 0,
-            quality: 0,
-            oee: 0,
-            avgSpeed: 0,
-            total: data.results || 0,
-            weightedavgspeed: 0,
-            equevilantAVGSpeed: 0,
+            count: results.count ?? results.cumulativeCount ?? (typeof results === 'number' ? results : 0),
+            qreject: results.qreject ?? results.rejectCount ?? 0,
+            availability: results.availability ?? 0,
+            performance: results.performance ?? 0,
+            quality: results.quality ?? 0,
+            oee: results.oee ?? 0,
+            avgSpeed: results.speed ?? results.avgSpeed ?? 0,
+            total: results.total ?? (results.count ?? results.cumulativeCount ?? 0),
+            weightedavgspeed: results.weightedavgspeed ?? 0,
+            equevilantAVGSpeed: results.equevilantAVGSpeed ?? 0,
           };
 
+          this.fillerData$.next(fillerData);
+        });
+      });
+
+      this.hubConnection.on('ReceiveDashboardData', (data) => {
+        console.log('%c SIGNALR_RAW_DATA [ReceiveDashboardData Event]: ', 'background: #000; color: #00ffff; font-size: 14px; font-weight: bold;', data);
+        this.ngZone.run(() => {
+          const results = data.results || data;
+          const fillerData: fillers = {
+            count: results.count ?? results.cumulativeCount ?? (typeof results === 'number' ? results : 0),
+            qreject: results.qreject ?? results.rejectCount ?? 0,
+            availability: results.availability ?? 0,
+            performance: results.performance ?? 0,
+            quality: results.quality ?? 0,
+            oee: results.oee ?? 0,
+            avgSpeed: results.speed ?? results.avgSpeed ?? 0,
+            total: results.total ?? (results.count ?? results.cumulativeCount ?? 0),
+            weightedavgspeed: results.weightedavgspeed ?? 0,
+            equevilantAVGSpeed: results.equevilantAVGSpeed ?? 0,
+          };
           this.fillerData$.next(fillerData);
         });
       });

@@ -177,6 +177,7 @@ export class TotalProductionComponent implements OnChanges, OnDestroy {
 
     this.fillerSubscription =
       this._historicalDashboardService.fillerData$.subscribe((data) => {
+        console.log('TotalProductionComponent Received Filler Data:', data);
         if (data && !this.isLoadingFiller) {
           this.filler = {
             ...(this.filler ?? {}),
@@ -193,6 +194,7 @@ export class TotalProductionComponent implements OnChanges, OnDestroy {
                 : this.filler?.equevilantAVGSpeed,
           } as fillers;
           this.part = data.count;
+          console.log('Updated Filler Object:', this.filler);
           this._cdr.detectChanges();
         }
       });

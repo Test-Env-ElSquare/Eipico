@@ -12,25 +12,28 @@ export class FillerPartsComponent implements OnChanges {
   public chartOptions!: any;
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('Current filler:', this.filler);
+    console.log('FillerPartsComponent Input Changed:', this.filler);
 
-    if (
-      !this.filler ||
-      this.filler.count == null ||
-      this.filler.qreject == null
-    ) {
+    if (!this.filler) {
+      console.warn('FillerPartsComponent: No filler data provided.');
       return;
     }
+
+    // Ensure we have numbers to display, even if they are 0
+    const count = this.filler.count ?? 0;
+    const qreject = this.filler.qreject ?? 0;
+    
+    console.log('Rendering Chart with:', { count, qreject });
 
     this.chartOptions = {
       series: [
         {
           name: 'Good Parts',
-          data: [this.filler.count],
+          data: [count],
         },
         {
           name: 'Reject Parts',
-          data: [this.filler.qreject],
+          data: [qreject],
         },
       ],
       chart: {
