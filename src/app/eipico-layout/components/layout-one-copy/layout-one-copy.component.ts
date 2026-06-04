@@ -134,7 +134,7 @@ export class LayoutOneCopyComponent implements OnInit {
         { name: 'Line AXO', lineId: 32 },
         { name: 'Line COM', lineId: 41 },
         { name: 'Line IMA', lineId: 37 },
-        // { name: 'Line Supp', lineId: 27 },
+        { name: 'Line Supp', lineId: 27 },
       ],
     },
   ];
