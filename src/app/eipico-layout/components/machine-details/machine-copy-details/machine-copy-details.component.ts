@@ -23,6 +23,8 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
   columName: string = '';
   count: number = 0;
   timeRange: string = '';
+  isChartLoading = false;
+  hasChartData = false;
 
   showDialog = false;
   dialogTitle = '';
@@ -33,8 +35,42 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
   private previousMachines: Record<string, { speed: number; count: number }> =
     {};
   private offlineTimers: Record<string, any> = {};
+  private chartRequestVersion = 0;
 
   constructor(private _machineService: MachinesService) {}
+
+  private normalizeMachineTagsResponse(data: any): any[] {
+    const responseData = data?.data ?? data;
+
+    if (!Array.isArray(responseData)) {
+      return [];
+    }
+
+    return responseData.reduce((items: any[], item: any) => {
+      return items.concat(Array.isArray(item) ? item : [item]);
+    }, []);
+  }
+
+  private resetChartState(showLoading = false): void {
+    this.MachinetagsData = [];
+    this.columName = '';
+    this.count = 0;
+    this.timeRange = '';
+    this.hasChartData = false;
+    this.isChartLoading = showLoading;
+
+    const chartElement = document.getElementById('LayoutMachineChart');
+    if (chartElement) {
+      chartElement.innerHTML = '';
+    }
+  }
+
+  private getDefaultTag(tags: MachineTagProperties[]): MachineTagProperties | undefined {
+    return (
+      tags.find((tag) => tag.displayName?.trim().toLowerCase() === 'count') ??
+      tags[0]
+    );
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isVisible'] && this.isVisible) {
@@ -46,13 +82,25 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
   }
 
   selectMachine(machineName: string) {
+    const requestVersion = ++this.chartRequestVersion;
     this.selectedMachineName = machineName;
+    this.MachineTagPropertiesData = [];
+    this.resetChartState(true);
+
     this._machineService.MachineTagProperties(machineName).subscribe((data: any) => {
-      this.MachineTagPropertiesData = data[0];
-      // Auto load the first tag graph if available
+      if (requestVersion !== this.chartRequestVersion) {
+        return;
+      }
+
+      this.MachineTagPropertiesData = data?.[0] ?? [];
+
       if (this.MachineTagPropertiesData && this.MachineTagPropertiesData.length > 0) {
-        const firstTag = this.MachineTagPropertiesData[0];
-        this.tagsChartBtn(firstTag.columnName, firstTag.chartType, firstTag.displayName);
+        const defaultTag = this.getDefaultTag(this.MachineTagPropertiesData);
+        if (defaultTag) {
+          this.tagsChartBtn(defaultTag.columnName, defaultTag.chartType, defaultTag.displayName);
+        }
+      } else {
+        this.isChartLoading = false;
       }
     });
   }
@@ -62,7 +110,20 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     chartType: string,
     displayName: string
   ) {
+    const requestVersion = ++this.chartRequestVersion;
+    const machineName = this.selectedMachineName;
+
     this.columName = displayName;
+    this.MachinetagsData = [];
+    this.count = 0;
+    this.hasChartData = false;
+    this.isChartLoading = true;
+
+    const chartElement = document.getElementById('LayoutMachineChart');
+    if (chartElement) {
+      chartElement.innerHTML = '';
+    }
+
     const dates = this.getFormattedDates();
     const from = dates.from;
     const to = dates.to;
@@ -75,15 +136,25 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     if (displayName === 'Speed') type = 2;
 
     this._machineService
-      .MachineTag(this.selectedMachineName, from, to, type)
-      .subscribe((data: any) => {
-        if (data) {
-          this.MachinetagsData = data;
+      .MachineTag(machineName, from, to, type)
+      .subscribe({
+      next: (data: any) => {
+        if (requestVersion !== this.chartRequestVersion || machineName !== this.selectedMachineName) {
+          return;
+        }
+
+        this.MachinetagsData = this.normalizeMachineTagsResponse(data);
+
+        if (!this.MachinetagsData.length) {
+          this.isChartLoading = false;
+          return;
         }
         
         const Category = this.MachinetagsData?.map((x) => {
           return new Date(x.timeStamp).toLocaleString();
         });
+
+        this.hasChartData = true;
 
         if (displayName === 'State') {
           const state = this.MachinetagsData.map((x) => x.state);
@@ -91,7 +162,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
             id: 'LayoutMachineChart',
             xAxisCategories: Category,
             series: state,
-            yAxistext: this.selectedMachineName,
+            yAxistext: machineName,
             seriesname: displayName,
           });
         } else if (displayName === 'Count') {
@@ -103,7 +174,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
             id: 'LayoutMachineChart',
             xAxisCategories: Category,
             series: counts,
-            yAxistext: this.selectedMachineName,
+            yAxistext: machineName,
             seriesname: displayName,
           });
         } else if (displayName === 'Speed') {
@@ -112,11 +183,22 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
             id: 'LayoutMachineChart',
             xAxisCategories: Category,
             series: speed,
-            yAxistext: this.selectedMachineName,
+            yAxistext: machineName,
             seriesname: displayName,
           });
         }
-      });
+
+        this.isChartLoading = false;
+      },
+      error: () => {
+        if (requestVersion !== this.chartRequestVersion) {
+          return;
+        }
+
+        this.isChartLoading = false;
+        this.hasChartData = false;
+      },
+    });
   }
 
   getFormattedDates() {

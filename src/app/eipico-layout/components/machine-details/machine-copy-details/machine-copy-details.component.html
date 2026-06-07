@@ -109,7 +109,19 @@
     </div>
 
     <div class="chart-container">
-      <div id="LayoutMachineChart"></div>
+      <div class="chart-loader" *ngIf="isChartLoading">
+        <div class="spinner"></div>
+        <span>Loading data...</span>
+      </div>
+
+      <div class="chart-empty" *ngIf="!isChartLoading && !hasChartData">
+        No chart data available.
+      </div>
+
+      <div
+        id="LayoutMachineChart"
+        [class.chart-hidden]="isChartLoading || !hasChartData"
+      ></div>
     </div>
   </div>
 
