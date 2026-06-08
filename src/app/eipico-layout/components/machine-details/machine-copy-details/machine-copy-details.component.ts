@@ -283,4 +283,8 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     if (lower.includes('cart')) return 'Carton';
     return 'Machine';
   }
+
+  ngOnDestroy(): void {
+    Object.values(this.offlineTimers).forEach(clearTimeout);
+  }
 }
