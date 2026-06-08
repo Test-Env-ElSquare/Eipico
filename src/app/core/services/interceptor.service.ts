@@ -10,14 +10,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { LoaderService } from './loader.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
   constructor(
-    private _ActivatedRoute: ActivatedRoute,
     public loader: LoaderService,
     private router: Router,
     private toastr: ToastrService
@@ -44,18 +43,31 @@ export class InterceptorService implements HttpInterceptor {
           localStorage.removeItem('isLoggedin');
           this.router.navigate(['/auth/login']);
         } else {
-          this.router.navigate([
-            `/error/${error.status}`,
-            {
-              type: error.error.type,
-              title: error.error.tilte,
-              desc: error.error.desc,
-            },
-          ]);
+          this.toastr.error(this.getErrorMessage(error));
         }
         return throwError(() => error);
       })
     );
+  }
+
+  private getErrorMessage(error: HttpErrorResponse): string {
+    if (error.error?.message) {
+      return error.error.message;
+    }
+
+    if (error.error?.title) {
+      return error.error.title;
+    }
+
+    if (error.status === 0) {
+      return 'Can not connect to server';
+    }
+
+    if (error.status === 404) {
+      return 'Requested data was not found';
+    }
+
+    return 'Something went wrong';
   }
 }
 // {
