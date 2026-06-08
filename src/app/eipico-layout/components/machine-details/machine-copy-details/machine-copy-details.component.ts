@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  OnDestroy,
+} from '@angular/core';
 import { MachinesService } from '../../../../components/machines/services/machines.service';
 import {
   createAreaSpline,
@@ -15,7 +21,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
   @Input() machines: any[] = [];
   @Input() filteredMachines: any[] = [];
   @Input() isVisible: boolean = false;
-  
+
   // Graph related properties
   selectedMachineName: string = '';
   MachineTagPropertiesData: MachineTagProperties[] = [];
@@ -65,7 +71,9 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private getDefaultTag(tags: MachineTagProperties[]): MachineTagProperties | undefined {
+  private getDefaultTag(
+    tags: MachineTagProperties[],
+  ): MachineTagProperties | undefined {
     return (
       tags.find((tag) => tag.displayName?.trim().toLowerCase() === 'count') ??
       tags[0]
@@ -87,29 +95,34 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     this.MachineTagPropertiesData = [];
     this.resetChartState(true);
 
-    this._machineService.MachineTagProperties(machineName).subscribe((data: any) => {
-      if (requestVersion !== this.chartRequestVersion) {
-        return;
-      }
-
-      this.MachineTagPropertiesData = data?.[0] ?? [];
-
-      if (this.MachineTagPropertiesData && this.MachineTagPropertiesData.length > 0) {
-        const defaultTag = this.getDefaultTag(this.MachineTagPropertiesData);
-        if (defaultTag) {
-          this.tagsChartBtn(defaultTag.columnName, defaultTag.chartType, defaultTag.displayName);
+    this._machineService
+      .MachineTagProperties(machineName)
+      .subscribe((data: any) => {
+        if (requestVersion !== this.chartRequestVersion) {
+          return;
         }
-      } else {
-        this.isChartLoading = false;
-      }
-    });
+
+        this.MachineTagPropertiesData = data?.[0] ?? [];
+
+        if (
+          this.MachineTagPropertiesData &&
+          this.MachineTagPropertiesData.length > 0
+        ) {
+          const defaultTag = this.getDefaultTag(this.MachineTagPropertiesData);
+          if (defaultTag) {
+            this.tagsChartBtn(
+              defaultTag.columnName,
+              defaultTag.chartType,
+              defaultTag.displayName,
+            );
+          }
+        } else {
+          this.isChartLoading = false;
+        }
+      });
   }
 
-  tagsChartBtn(
-    columnName: any,
-    chartType: string,
-    displayName: string
-  ) {
+  tagsChartBtn(columnName: any, chartType: string, displayName: string) {
     const requestVersion = ++this.chartRequestVersion;
     const machineName = this.selectedMachineName;
 
@@ -127,7 +140,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     const dates = this.getFormattedDates();
     const from = dates.from;
     const to = dates.to;
-    
+
     // Format for display: From 2024-05-05 08:00 To 2024-05-05 12:00
     this.timeRange = `Data from ${from.replace('T', ' ')} to ${to.replace('T', ' ')}`;
 
@@ -135,11 +148,12 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     if (displayName === 'Count') type = 1;
     if (displayName === 'Speed') type = 2;
 
-    this._machineService
-      .MachineTag(machineName, from, to, type)
-      .subscribe({
+    this._machineService.MachineTag(machineName, from, to, type).subscribe({
       next: (data: any) => {
-        if (requestVersion !== this.chartRequestVersion || machineName !== this.selectedMachineName) {
+        if (
+          requestVersion !== this.chartRequestVersion ||
+          machineName !== this.selectedMachineName
+        ) {
           return;
         }
 
@@ -149,7 +163,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
           this.isChartLoading = false;
           return;
         }
-        
+
         const Category = this.MachinetagsData?.map((x) => {
           return new Date(x.timeStamp).toLocaleString();
         });
@@ -167,7 +181,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
           });
         } else if (displayName === 'Count') {
           let sum = 0;
-          this.MachinetagsData.forEach(x => sum += (x.count || 0));
+          this.MachinetagsData.forEach((x) => (sum += x.count || 0));
           this.count = sum;
           const counts = this.MachinetagsData.map((x) => x.count);
           createAreaSpline({
@@ -205,18 +219,18 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     const now = new Date();
     const from = new Date();
     from.setHours(8, 0, 0, 0);
-    
+
     if (now < from) {
       from.setDate(from.getDate() - 1);
     }
 
     const pad = (n: number) => (n < 10 ? '0' + n : n);
-    const format = (d: Date) => 
+    const format = (d: Date) =>
       `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    
+
     return {
       from: format(from),
-      to: format(now)
+      to: format(now),
     };
   }
 
@@ -268,9 +282,5 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     if (lower.includes('capp')) return 'Capping';
     if (lower.includes('cart')) return 'Carton';
     return 'Machine';
-  }
-
-  ngOnDestroy(): void {
-    Object.values(this.offlineTimers).forEach(clearTimeout);
   }
 }
