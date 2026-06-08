@@ -271,19 +271,6 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     }, 1500);
   }
 
-  getMachineType(name: string): string {
-    const lower = name.toLowerCase();
-    if (lower.includes('forming')) return 'Forming';
-    if (lower.includes('fill')) return 'Filling';
-    if (lower.includes('labl')) return 'Label';
-    if (lower.includes('blstr')) return 'Blister';
-    if (lower.includes('shrink')) return 'Shrink';
-    if (lower.includes('rins')) return 'Rinsing';
-    if (lower.includes('capp')) return 'Capping';
-    if (lower.includes('cart')) return 'Carton';
-    return 'Machine';
-  }
-
   ngOnDestroy(): void {
     Object.values(this.offlineTimers).forEach(clearTimeout);
   }
