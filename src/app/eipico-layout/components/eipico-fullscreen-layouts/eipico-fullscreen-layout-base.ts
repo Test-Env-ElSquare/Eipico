@@ -18,6 +18,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   abstract pageLabel: string;
   abstract exitLink: string;
   abstract productionSections: LayoutSection[];
+  dispensingRoomStartIndex = 0;
+  dispensingRoomEndIndex = 5;
 
   showDialog = false;
   dialogTitle = '';
@@ -27,11 +29,46 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   lineStats: Record<number, LineStats> = {};
 
   dispensingRooms = [
-    { name: 'Room 1', scales: ['Scale 1', 'Scale 2', 'Scale 3'] },
-    { name: 'Room 2', scales: ['Scale 1', 'Scale 2', 'Scale 3'] },
-    { name: 'Room 3', scales: ['Scale 1', 'Scale 2', 'Scale 3'] },
-    { name: 'Room 4', scales: ['Scale 1', 'Scale 2', 'Scale 3'] },
-    { name: 'Room 5', scales: ['Scale 1', 'Scale 2', 'Scale 3'] },
+    {
+      name: 'Room 1',
+      scales: [
+        { name: 'Scale 1', status: 'ready' },
+        { name: 'Scale 2', status: 'busy' },
+        { name: 'Scale 3', status: 'idle' },
+      ],
+    },
+    {
+      name: 'Room 2',
+      scales: [
+        { name: 'Scale 1', status: 'ready' },
+        { name: 'Scale 2', status: 'idle' },
+        { name: 'Scale 3', status: 'maintenance' },
+      ],
+    },
+    {
+      name: 'Room 3',
+      scales: [
+        { name: 'Scale 1', status: 'busy' },
+        { name: 'Scale 2', status: 'ready' },
+        { name: 'Scale 3', status: 'idle' },
+      ],
+    },
+    {
+      name: 'Room 4',
+      scales: [
+        { name: 'Scale 1', status: 'ready' },
+        { name: 'Scale 2', status: 'busy' },
+        { name: 'Scale 3', status: 'idle' },
+      ],
+    },
+    {
+      name: 'Room 5',
+      scales: [
+        { name: 'Scale 1', status: 'idle' },
+        { name: 'Scale 2', status: 'ready' },
+        { name: 'Scale 3', status: 'maintenance' },
+      ],
+    },
   ];
 
   protected constructor(
@@ -153,6 +190,19 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     return speed === undefined || speed === null ? '-' : Math.round(speed).toString();
   }
 
+  getScaleStatusLabel(status: string): string {
+    switch (status) {
+      case 'ready':
+        return 'Ready';
+      case 'busy':
+        return 'In use';
+      case 'maintenance':
+        return 'Service';
+      default:
+        return 'Idle';
+    }
+  }
+
   getMachineType(name: string): string {
     const lower = (name || '').toLowerCase();
     if (lower.includes('rins')) return 'Rinsing';
@@ -167,11 +217,24 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getFirstDispensingRooms(): any[] {
-    return this.dispensingRooms.slice(0, 2);
+    const rooms = this.getPageDispensingRooms();
+    const splitIndex = Math.ceil(rooms.length / 2);
+
+    return rooms.slice(0, splitIndex);
   }
 
   getSecondDispensingRooms(): any[] {
-    return this.dispensingRooms.slice(2);
+    const rooms = this.getPageDispensingRooms();
+    const splitIndex = Math.ceil(rooms.length / 2);
+
+    return rooms.slice(splitIndex);
+  }
+
+  private getPageDispensingRooms(): any[] {
+    return this.dispensingRooms.slice(
+      this.dispensingRoomStartIndex,
+      this.dispensingRoomEndIndex,
+    );
   }
 
   getProductionSectionGroups(): LayoutSection[][] {

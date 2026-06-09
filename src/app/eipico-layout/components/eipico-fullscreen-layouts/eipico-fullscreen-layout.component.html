@@ -23,7 +23,23 @@
           *ngFor="let room of getFirstDispensingRooms()"
         >
           <strong>{{ room.name }}</strong>
-          <span *ngFor="let scale of room.scales">{{ scale }}</span>
+          <div class="scale-grid">
+            <div
+              class="scale-pill"
+              *ngFor="let scale of room.scales; let scaleIndex = index"
+              [class.scale-one]="scaleIndex === 0"
+              [class.scale-two]="scaleIndex === 1"
+              [class.scale-three]="scaleIndex === 2"
+              [class.ready]="scale.status === 'ready'"
+              [class.busy]="scale.status === 'busy'"
+              [class.idle]="scale.status === 'idle'"
+              [class.maintenance]="scale.status === 'maintenance'"
+            >
+              <span class="scale-icon">⚖</span>
+              <span class="scale-name">{{ scale.name }}</span>
+              <small>{{ getScaleStatusLabel(scale.status) }}</small>
+            </div>
+          </div>
         </article>
       </div>
     </section>
@@ -53,7 +69,23 @@
           *ngFor="let room of getSecondDispensingRooms()"
         >
           <strong>{{ room.name }}</strong>
-          <span *ngFor="let scale of room.scales">{{ scale }}</span>
+          <div class="scale-grid">
+            <div
+              class="scale-pill"
+              *ngFor="let scale of room.scales; let scaleIndex = index"
+              [class.scale-one]="scaleIndex === 0"
+              [class.scale-two]="scaleIndex === 1"
+              [class.scale-three]="scaleIndex === 2"
+              [class.ready]="scale.status === 'ready'"
+              [class.busy]="scale.status === 'busy'"
+              [class.idle]="scale.status === 'idle'"
+              [class.maintenance]="scale.status === 'maintenance'"
+            >
+              <span class="scale-icon">⚖</span>
+              <span class="scale-name">{{ scale.name }}</span>
+              <small>{{ getScaleStatusLabel(scale.status) }}</small>
+            </div>
+          </div>
         </article>
       </div>
     </section>

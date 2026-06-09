@@ -14,6 +14,8 @@ export class EipicoOneLayoutTwoComponent extends EipicoFullscreenLayoutBase {
   title = 'Eipico 1';
   pageLabel = 'Layout - 2';
   exitLink = '/eipico-layout/layout-one-copy';
+  override dispensingRoomStartIndex = 3;
+  override dispensingRoomEndIndex = 5;
   productionSections = EIPICO_ONE_SECTIONS.slice(5);
 
   constructor(layoutService: LayoutService, router: Router) {
