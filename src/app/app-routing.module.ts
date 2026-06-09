@@ -12,6 +12,14 @@ const routes: Routes = [
       import('./views/pages/auth/auth.module').then((m) => m.AuthModule),
   },
   {
+    path: 'eipico-layout-fullscreen',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./eipico-layout/eipico-layout.module').then(
+        (m) => m.EipicoLayoutModule
+      ),
+  },
+  {
     path: '',
     component: BaseComponent,
     canActivate: [AuthGuard],

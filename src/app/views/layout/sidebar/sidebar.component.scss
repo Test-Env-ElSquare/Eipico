@@ -9,6 +9,136 @@
 
 $primary: #92defe !important ;
 
+.sidebar {
+  .sidebar-header {
+    gap: 12px;
+    padding: 0 18px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    img {
+      display: block;
+      width: 150px;
+      max-width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+  }
+
+  .sidebar-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 12px !important;
+  }
+
+  .sidebar-nav {
+    flex: 1 1 auto;
+    padding: 14px 16px 18px !important;
+
+    .nav-item {
+      margin-bottom: 6px;
+    }
+
+    .nav-item.nav-category {
+      display: none;
+    }
+
+    .nav-item > .nav-link,
+    .nav-item > button.nav-link {
+      width: 100%;
+      min-height: 40px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      padding: 0 12px;
+      text-align: left;
+      color: #334155;
+      font-weight: 500;
+      transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
+
+      .link-icon {
+        color: #7b8798;
+      }
+
+      .link-title {
+        margin-left: 28px;
+      }
+    }
+
+    .nav-item > .nav-link:hover,
+    .nav-item > button.nav-link:hover,
+    .nav-item.mm-active > .nav-link,
+    .nav-link.mm-active {
+      background: rgba(146, 222, 254, .18);
+      color: #36a9dc !important;
+
+      .link-icon,
+      .link-arrow {
+        color: #36a9dc !important;
+      }
+    }
+
+    .nav-item.mm-active > .nav-link::before {
+      left: -16px;
+      background: #92defe;
+      border-radius: 0 4px 4px 0;
+    }
+
+    &.sub-menu {
+      margin: 4px 0 8px;
+      padding: 2px 0 2px 38px !important;
+
+      .nav-item > .nav-link,
+      .nav-item > button.nav-link {
+        min-height: 32px;
+        border-radius: 6px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .sidebar-footer {
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(121, 135, 161, .18);
+    padding: 12px 20px 14px;
+    color: #8b98ad;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+
+    span,
+    strong {
+      display: block;
+    }
+
+    strong {
+      color: #5f6b7a;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+  }
+}
+
+:host-context(.sidebar-folded:not(.open-sidebar-folded)) {
+  .sidebar {
+    .sidebar-logo,
+    .sidebar-footer {
+      display: none;
+    }
+
+    .sidebar-header {
+      justify-content: center;
+      padding: 0;
+    }
+  }
+}
+
 // .nobleui-logo {
 //   color: #92defe!important ;
 // }

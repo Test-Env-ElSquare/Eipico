@@ -326,13 +326,28 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         showSubItems: fullAccess || this.perms.has(Permission.Everything),
         subItems: [
           {
-            label: 'Eipico one',
+            label: 'Eipico 1 Old Layout',
             link: '/eipico-layout/layout-one-copy',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
           },
           {
-            label: 'Eipico two',
+            label: 'Eipico 2 Old Layout',
             link: '/eipico-layout/layout-two',
+            showSubItems: fullAccess || this.perms.has(Permission.Everything),
+          },
+          {
+            label: 'Eipico 1 Layout - 1',
+            link: '/eipico-layout-fullscreen/eipico-one-layout-1',
+            showSubItems: fullAccess || this.perms.has(Permission.Everything),
+          },
+          {
+            label: 'Eipico 1 Layout - 2',
+            link: '/eipico-layout-fullscreen/eipico-one-layout-2',
+            showSubItems: fullAccess || this.perms.has(Permission.Everything),
+          },
+          {
+            label: 'Eipico 2',
+            link: '/eipico-layout-fullscreen/eipico-two-fullscreen',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
           },
         ],
@@ -471,11 +486,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     const links: any = document.getElementsByClassName('nav-link-ref');
     let menuItemEl: HTMLElement | null =
       document.querySelector('.your-selector');
-    for (let i = 0; i < links.length; i++) {
-      // tslint:disable-next-line: no-string-literal
-      if (window.location.pathname === links[i]['pathname']) {
-        menuItemEl = links[i];
+    const currentPath = this.router.url.split('?')[0].split('#')[0];
 
+    for (let i = 0; i < links.length; i++) {
+      const linkPath = this.normalizeLinkPath(links[i]);
+
+      if (linkPath === currentPath) {
+        menuItemEl = links[i];
         break;
       }
     }
@@ -516,5 +533,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         }
       }
     }
+  }
+
+  private normalizeLinkPath(link: HTMLAnchorElement): string {
+    const hashPath = link.hash?.replace(/^#/, '');
+    const hrefPath = link.getAttribute('href') || '';
+    const path = hashPath || hrefPath;
+
+    return path.split('?')[0].replace(/^#/, '') || '/';
   }
 }

@@ -1,0 +1,174 @@
+<div class="fullscreen-layout">
+  <header class="layout-header">
+    <div>
+      <span class="eyebrow">{{ pageLabel }}</span>
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="legend">
+      <span><i class="dot running"></i>Running</span>
+      <span><i class="dot stopped"></i>Stopped</span>
+      <span><i class="dot empty"></i>No data</span>
+      <button type="button" class="exit-fullscreen" (click)="exitFullscreen()">
+        Exit fullscreen
+      </button>
+    </div>
+  </header>
+
+  <main class="layout-board">
+    <section class="process-column dispensing-column">
+      <div class="column-title">Step 1: Dispensing</div>
+      <div class="room-group">
+        <article
+          class="room-card"
+          *ngFor="let room of getFirstDispensingRooms()"
+        >
+          <strong>{{ room.name }}</strong>
+          <span *ngFor="let scale of room.scales">{{ scale }}</span>
+        </article>
+      </div>
+    </section>
+
+    <div class="process-group">
+      <div class="process-group-header">
+        <span class="input">Input Room</span>
+        <span class="prep">Preparation</span>
+        <span>Production Lines - 1</span>
+      </div>
+      <div class="process-sections">
+        <ng-container
+          *ngTemplateOutlet="
+            processGroup;
+            context: { sections: getProductionSectionGroups()[0] }
+          "
+        >
+        </ng-container>
+      </div>
+    </div>
+
+    <section class="process-column dispensing-column">
+      <div class="column-title">Dispensing</div>
+      <div class="room-group">
+        <article
+          class="room-card"
+          *ngFor="let room of getSecondDispensingRooms()"
+        >
+          <strong>{{ room.name }}</strong>
+          <span *ngFor="let scale of room.scales">{{ scale }}</span>
+        </article>
+      </div>
+    </section>
+
+    <div class="process-group">
+      <div class="process-group-header">
+        <span class="input">Input Room</span>
+        <span class="prep">Preparation</span>
+        <span>Production Lines - 2</span>
+      </div>
+      <div class="process-sections">
+        <ng-container
+          *ngTemplateOutlet="
+            processGroup;
+            context: { sections: getProductionSectionGroups()[1] }
+          "
+        >
+        </ng-container>
+      </div>
+    </div>
+
+    <section class="process-column small">
+      <div class="column-title">Quarantine</div>
+    </section>
+  </main>
+</div>
+
+<ng-template #processGroup let-sections="sections">
+  <article class="process-section" *ngFor="let section of sections">
+    <div class="section-title input-title">{{ section.label }}</div>
+    <div class="section-title prep-title">{{ section.label }}</div>
+    <div class="section-title">{{ section.label }}</div>
+
+    <div class="line-list stage-list">
+      <div class="stage-row input" *ngFor="let line of section.machines">
+        Input Room
+      </div>
+    </div>
+
+    <div class="line-list stage-list">
+      <div class="stage-row prep" *ngFor="let line of section.machines">
+        Preparation
+      </div>
+    </div>
+
+    <div class="line-list">
+      <button
+        type="button"
+        class="line-card"
+        *ngFor="let line of section.machines"
+        [class.green]="getCssClass(line.lineId) === 'green'"
+        [class.pink]="getCssClass(line.lineId) === 'pink'"
+        [class.white]="getCssClass(line.lineId) === 'white'"
+        (click)="goToMachineDetails(line.lineId.toString())"
+      >
+        <div class="production-cell">
+          <div class="line-head">
+            <div>
+              <strong>{{ line.name }}</strong>
+              <span>{{ getMachineCount(line.lineId) }}</span>
+            </div>
+            <span
+              class="line-status"
+              [class.on]="isLineRunning(line.lineId)"
+              [class.off]="!isLineRunning(line.lineId)"
+            >
+              {{ getLineStatusText(line.lineId) }}
+            </span>
+            <small *ngIf="getLastUpdate(line.lineId)">{{
+              getLastUpdate(line.lineId)
+            }}</small>
+          </div>
+
+          <div
+            class="line-machines"
+            *ngIf="getLineMachines(line.lineId).length; else noMachines"
+          >
+            <div
+              class="machine-chip"
+              *ngFor="let machine of getLineMachines(line.lineId)"
+              [class.running]="getMachineStatusClass(machine) === 'running'"
+              [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
+              [class.flash-running]="isMachineRunning(machine)"
+              [class.flash-stopped]="!isMachineRunning(machine)"
+              [title]="
+                machine.machineName + ' - ' + getMachineSpeed(machine) + ' PpH'
+              "
+            >
+              <span>{{ getMachineType(machine.machineName) }}</span>
+              <strong>{{ machine.machineName }}</strong>
+              <small>{{ getMachineSpeed(machine) }}</small>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noMachines>
+          <div class="inline-empty">Waiting for machine signal</div>
+        </ng-template>
+      </button>
+    </div>
+  </article>
+</ng-template>
+
+<div class="details-overlay" *ngIf="showDialog">
+  <section class="details-modal">
+    <header class="details-header">
+      <h2>{{ dialogTitle }}</h2>
+      <button type="button" (click)="showDialog = false">Close</button>
+    </header>
+
+    <app-machine-copy-details
+      [machines]="machines"
+      [filteredMachines]="machines"
+      [isVisible]="showDialog"
+    >
+    </app-machine-copy-details>
+  </section>
+</div>

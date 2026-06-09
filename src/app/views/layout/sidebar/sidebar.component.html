@@ -1,26 +1,19 @@
 <nav class="sidebar">
   <div class="sidebar-header">
-    <div></div>
+    <a routerLink="/" class="sidebar-logo" aria-label="Home">
+      <img src="assets/images/logo-eipico.png" alt="EIPICO" />
+    </a>
     <div class="sidebar-toggler active" #sidebarToggler (click)="toggleSidebar($event)">
       <span></span>
       <span></span>
       <span></span>
     </div>
-    <!--- Logo -->
-    <img width="200" routerLink="/" src="assets/images/logo-eipico.png"
-      class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" />
-
-
-    <!--
-    <a routerLink="/" class="sidebar-brand nobleui-logo">Taqa    </a> -->
-    <!--- Toggler -->
-
   </div>
   <div class="sidebar-body pt-5" (mouseenter)="operSidebarFolded()" (mouseleave)="closeSidebarFolded()"
     [perfectScrollbar]>
     <!--- Sidemenu start -->
 
-    <ul class="sidebar-nav metismenu tw-h-full tw-relative" id="sidebar-menu" #sidebarMenu>
+    <ul class="sidebar-nav metismenu" id="sidebar-menu" #sidebarMenu>
       <li class="nav-item text-center">
 
 
@@ -31,10 +24,6 @@
         </a> -->
       </li>
       <ng-container *ngFor="let item of menuItems">
-        <!-- Title item -->
-        <!-- <li class="nav-item nav-category" *ngIf="item.showSubItems">{{
-          item.label }}</li> -->
-
         <!-- Main item (with or without subitems) -->
         <li class="nav-item" *ngIf="!item.isTitle">
           <!-- Main item with subitems -->
@@ -65,17 +54,12 @@
               </a>
 
               <!-- Button for subitems without further subitems -->
-              <button [disabled]="
-                  subitem.label === 'Line Settings' ||
-                  subitem.label === 'Production Settings' ||
-                  subitem.label === 'Stoppage Plan' ||
-                  subitem.label === 'Daily reports'
-                " *ngIf="subitem.showSubItems" class="nav-link nav-link-ref" [routerLink]="subitem.link"
+              <a *ngIf="subitem.showSubItems" class="nav-link nav-link-ref" [routerLink]="subitem.link"
                 routerLinkActive="mm-active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-parent]="subitem.parentId">
                 <i class="link-icon" [attr.data-feather]="subitem.icon" appFeatherIcon *ngIf="subitem.icon"></i>
                 {{ subitem.label }}
-              </button>
+              </a>
 
               <!-- Sub-sub-items -->
               <ul class="sidebar-nav sub-menu nav-third-level" *ngIf="subitem.showSubItems">
@@ -93,14 +77,14 @@
         </li>
       </ng-container>
 
-      <li class="nav-item nav-category text-center tw-absolute -tw-bottom-32">
-        Powered by Elsquare
-      </li>
       <!-- <p class="sidebar-brand nobleui-logo" style="font-size: 18px">
         MES Genies AI
 
       </p> -->
-      <li class="text-center fw-bold nav-item nav-category tw-absolute -tw-bottom-32">v3.0.2</li>
     </ul>
+    <div class="sidebar-footer">
+      <span>Powered by Elsquare</span>
+      <strong>v3.0.2</strong>
+    </div>
   </div>
 </nav>

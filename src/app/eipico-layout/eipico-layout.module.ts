@@ -10,6 +10,9 @@ import { LayoutOneCopyComponent } from './components/layout-one-copy/layout-one-
 import { MachineCopyDetailsComponent } from './components/machine-details/machine-copy-details/machine-copy-details.component';
 import { LayoutTwoCopyComponent } from './components/layout-two-copy/layout-two-copy.component';
 import { MachineStateDetailsComponent } from './components/machine-state-details/machine-state-details.component';
+import { EipicoOneLayoutOneComponent } from './components/eipico-fullscreen-layouts/eipico-one-layout-one.component';
+import { EipicoOneLayoutTwoComponent } from './components/eipico-fullscreen-layouts/eipico-one-layout-two.component';
+import { EipicoTwoFullscreenComponent } from './components/eipico-fullscreen-layouts/eipico-two-fullscreen.component';
 @NgModule({
   declarations: [
     EipicoLayoutOneComponent,
@@ -19,6 +22,9 @@ import { MachineStateDetailsComponent } from './components/machine-state-details
     MachineCopyDetailsComponent,
     LayoutTwoCopyComponent,
     MachineStateDetailsComponent,
+    EipicoOneLayoutOneComponent,
+    EipicoOneLayoutTwoComponent,
+    EipicoTwoFullscreenComponent,
   ],
   imports: [
     CommonModule,
