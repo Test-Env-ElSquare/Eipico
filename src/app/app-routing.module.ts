@@ -82,6 +82,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'batch-workflow',
+        loadChildren: () =>
+          import('./components/batch-workflow/batch-workflow.module').then(
+            (m) => m.BatchWorkflowModule
+          ),
+      },
+      {
         path: 'machines',
         loadChildren: () =>
           import('./components/machines/machines.module').then(

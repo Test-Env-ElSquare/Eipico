@@ -18,10 +18,6 @@ export const MENU: MenuItem[] = [
         label: 'Historical Dashboard  ',
         link: '/Historical',
       },
-      {
-        label: 'External Dashboard',
-        link: '/external-dashboard',
-      },
     ],
   },
   {
@@ -170,6 +166,54 @@ export const MENU: MenuItem[] = [
       {
         label: 'Main Scada',
         link: '/Scada/mainScada',
+      },
+    ],
+  },
+  {
+    label: 'Layout',
+    isTitle: true,
+  },
+  {
+    label: 'Layout',
+    icon: 'bar-chart',
+    subItems: [
+      {
+        label: 'Eipico 1 Layout',
+        link: '/eipico-layout/layout-one-copy',
+      },
+      {
+        label: 'Eipico 2 Layout',
+        link: '/eipico-layout/layout-two',
+      },
+    ],
+  },
+  {
+    label: 'Signage',
+    isTitle: true,
+  },
+  {
+    label: 'Signage',
+    icon: 'monitor',
+    subItems: [
+      {
+        label: 'Batch Workflow',
+        link: '/batch-workflow',
+      },
+      {
+        label: 'Eipico 1 Layout - 1',
+        link: '/eipico-layout-fullscreen/eipico-one-layout-1',
+      },
+      {
+        label: 'Eipico 1 Layout - 2',
+        link: '/eipico-layout-fullscreen/eipico-one-layout-2',
+      },
+      {
+        label: 'Eipico 2',
+        link: '/eipico-layout-fullscreen/eipico-two-fullscreen',
+      },
+      {
+        label: 'External Dashboard',
+        link: '/external-dashboard',
       },
     ],
   },

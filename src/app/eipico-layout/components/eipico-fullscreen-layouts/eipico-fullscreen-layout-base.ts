@@ -11,6 +11,17 @@ interface LineStats {
   machines: any[];
 }
 
+interface ScaleStatus {
+  scaleName: string;
+  room: string;
+  lastSignalTime: string | null;
+}
+
+interface DispensingRoom {
+  name: string;
+  scales: ScaleStatus[];
+}
+
 @Directive()
 export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   abstract factoryId: number;
@@ -19,7 +30,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   abstract exitLink: string;
   abstract productionSections: LayoutSection[];
   dispensingRoomStartIndex = 0;
-  dispensingRoomEndIndex = 5;
+  dispensingRoomEndIndex = Number.MAX_SAFE_INTEGER;
 
   showDialog = false;
   dialogTitle = '';
@@ -27,49 +38,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   currentOpenedLineId: string | null = null;
   receivedData: any[] = [];
   lineStats: Record<number, LineStats> = {};
-
-  dispensingRooms = [
-    {
-      name: 'Room 1',
-      scales: [
-        { name: 'Scale 1', status: 'ready' },
-        { name: 'Scale 2', status: 'busy' },
-        { name: 'Scale 3', status: 'idle' },
-      ],
-    },
-    {
-      name: 'Room 2',
-      scales: [
-        { name: 'Scale 1', status: 'ready' },
-        { name: 'Scale 2', status: 'idle' },
-        { name: 'Scale 3', status: 'maintenance' },
-      ],
-    },
-    {
-      name: 'Room 3',
-      scales: [
-        { name: 'Scale 1', status: 'busy' },
-        { name: 'Scale 2', status: 'ready' },
-        { name: 'Scale 3', status: 'idle' },
-      ],
-    },
-    {
-      name: 'Room 4',
-      scales: [
-        { name: 'Scale 1', status: 'ready' },
-        { name: 'Scale 2', status: 'busy' },
-        { name: 'Scale 3', status: 'idle' },
-      ],
-    },
-    {
-      name: 'Room 5',
-      scales: [
-        { name: 'Scale 1', status: 'idle' },
-        { name: 'Scale 2', status: 'ready' },
-        { name: 'Scale 3', status: 'maintenance' },
-      ],
-    },
-  ];
+  scaleStatusText = 'Connecting scales...';
+  dispensingRooms: DispensingRoom[] = [];
+  private scalesByRoomAndName: Record<string, ScaleStatus> = {};
 
   protected constructor(
     protected layoutService: LayoutService,
@@ -78,10 +49,12 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onStartConnection();
+    this.onStartScaleStatusConnection();
   }
 
   ngOnDestroy(): void {
     this.layoutService.stopConnection();
+    this.layoutService.stopScaleStatusConnection();
   }
 
   onStartConnection(): void {
@@ -99,6 +72,49 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
         );
       })
       .catch((err) => console.error('SignalR error:', err));
+  }
+
+  onStartScaleStatusConnection(): void {
+    this.layoutService
+      .startScaleStatusConnection(this.factoryId)
+      .then(() => {
+        this.layoutService.onInitialScales((data: any[]) => {
+          this.setScales(data);
+        });
+
+        this.layoutService.onScaleUpdate((updated: any) => {
+          this.upsertScale(updated);
+        });
+      })
+      .catch((err) => {
+        this.scaleStatusText = 'Scale connection failed';
+        console.error('Scale status SignalR error:', err);
+      });
+  }
+
+  setScales(scales: any[]): void {
+    this.scalesByRoomAndName = {};
+    scales.forEach((scale) => this.upsertScale(scale, false));
+    this.rebuildDispensingRooms();
+  }
+
+  upsertScale(scale: any, rebuild = true): void {
+    if (!scale?.scaleName) {
+      return;
+    }
+
+    const normalizedScale: ScaleStatus = {
+      scaleName: scale.scaleName,
+      room: scale.room || 'Unassigned Room',
+      lastSignalTime: scale.lastSignalTime || null,
+    };
+
+    this.scalesByRoomAndName[this.getScaleKey(normalizedScale)] =
+      normalizedScale;
+
+    if (rebuild) {
+      this.rebuildDispensingRooms();
+    }
   }
 
   updateMachinesData(lines: any[]): void {
@@ -190,17 +206,12 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     return speed === undefined || speed === null ? '-' : Math.round(speed).toString();
   }
 
-  getScaleStatusLabel(status: string): string {
-    switch (status) {
-      case 'ready':
-        return 'Ready';
-      case 'busy':
-        return 'In use';
-      case 'maintenance':
-        return 'Service';
-      default:
-        return 'Idle';
-    }
+  getScaleStatusLabel(scale: ScaleStatus): string {
+    return scale.lastSignalTime ? 'Live' : 'No signal';
+  }
+
+  getScaleLastSignal(scale: ScaleStatus): string {
+    return scale.lastSignalTime ? this.formatDateTime(scale.lastSignalTime) : '-';
   }
 
   getMachineType(name: string): string {
@@ -235,6 +246,49 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       this.dispensingRoomStartIndex,
       this.dispensingRoomEndIndex,
     );
+  }
+
+  private rebuildDispensingRooms(): void {
+    const rooms = new Map<string, ScaleStatus[]>();
+
+    Object.values(this.scalesByRoomAndName).forEach((scale) => {
+      if (!rooms.has(scale.room)) {
+        rooms.set(scale.room, []);
+      }
+
+      rooms.get(scale.room)?.push(scale);
+    });
+
+    this.dispensingRooms = Array.from(rooms.entries())
+      .map(([name, scales]) => ({
+        name,
+        scales: scales.sort((a, b) => a.scaleName.localeCompare(b.scaleName)),
+      }))
+      .sort((a, b) => this.compareRoomNames(a.name, b.name));
+
+    this.scaleStatusText = this.dispensingRooms.length
+      ? ''
+      : 'No scales found';
+  }
+
+  private compareRoomNames(first: string, second: string): number {
+    const firstNumber = this.getFirstNumber(first);
+    const secondNumber = this.getFirstNumber(second);
+
+    if (firstNumber !== null && secondNumber !== null) {
+      return firstNumber - secondNumber;
+    }
+
+    return first.localeCompare(second);
+  }
+
+  private getFirstNumber(value: string): number | null {
+    const match = value.match(/\d+/);
+    return match ? Number(match[0]) : null;
+  }
+
+  private getScaleKey(scale: ScaleStatus): string {
+    return `${scale.room}::${scale.scaleName}`;
   }
 
   getProductionSectionGroups(): LayoutSection[][] {

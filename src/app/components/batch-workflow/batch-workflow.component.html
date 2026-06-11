@@ -1,0 +1,176 @@
+<div class="batch-workflow-page">
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <section class="filters-bar">
+    <div class="search-box">
+      <svg
+        class="search-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="filter"
+        (ngModelChange)="onFiltersChange()"
+        placeholder="Batchname SKUcode Job order TimeStamp"
+      />
+    </div>
+
+    <label class="status-filter">
+      <span>Status</span>
+      <select [(ngModel)]="status" (ngModelChange)="onFiltersChange()">
+        <option value="">All</option>
+        <option value="SapReceived">SapReceived</option>
+        <option value="InProgress">InProgress</option>
+        <option value="MachineLoaded">MachineLoaded</option>
+      </select>
+    </label>
+
+    <label class="hidden-filter">
+      <input
+        type="checkbox"
+        [(ngModel)]="includeHidden"
+        (ngModelChange)="onFiltersChange()"
+      />
+      Include Hidden
+    </label>
+
+    <div class="status-legend">
+      <span><i class="red"></i>SapReceived</span>
+      <span><i class="yellow"></i>InProgress</span>
+      <span><i class="green"></i>MachineLoaded</span>
+    </div>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards-grid" *ngIf="cards.length; else emptyCards">
+      <article
+        class="workflow-card"
+        *ngFor="let card of cards"
+        [ngClass]="getCardClass(card)"
+        (click)="openCardDetails(batchDetailsModal, card)"
+      >
+        <header>
+          <strong [title]="card.batchId || '-'">{{ card.batchId || '-' }}</strong>
+        </header>
+
+        <div class="sku-name" [title]="card.skuName || '-'">
+          {{ card.skuName || '-' }}
+        </div>
+
+        <div class="card-details">
+          <span>
+            <b>Job</b>
+            {{ showValue(card.jobOrderId) }}
+          </span>
+          <span>
+            <b>Status</b>
+            {{ showValue(card.status) }}
+          </span>
+        </div>
+
+        <div class="card-times">
+          <div>
+            <b>Last Weight</b>
+            {{ formatDate(card.lastWeightTime) }}
+          </div>
+          <div>
+            <b>Last Load</b>
+            {{ formatDate(card.lastMachineLoadTime) }}
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #emptyCards>
+      <div class="empty-state">No cards found.</div>
+    </ng-template>
+  </section>
+</div>
+
+<ng-template #batchDetailsModal let-modal>
+  <div class="modal-header workflow-modal-header">
+    <div>
+      <h4 class="modal-title">{{ selectedCard?.batchId || '-' }}</h4>
+      <p>{{ selectedCard?.skuName || '-' }}</p>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-summary">
+      <span>
+        <b>Job Order</b>
+        {{ showValue(selectedCard?.jobOrderId) }}
+      </span>
+      <span>
+        <b>Status</b>
+        {{ showValue(selectedCard?.status) }}
+      </span>
+      <span>
+        <b>Last Weight</b>
+        {{ formatDate(selectedCard?.lastWeightTime) }}
+      </span>
+      <span>
+        <b>Last Load</b>
+        {{ formatDate(selectedCard?.lastMachineLoadTime) }}
+      </span>
+    </div>
+
+    <div class="table-responsive" *ngIf="selectedMaterials.length; else noMaterials">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Material Name</th>
+            <th>Material Code</th>
+            <th>SAP Weight</th>
+            <th>Actual Weight</th>
+            <th>Deviation %</th>
+            <th>Time Stamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of selectedMaterials">
+            <td>{{ item?.materialName || '-' }}</td>
+            <td>{{ item?.uid || '-' }}</td>
+            <td>{{ item?.sapweight || '-' }}</td>
+            <td>
+              {{
+                item?.handheldweight !== '-1'
+                  ? item?.handheldweight
+                  : 'N/A'
+              }}
+            </td>
+            <td>{{ item?.deviation !== -1 ? item?.deviation : 'N/A' }}</td>
+            <td>
+              {{
+                item?.timeStamp
+                  ? (item?.timeStamp | date : 'dd-MM-yyyy HH:mm a')
+                  : 'N/A'
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noMaterials>
+      <div class="empty-state">No material details found.</div>
+    </ng-template>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
+      Close
+    </button>
+  </div>
+</ng-template>

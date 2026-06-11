@@ -94,11 +94,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             showSubItems:
               fullAccess || this.perms.has(Permission.HistoricalDashboards),
           },
-          {
-            label: 'External Dashboard',
-            link: '/external-dashboard',
-            showSubItems: fullAccess,
-          },
         ],
       },
       {
@@ -340,6 +335,22 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             link: '/eipico-layout/layout-two',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
           },
+        ],
+      },
+      {
+        label: 'Signage',
+        isTitle: true,
+      },
+      {
+        label: 'Signage',
+        icon: 'monitor',
+        showSubItems: fullAccess || this.perms.has(Permission.Everything),
+        subItems: [
+          {
+            label: 'Batch Workflow',
+            link: '/batch-workflow',
+            showSubItems: fullAccess,
+          },
           {
             label: 'Eipico 1 Layout - 1',
             link: '/eipico-layout-fullscreen/eipico-one-layout-1',
@@ -354,6 +365,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             label: 'Eipico 2',
             link: '/eipico-layout-fullscreen/eipico-two-fullscreen',
             showSubItems: fullAccess || this.perms.has(Permission.Everything),
+          },
+          {
+            label: 'External Dashboard',
+            link: '/external-dashboard',
+            showSubItems: fullAccess,
           },
         ],
       },

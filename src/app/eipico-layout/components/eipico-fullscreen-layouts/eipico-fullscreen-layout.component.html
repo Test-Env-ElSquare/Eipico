@@ -18,6 +18,9 @@
     <section class="process-column dispensing-column">
       <div class="column-title">Step 1: Dispensing</div>
       <div class="room-group">
+        <div class="scale-empty" *ngIf="!getFirstDispensingRooms().length">
+          {{ scaleStatusText }}
+        </div>
         <article
           class="room-card"
           *ngFor="let room of getFirstDispensingRooms()"
@@ -30,14 +33,13 @@
               [class.scale-one]="scaleIndex === 0"
               [class.scale-two]="scaleIndex === 1"
               [class.scale-three]="scaleIndex === 2"
-              [class.ready]="scale.status === 'ready'"
-              [class.busy]="scale.status === 'busy'"
-              [class.idle]="scale.status === 'idle'"
-              [class.maintenance]="scale.status === 'maintenance'"
+              [class.live]="scale.lastSignalTime"
+              [class.no-signal]="!scale.lastSignalTime"
             >
-              <span class="scale-icon">⚖</span>
-              <span class="scale-name">{{ scale.name }}</span>
-              <small>{{ getScaleStatusLabel(scale.status) }}</small>
+              <span class="scale-icon">S</span>
+              <span class="scale-name">{{ scale.scaleName }}</span>
+              <small>{{ getScaleStatusLabel(scale) }}</small>
+              <time>{{ getScaleLastSignal(scale) }}</time>
             </div>
           </div>
         </article>
@@ -64,6 +66,9 @@
     <section class="process-column dispensing-column">
       <div class="column-title">Dispensing</div>
       <div class="room-group">
+        <div class="scale-empty" *ngIf="!getSecondDispensingRooms().length">
+          {{ scaleStatusText }}
+        </div>
         <article
           class="room-card"
           *ngFor="let room of getSecondDispensingRooms()"
@@ -76,14 +81,13 @@
               [class.scale-one]="scaleIndex === 0"
               [class.scale-two]="scaleIndex === 1"
               [class.scale-three]="scaleIndex === 2"
-              [class.ready]="scale.status === 'ready'"
-              [class.busy]="scale.status === 'busy'"
-              [class.idle]="scale.status === 'idle'"
-              [class.maintenance]="scale.status === 'maintenance'"
+              [class.live]="scale.lastSignalTime"
+              [class.no-signal]="!scale.lastSignalTime"
             >
-              <span class="scale-icon">⚖</span>
-              <span class="scale-name">{{ scale.name }}</span>
-              <small>{{ getScaleStatusLabel(scale.status) }}</small>
+              <span class="scale-icon">S</span>
+              <span class="scale-name">{{ scale.scaleName }}</span>
+              <small>{{ getScaleStatusLabel(scale) }}</small>
+              <time>{{ getScaleLastSignal(scale) }}</time>
             </div>
           </div>
         </article>
