@@ -9,3 +9,15 @@
   left: 0;
   top: 0;
 }
+
+.nav-brand-eipico {
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+
+  img {
+    display: block;
+    width: 54px;
+    height: auto;
+  }
+}
