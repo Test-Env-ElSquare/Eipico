@@ -94,6 +94,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             showSubItems:
               fullAccess || this.perms.has(Permission.HistoricalDashboards),
           },
+          {
+            label: 'External Dashboard',
+            link: '/external-dashboard',
+            showSubItems: fullAccess,
+          },
         ],
       },
       {

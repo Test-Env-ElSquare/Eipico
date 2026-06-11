@@ -41,6 +41,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'external-dashboard',
+        loadChildren: () =>
+          import('./components/external-dashboard/external-dashboard.module').then(
+            (m) => m.ExternalDashboardModule
+          ),
+      },
+      {
         path: 'reports',
         loadChildren: () =>
           import('./components/reports/reports.module').then(

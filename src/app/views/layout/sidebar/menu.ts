@@ -18,6 +18,10 @@ export const MENU: MenuItem[] = [
         label: 'Historical Dashboard  ',
         link: '/Historical',
       },
+      {
+        label: 'External Dashboard',
+        link: '/external-dashboard',
+      },
     ],
   },
   {
