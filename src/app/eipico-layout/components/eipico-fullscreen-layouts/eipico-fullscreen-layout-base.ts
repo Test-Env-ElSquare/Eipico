@@ -1,4 +1,10 @@
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Directive,
+  NgZone,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { LayoutService } from '../../layout.service';
 import { LayoutLine, LayoutSection } from './eipico-layout-data';
@@ -29,6 +35,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   abstract pageLabel: string;
   abstract exitLink: string;
   abstract productionSections: LayoutSection[];
+  customProductionSectionGroups: LayoutSection[][] | null = null;
   dispensingRoomStartIndex = 0;
   dispensingRoomEndIndex = Number.MAX_SAFE_INTEGER;
 
@@ -40,16 +47,19 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   lineStats: Record<number, LineStats> = {};
   scaleStatusText = 'Connecting scales...';
   dispensingRooms: DispensingRoom[] = [];
+  productionSectionGroups: LayoutSection[][] = [[], []];
   private scalesByRoomAndName: Record<string, ScaleStatus> = {};
 
   protected constructor(
     protected layoutService: LayoutService,
     protected router: Router,
+    protected cdr: ChangeDetectorRef,
+    protected ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {
+    this.productionSectionGroups = this.buildProductionSectionGroups();
     this.onStartConnection();
-    this.onStartScaleStatusConnection();
   }
 
   ngOnDestroy(): void {
@@ -62,14 +72,30 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       .startConnection()
       .then(() => {
         this.layoutService.onAllMachineUpdate((data: any[]) => {
-          this.receivedData = data;
-          this.updateMachinesData(data);
+          const receivedAt = performance.now();
+          this.logSignalReceived(data, receivedAt);
+          this.ngZone.run(() => {
+            this.receivedData = data;
+            this.updateMachinesData(data);
+            this.cdr.detectChanges();
+            this.logRenderDebug(data, receivedAt);
+          });
+        });
+
+        this.layoutService.hubConnection.onreconnected(() => {
+          this.layoutService.hubConnection.invoke(
+            'JoinFactoryGroup',
+            this.factoryId,
+          );
         });
 
         return this.layoutService.hubConnection.invoke(
           'JoinFactoryGroup',
           this.factoryId,
         );
+      })
+      .then(() => {
+        this.onStartScaleStatusConnection();
       })
       .catch((err) => console.error('SignalR error:', err));
   }
@@ -79,11 +105,17 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       .startScaleStatusConnection(this.factoryId)
       .then(() => {
         this.layoutService.onInitialScales((data: any[]) => {
-          this.setScales(data);
+          this.ngZone.run(() => {
+            this.setScales(data);
+            this.cdr.detectChanges();
+          });
         });
 
         this.layoutService.onScaleUpdate((updated: any) => {
-          this.upsertScale(updated);
+          this.ngZone.run(() => {
+            this.upsertScale(updated);
+            this.cdr.detectChanges();
+          });
         });
       })
       .catch((err) => {
@@ -125,22 +157,27 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     }
 
     lines.forEach((line: any) => {
-      const machines = this.sortMachines(line.machines || []);
-      const speeds = machines.map((m: any) => m.latestSignal?.speed ?? 0);
-      const cssClass = machines.length
-        ? speeds.some((speed: number) => speed > 0)
+      const machines: any[] = line.machines || [];
+      const speeds: number[] = machines.map(
+        (m: any) => m.latestSignal?.speed ?? 0,
+      );
+
+      let cssClass = 'white';
+      if (machines.length > 0) {
+        cssClass = speeds.some((speed: number) => speed > 0)
           ? 'green'
-          : 'pink'
-        : 'white';
+          : 'pink';
+      }
+
       const lastTimestamp =
         machines[machines.length - 1]?.latestTimeStamp ?? '';
 
       this.lineStats[line.lineId] = {
-        machineCount: line.machineCount ?? machines.length,
+        machineCount: line.machineCount ?? 0,
         lastUpdate: this.formatDateTime(lastTimestamp),
         cssClass,
         isRunning: cssClass === 'green',
-        machines,
+        machines: this.sortMachines(machines),
       };
     });
   }
@@ -204,6 +241,20 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   getMachineSpeed(machine: any): string {
     const speed = machine.latestSignal?.speed;
     return speed === undefined || speed === null ? '-' : Math.round(speed).toString();
+  }
+
+  getMachineCountValue(machine: any): string {
+    const count =
+      machine.latestSignal?.count ??
+      machine.latestSignal?.counter ??
+      machine.latestSignal?.productionCount ??
+      machine.count ??
+      machine.counter ??
+      machine.productionCount;
+
+    return count === undefined || count === null
+      ? '-'
+      : Math.round(Number(count)).toString();
   }
 
   getScaleStatusLabel(scale: ScaleStatus): string {
@@ -292,6 +343,14 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getProductionSectionGroups(): LayoutSection[][] {
+    return this.productionSectionGroups;
+  }
+
+  private buildProductionSectionGroups(): LayoutSection[][] {
+    if (this.customProductionSectionGroups) {
+      return this.customProductionSectionGroups;
+    }
+
     if (this.productionSections.length <= 1) {
       return [this.productionSections, []];
     }
@@ -339,6 +398,125 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     );
 
     return section?.label ?? 'Machine Details';
+  }
+
+  private logSignalReceived(data: any[], receivedAtMs: number): void {
+    const now = new Date();
+    console.log(
+      `[SignalR][Fullscreen][Factory ${this.factoryId}][${this.pageLabel}] ReceiveFactorySignals`,
+      {
+        receivedAt: now.toISOString(),
+        localTime: now.toLocaleTimeString(),
+        performanceMs: Math.round(receivedAtMs),
+        lineCount: Array.isArray(data) ? data.length : 0,
+        firstLineId: Array.isArray(data) ? data[0]?.lineId : undefined,
+      },
+    );
+    this.logIma2Speed(data, now);
+  }
+
+  private logRenderDebug(data: any[], receivedAtMs: number): void {
+    const ima2Line = this.findIma2Line(data);
+    const lineId = ima2Line?.signalLine?.lineId;
+
+    requestAnimationFrame(() => {
+      const frameAtMs = performance.now();
+      const lineButton = lineId
+        ? document.querySelector(`[data-line-id="${lineId}"]`)
+        : null;
+
+      console.log(
+        `[RenderDebug][Fullscreen][Factory ${this.factoryId}][${this.pageLabel}] After detectChanges`,
+        {
+          elapsedMs: Math.round(frameAtMs - receivedAtMs),
+          ima2Found: Boolean(ima2Line),
+          lineId,
+          lineName: ima2Line?.layoutLine?.name,
+          speeds: ima2Line?.speeds,
+          maxSpeed: ima2Line?.maxSpeed,
+          lineCssClass: lineId ? this.getCssClass(lineId) : undefined,
+          domFound: Boolean(lineButton),
+          domClasses: lineButton?.getAttribute('class'),
+          domText: lineButton?.textContent?.trim().slice(0, 160),
+        },
+      );
+    });
+  }
+
+  private logIma2Speed(data: any[], receivedAt: Date): void {
+    if (!Array.isArray(data)) {
+      return;
+    }
+
+    data.forEach((line) => {
+      const layoutLine = this.findIma2LayoutLine(line.lineId);
+
+      if (!layoutLine) {
+        return;
+      }
+
+      const speeds = (line.machines || []).map(
+        (machine: any) => machine.latestSignal?.speed ?? 0,
+      );
+
+      console.log(
+        `[SignalR][Fullscreen][Factory ${this.factoryId}][${this.pageLabel}] IMA 2 Line Speeds`,
+        {
+          receivedAt: receivedAt.toISOString(),
+          localTime: receivedAt.toLocaleTimeString(),
+          lineId: line.lineId,
+          lineName: layoutLine.name,
+          speeds,
+          maxSpeed: speeds.length ? Math.max(...speeds) : 0,
+          machineNames: (line.machines || []).map(
+            (machine: any) => machine.machineName,
+          ),
+        },
+      );
+    });
+  }
+
+  private findIma2Line(data: any[]): any | null {
+    if (!Array.isArray(data)) {
+      return null;
+    }
+
+    for (const signalLine of data) {
+      const layoutLine = this.findIma2LayoutLine(signalLine.lineId);
+
+      if (layoutLine) {
+        const speeds = (signalLine.machines || []).map(
+          (machine: any) => machine.latestSignal?.speed ?? 0,
+        );
+
+        return {
+          signalLine,
+          layoutLine,
+          speeds,
+          maxSpeed: speeds.length ? Math.max(...speeds) : 0,
+        };
+      }
+    }
+
+    return null;
+  }
+
+  private findIma2LayoutLine(lineId: number): LayoutLine | undefined {
+    for (const section of this.productionSections) {
+      const found = section.machines.find(
+        (line) => line.lineId === lineId && this.isIma2Name(line.name),
+      );
+
+      if (found) {
+        return found;
+      }
+    }
+
+    return undefined;
+  }
+
+  private isIma2Name(name: string): boolean {
+    return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'ima2';
   }
 
   private sortMachines(machines: any[]): any[] {

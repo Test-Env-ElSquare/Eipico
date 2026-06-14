@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { LayoutService } from '../../layout.service';
 import { EipicoFullscreenLayoutBase } from './eipico-fullscreen-layout-base';
@@ -16,7 +16,12 @@ export class EipicoTwoFullscreenComponent extends EipicoFullscreenLayoutBase {
   exitLink = '/eipico-layout/layout-two';
   productionSections = EIPICO_TWO_SECTIONS;
 
-  constructor(layoutService: LayoutService, router: Router) {
-    super(layoutService, router);
+  constructor(
+    layoutService: LayoutService,
+    router: Router,
+    cdr: ChangeDetectorRef,
+    ngZone: NgZone,
+  ) {
+    super(layoutService, router, cdr, ngZone);
   }
 }

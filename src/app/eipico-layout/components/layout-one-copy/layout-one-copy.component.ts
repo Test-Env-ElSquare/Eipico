@@ -152,9 +152,11 @@ export class LayoutOneCopyComponent implements OnInit {
       .then(() => {
         console.log('Connected to SignalR Hub');
         this._LayoutService.onAllMachineUpdate((data: any[]) => {
-          console.log('Received Data:', data);
+          const receivedAt = performance.now();
+          this.logSignalReceived(data, 2);
           this.receivedData = data;
           this.updateMachinesData(data);
+          this.logRenderDebug(data, 2, receivedAt);
         });
         const factoryId = 2;
         return this._LayoutService.hubConnection.invoke(
@@ -304,5 +306,120 @@ export class LayoutOneCopyComponent implements OnInit {
       minute: '2-digit',
       second: '2-digit',
     });
+  }
+
+  private logSignalReceived(data: any[], factoryId: number): void {
+    const now = new Date();
+    console.log(
+      `[SignalR][Old Layout][Factory ${factoryId}][Eipico 1 Old Layout] ReceiveFactorySignals`,
+      {
+        receivedAt: now.toISOString(),
+        localTime: now.toLocaleTimeString(),
+        lineCount: Array.isArray(data) ? data.length : 0,
+        firstLineId: Array.isArray(data) ? data[0]?.lineId : undefined,
+      },
+    );
+    this.logIma2Speed(data, factoryId, now);
+  }
+
+  private logIma2Speed(data: any[], factoryId: number, receivedAt: Date): void {
+    if (!Array.isArray(data)) {
+      return;
+    }
+
+    data.forEach((line) => {
+      const layoutLine = this.findIma2LayoutLine(line.lineId);
+
+      if (!layoutLine) {
+        return;
+      }
+
+      const speeds = (line.machines || []).map(
+        (machine: any) => machine.latestSignal?.speed ?? 0,
+      );
+
+      console.log(
+        `[SignalR][Old Layout][Factory ${factoryId}][Eipico 1 Old Layout] IMA 2 Line Speeds`,
+        {
+          receivedAt: receivedAt.toISOString(),
+          localTime: receivedAt.toLocaleTimeString(),
+          lineId: line.lineId,
+          lineName: layoutLine.name,
+          speeds,
+          maxSpeed: speeds.length ? Math.max(...speeds) : 0,
+          machineNames: (line.machines || []).map(
+            (machine: any) => machine.machineName,
+          ),
+        },
+      );
+    });
+  }
+
+  private logRenderDebug(
+    data: any[],
+    factoryId: number,
+    receivedAtMs: number,
+  ): void {
+    const ima2Line = this.findIma2Line(data);
+    const lineId = ima2Line?.signalLine?.lineId;
+
+    requestAnimationFrame(() => {
+      const frameAtMs = performance.now();
+      console.log(
+        `[RenderDebug][Old Layout][Factory ${factoryId}][Eipico 1 Old Layout] After updateMachinesData`,
+        {
+          elapsedMs: Math.round(frameAtMs - receivedAtMs),
+          ima2Found: Boolean(ima2Line),
+          lineId,
+          lineName: ima2Line?.layoutLine?.name,
+          speeds: ima2Line?.speeds,
+          maxSpeed: ima2Line?.maxSpeed,
+          lineCssClass: lineId ? this.getCssClass(lineId) : undefined,
+        },
+      );
+    });
+  }
+
+  private findIma2Line(data: any[]): any | null {
+    if (!Array.isArray(data)) {
+      return null;
+    }
+
+    for (const signalLine of data) {
+      const layoutLine = this.findIma2LayoutLine(signalLine.lineId);
+
+      if (layoutLine) {
+        const speeds = (signalLine.machines || []).map(
+          (machine: any) => machine.latestSignal?.speed ?? 0,
+        );
+
+        return {
+          signalLine,
+          layoutLine,
+          speeds,
+          maxSpeed: speeds.length ? Math.max(...speeds) : 0,
+        };
+      }
+    }
+
+    return null;
+  }
+
+  private findIma2LayoutLine(lineId: number): any | undefined {
+    for (const section of this.productionSections) {
+      const found = section.machines.find(
+        (line) => line.lineId === lineId && this.isIma2Name(line.name),
+      );
+
+      if (found) {
+        return found;
+      }
+    }
+
+    return undefined;
+  }
+
+  private isIma2Name(name: string): boolean {
+    return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'ima2';
   }
 }

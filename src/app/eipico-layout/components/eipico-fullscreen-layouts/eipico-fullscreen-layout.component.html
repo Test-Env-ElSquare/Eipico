@@ -140,6 +140,7 @@
         type="button"
         class="line-card"
         *ngFor="let line of section.machines"
+        [attr.data-line-id]="line.lineId"
         [class.green]="getCssClass(line.lineId) === 'green'"
         [class.pink]="getCssClass(line.lineId) === 'pink'"
         [class.white]="getCssClass(line.lineId) === 'white'"
@@ -175,12 +176,15 @@
               [class.flash-running]="isMachineRunning(machine)"
               [class.flash-stopped]="!isMachineRunning(machine)"
               [title]="
-                machine.machineName + ' - ' + getMachineSpeed(machine) + ' PpH'
+                machine.machineName + ' - Count: ' + getMachineCountValue(machine)
               "
             >
               <span>{{ getMachineType(machine.machineName) }}</span>
               <strong>{{ machine.machineName }}</strong>
-              <small>{{ getMachineSpeed(machine) }}</small>
+              <small class="machine-count">
+                <i aria-hidden="true">#</i>
+                {{ getMachineCountValue(machine) }}
+              </small>
             </div>
           </div>
         </div>
