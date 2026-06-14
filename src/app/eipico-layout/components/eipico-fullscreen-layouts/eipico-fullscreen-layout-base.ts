@@ -45,10 +45,14 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   currentOpenedLineId: string | null = null;
   receivedData: any[] = [];
   lineStats: Record<number, LineStats> = {};
+  lineStatusEffects: Record<number, string> = {};
+  machineStatusEffects: Record<string, string> = {};
   scaleStatusText = 'Connecting scales...';
   dispensingRooms: DispensingRoom[] = [];
   productionSectionGroups: LayoutSection[][] = [[], []];
   private scalesByRoomAndName: Record<string, ScaleStatus> = {};
+  private lineStatusEffectTimers: Record<number, any> = {};
+  private machineStatusEffectTimers: Record<string, any> = {};
 
   protected constructor(
     protected layoutService: LayoutService,
@@ -63,6 +67,12 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    Object.values(this.lineStatusEffectTimers).forEach((timer) =>
+      clearTimeout(timer),
+    );
+    Object.values(this.machineStatusEffectTimers).forEach((timer) =>
+      clearTimeout(timer),
+    );
     this.layoutService.stopConnection();
     this.layoutService.stopScaleStatusConnection();
   }
@@ -171,14 +181,26 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
       const lastTimestamp =
         machines[machines.length - 1]?.latestTimeStamp ?? '';
+      const previousStats = this.lineStats[line.lineId];
+      const isRunning = cssClass === 'green';
+      this.trackMachineStatusEffects(line.lineId, machines, previousStats);
 
       this.lineStats[line.lineId] = {
         machineCount: line.machineCount ?? 0,
         lastUpdate: this.formatDateTime(lastTimestamp),
         cssClass,
-        isRunning: cssClass === 'green',
+        isRunning,
         machines: this.sortMachines(machines),
       };
+
+      if (
+        previousStats &&
+        previousStats.cssClass !== 'white' &&
+        cssClass !== 'white' &&
+        previousStats.isRunning !== isRunning
+      ) {
+        this.showLineStatusEffect(line.lineId, isRunning);
+      }
     });
   }
 
@@ -216,6 +238,14 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   isLineRunning(lineId: number): boolean {
     return this.lineStats[lineId]?.isRunning ?? false;
+  }
+
+  getLineStatusEffect(lineId: number): string {
+    return this.lineStatusEffects[lineId] ?? '';
+  }
+
+  getMachineStatusEffect(lineId: number, machine: any): string {
+    return this.machineStatusEffects[this.getMachineEffectKey(lineId, machine)] ?? '';
   }
 
   getLineStatusText(lineId: number): string {
@@ -398,6 +428,79 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     );
 
     return section?.label ?? 'Machine Details';
+  }
+
+  private showLineStatusEffect(lineId: number, isRunning: boolean): void {
+    this.lineStatusEffects[lineId] = isRunning ? 'to-on' : 'to-off';
+
+    if (this.lineStatusEffectTimers[lineId]) {
+      clearTimeout(this.lineStatusEffectTimers[lineId]);
+    }
+
+    this.lineStatusEffectTimers[lineId] = setTimeout(() => {
+      delete this.lineStatusEffects[lineId];
+      delete this.lineStatusEffectTimers[lineId];
+      this.cdr.detectChanges();
+    }, 2600);
+  }
+
+  private trackMachineStatusEffects(
+    lineId: number,
+    machines: any[],
+    previousStats?: LineStats,
+  ): void {
+    if (!previousStats) {
+      return;
+    }
+
+    const previousMachinesByName = new Map<string, any>();
+    previousStats.machines.forEach((machine) => {
+      previousMachinesByName.set(this.getMachineNameKey(machine), machine);
+    });
+
+    machines.forEach((machine) => {
+      const previousMachine = previousMachinesByName.get(
+        this.getMachineNameKey(machine),
+      );
+
+      if (!previousMachine) {
+        return;
+      }
+
+      const wasRunning = this.isMachineRunning(previousMachine);
+      const isRunning = this.isMachineRunning(machine);
+
+      if (wasRunning !== isRunning) {
+        this.showMachineStatusEffect(lineId, machine, isRunning);
+      }
+    });
+  }
+
+  private showMachineStatusEffect(
+    lineId: number,
+    machine: any,
+    isRunning: boolean,
+  ): void {
+    const key = this.getMachineEffectKey(lineId, machine);
+    this.machineStatusEffects[key] = isRunning ? 'to-on' : 'to-off';
+
+    if (this.machineStatusEffectTimers[key]) {
+      clearTimeout(this.machineStatusEffectTimers[key]);
+    }
+
+    this.machineStatusEffectTimers[key] = setTimeout(() => {
+      delete this.machineStatusEffects[key];
+      delete this.machineStatusEffectTimers[key];
+      this.cdr.detectChanges();
+    }, 2600);
+  }
+
+  private getMachineEffectKey(lineId: number, machine: any): string {
+    return `${lineId}::${this.getMachineNameKey(machine)}`;
+  }
+
+  private getMachineNameKey(machine: any): string {
+    return (machine?.machineName || '').trim().toLowerCase();
   }
 
   private logSignalReceived(data: any[], receivedAtMs: number): void {

@@ -144,6 +144,8 @@
         [class.green]="getCssClass(line.lineId) === 'green'"
         [class.pink]="getCssClass(line.lineId) === 'pink'"
         [class.white]="getCssClass(line.lineId) === 'white'"
+        [class.status-to-on]="getLineStatusEffect(line.lineId) === 'to-on'"
+        [class.status-to-off]="getLineStatusEffect(line.lineId) === 'to-off'"
         (click)="goToMachineDetails(line.lineId.toString())"
       >
         <div class="production-cell">
@@ -175,6 +177,12 @@
               [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
               [class.flash-running]="isMachineRunning(machine)"
               [class.flash-stopped]="!isMachineRunning(machine)"
+              [class.machine-to-on]="
+                getMachineStatusEffect(line.lineId, machine) === 'to-on'
+              "
+              [class.machine-to-off]="
+                getMachineStatusEffect(line.lineId, machine) === 'to-off'
+              "
               [title]="
                 machine.machineName + ' - Count: ' + getMachineCountValue(machine)
               "
