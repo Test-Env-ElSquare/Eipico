@@ -18,20 +18,8 @@ export class EipicoOneLayoutTwoComponent extends EipicoFullscreenLayoutBase {
   override dispensingRoomEndIndex = 5;
   productionSections = EIPICO_ONE_SECTIONS.slice(6);
   override customProductionSectionGroups = [
-    [
-      {
-        label: 'Tablet',
-        machines: EIPICO_ONE_SECTIONS[6].machines.slice(0, 8),
-      },
-    ],
-    [
-      {
-        label: 'Tablet',
-        machines: EIPICO_ONE_SECTIONS[6].machines.slice(8),
-      },
-      EIPICO_ONE_SECTIONS[7],
-      EIPICO_ONE_SECTIONS[8],
-    ],
+    [EIPICO_ONE_SECTIONS[6]],
+    [EIPICO_ONE_SECTIONS[7], EIPICO_ONE_SECTIONS[8]],
   ];
 
   constructor(
