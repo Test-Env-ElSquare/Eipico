@@ -351,7 +351,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       }))
       .sort((a, b) => this.compareRoomNames(a.name, b.name));
 
-    this.scaleStatusText = this.dispensingRooms.length ? '' : 'No scale found';
+    this.scaleStatusText = this.dispensingRooms.length ? '' : 'No scales found';
   }
 
   private compareRoomNames(first: string, second: string): number {
