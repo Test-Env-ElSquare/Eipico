@@ -174,9 +174,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
       let cssClass = 'white';
       if (machines.length > 0) {
-        cssClass = speeds.some((speed: number) => speed > 0)
-          ? 'green'
-          : 'pink';
+        cssClass = speeds.some((speed: number) => speed > 0) ? 'green' : 'pink';
       }
 
       const lastTimestamp =
@@ -245,7 +243,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getMachineStatusEffect(lineId: number, machine: any): string {
-    return this.machineStatusEffects[this.getMachineEffectKey(lineId, machine)] ?? '';
+    return (
+      this.machineStatusEffects[this.getMachineEffectKey(lineId, machine)] ?? ''
+    );
   }
 
   getLineStatusText(lineId: number): string {
@@ -270,7 +270,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   getMachineSpeed(machine: any): string {
     const speed = machine.latestSignal?.speed;
-    return speed === undefined || speed === null ? '-' : Math.round(speed).toString();
+    return speed === undefined || speed === null
+      ? '-'
+      : Math.round(speed).toString();
   }
 
   getMachineCountValue(machine: any): string {
@@ -292,7 +294,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getScaleLastSignal(scale: ScaleStatus): string {
-    return scale.lastSignalTime ? this.formatDateTime(scale.lastSignalTime) : '-';
+    return scale.lastSignalTime
+      ? this.formatDateTime(scale.lastSignalTime)
+      : '-';
   }
 
   getMachineType(name: string): string {
@@ -347,9 +351,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       }))
       .sort((a, b) => this.compareRoomNames(a.name, b.name));
 
-    this.scaleStatusText = this.dispensingRooms.length
-      ? ''
-      : 'No scales found';
+    this.scaleStatusText = this.dispensingRooms.length ? '' : 'No scale found';
   }
 
   private compareRoomNames(first: string, second: string): number {
@@ -413,7 +415,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   getLineName(lineId: number): string {
     for (const section of this.productionSections) {
-      const found = section.machines.find((line: LayoutLine) => line.lineId === lineId);
+      const found = section.machines.find(
+        (line: LayoutLine) => line.lineId === lineId,
+      );
       if (found) {
         return found.name;
       }
