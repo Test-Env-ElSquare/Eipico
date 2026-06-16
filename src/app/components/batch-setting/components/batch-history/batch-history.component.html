@@ -123,9 +123,14 @@
                     <td>{{ batch.sapOrderId }}</td>
                     <td>{{ batch.timeStamp | date : "medium" }}</td>
                     <td>{{ batch.machineName}}</td>
-                    <td class="tw-flex tw-items-center tw-justify-between">
-                      <button (click)="openLg(content, batch?.batch)" class="btn tw-text-blue-900 hover:tw-text-black">
+                    <td class="batch-actions">
+                      <button (click)="openLg(content, batch)" class="btn tw-text-blue-900 hover:tw-text-black"
+                        title="View Details">
                         <i data-feather="eye" appFeatherIcon></i>
+                      </button>
+                      <button (click)="printBatch(batch)" class="btn tw-text-blue-900 hover:tw-text-black"
+                        title="Print Row">
+                        <i data-feather="printer" appFeatherIcon></i>
                       </button>
                     </td>
                   </tr>
@@ -253,6 +258,10 @@
     </table>
   </div>
   <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="printBatchDetails()">
+      <i data-feather="printer" appFeatherIcon></i>
+      Print
+    </button>
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
       Close
     </button>
