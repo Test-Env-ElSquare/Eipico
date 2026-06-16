@@ -70,7 +70,40 @@ export class BatchHistoryComponent implements OnInit {
   }
 
   printBatchDetails() {
-    const materialsRows = (this.batchMatarialsArr || [])
+    const content = `
+      <h1>Batch Details</h1>
+      ${
+        this.selectedBatch
+          ? this.renderBatchSummary(this.selectedBatch)
+          : `<h2>${this.escapeHtml(this.batchName || '')}</h2>`
+      }
+      <h2>Materials</h2>
+      ${this.renderMaterialTable(this.batchMatarialsArr || [])}
+    `;
+
+    this.printDocument(`Batch Details - ${this.batchName || ''}`, content);
+  }
+
+  printBatchMaterial(material: BatchMatarials) {
+    const content = `
+      <h1>Batch Material</h1>
+      ${
+        this.selectedBatch
+          ? this.renderBatchSummary(this.selectedBatch)
+          : `<h2>${this.escapeHtml(this.batchName || '')}</h2>`
+      }
+      <h2>Material</h2>
+      ${this.renderMaterialTable([material])}
+    `;
+
+    this.printDocument(
+      `Batch Material - ${this.batchName || ''} - ${material.name || ''}`,
+      content
+    );
+  }
+
+  private renderMaterialTable(materials: BatchMatarials[]): string {
+    const rows = materials
       .map(
         (material) => `
           <tr>
@@ -84,14 +117,7 @@ export class BatchHistoryComponent implements OnInit {
       )
       .join('');
 
-    const content = `
-      <h1>Batch Details</h1>
-      ${
-        this.selectedBatch
-          ? this.renderBatchSummary(this.selectedBatch)
-          : `<h2>${this.escapeHtml(this.batchName || '')}</h2>`
-      }
-      <h2>Materials</h2>
+    return `
       <table>
         <thead>
           <tr>
@@ -103,15 +129,10 @@ export class BatchHistoryComponent implements OnInit {
           </tr>
         </thead>
         <tbody>
-          ${
-            materialsRows ||
-            '<tr><td colspan="5" class="empty-row">No materials found</td></tr>'
-          }
+          ${rows || '<tr><td colspan="5" class="empty-row">No materials found</td></tr>'}
         </tbody>
       </table>
     `;
-
-    this.printDocument(`Batch Details - ${this.batchName || ''}`, content);
   }
 
   private renderBatchSummary(batch: pariedBatchesData): string {

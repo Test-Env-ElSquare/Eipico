@@ -193,6 +193,7 @@
           <th scope="col">Item Code</th>
           <th scope="col">Machine Pair Status</th>
           <th scope="col">Scale Pair Status</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody class="align-center">
@@ -252,6 +253,12 @@
                 view details
               </p>
             </div>
+          </td>
+          <td>
+            <button (click)="printBatchMaterial(batchMatarial)" class="btn tw-text-blue-900 hover:tw-text-black"
+              title="Print Row">
+              <i data-feather="printer" appFeatherIcon></i>
+            </button>
           </td>
         </tr>
       </tbody>
