@@ -1013,3 +1013,10 @@
     transform: none;
   }
 }
+.scale-pill.stale {
+  border-color: rgba(214, 69, 107, 0.2),;
+  background-color: rgba(211, 47, 47, 0.08);
+}
+.scale-pill.stale .scale-icon {
+  background-color:rgba(214, 69, 107, 0.2),;
+}

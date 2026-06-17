@@ -53,7 +53,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private scalesByRoomAndName: Record<string, ScaleStatus> = {};
   private lineStatusEffectTimers: Record<number, any> = {};
   private machineStatusEffectTimers: Record<string, any> = {};
-
+  private readonly staleThresholdMs = 3 * 60 * 60 * 1000;
   protected constructor(
     protected layoutService: LayoutService,
     protected router: Router,
@@ -289,16 +289,33 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       : Math.round(Number(count)).toString();
   }
 
-  getScaleStatusLabel(scale: ScaleStatus): string {
-    return scale.lastSignalTime ? 'Live' : 'No signal';
-  }
+ 
 
   getScaleLastSignal(scale: ScaleStatus): string {
     return scale.lastSignalTime
       ? this.formatDateTime(scale.lastSignalTime)
       : '-';
   }
+  isScaleStale(scale: ScaleStatus): boolean {
+    if (!scale.lastSignalTime) {
+      return false; // "no signal" is its own state, not "stale"
+    }
 
+    const lastSignal = new Date(scale.lastSignalTime).getTime();
+    if (Number.isNaN(lastSignal)) {
+      return false;
+    }
+
+    return Date.now() - lastSignal > this.staleThresholdMs;
+  }
+
+  getScaleStatusLabel(scale: ScaleStatus): string {
+    if (!scale.lastSignalTime) {
+      return 'No signal';
+    }
+
+    return this.isScaleStale(scale) ? 'Stale' : 'Live';
+  }
   getMachineType(name: string): string {
     const lower = (name || '').toLowerCase();
     if (lower.includes('rins')) return 'Rinsing';

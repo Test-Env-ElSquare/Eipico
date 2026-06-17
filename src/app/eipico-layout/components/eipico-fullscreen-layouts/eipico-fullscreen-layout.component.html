@@ -21,26 +21,18 @@
         <div class="scale-empty" *ngIf="!getFirstDispensingRooms().length">
           {{ scaleStatusText }}
         </div>
-        <article
-          class="room-card"
-          *ngFor="let room of getFirstDispensingRooms()"
-        >
+        <article class="room-card" *ngFor="let room of getFirstDispensingRooms()">
           <strong>{{ room.name }}</strong>
           <div class="scale-grid">
-            <div
-              class="scale-pill"
-              *ngFor="let scale of room.scales; let scaleIndex = index"
-              [class.scale-one]="scaleIndex === 0"
-              [class.scale-two]="scaleIndex === 1"
-              [class.scale-three]="scaleIndex === 2"
-              [class.live]="scale.lastSignalTime"
-              [class.no-signal]="!scale.lastSignalTime"
-            >
-              <span class="scale-icon">S</span>
-              <span class="scale-name">{{ scale.scaleName }}</span>
-              <small>{{ getScaleStatusLabel(scale) }}</small>
-              <time>{{ getScaleLastSignal(scale) }}</time>
-            </div>
+          <div class="scale-pill" *ngFor="let scale of room.scales; let scaleIndex = index" [class.scale-one]="scaleIndex === 0"
+            [class.scale-two]="scaleIndex === 1" [class.scale-three]="scaleIndex === 2"
+            [class.live]="scale.lastSignalTime && !isScaleStale(scale)" [class.no-signal]="!scale.lastSignalTime"
+            [class.stale]="isScaleStale(scale)">
+            <span class="scale-icon">S</span>
+            <span class="scale-name">{{ scale.scaleName }}</span>
+            <small>{{ getScaleStatusLabel(scale) }}</small>
+            <time>{{ getScaleLastSignal(scale) }}</time>
+          </div>
           </div>
         </article>
       </div>
@@ -53,12 +45,10 @@
         <span>Production Lines - 1</span>
       </div>
       <div class="process-sections">
-        <ng-container
-          *ngTemplateOutlet="
+        <ng-container *ngTemplateOutlet="
             processGroup;
             context: { sections: getProductionSectionGroups()[0] }
-          "
-        >
+          ">
         </ng-container>
       </div>
     </div>
@@ -69,26 +59,18 @@
         <div class="scale-empty" *ngIf="!getSecondDispensingRooms().length">
           {{ scaleStatusText }}
         </div>
-        <article
-          class="room-card"
-          *ngFor="let room of getSecondDispensingRooms()"
-        >
+        <article class="room-card" *ngFor="let room of getSecondDispensingRooms()">
           <strong>{{ room.name }}</strong>
           <div class="scale-grid">
-            <div
-              class="scale-pill"
-              *ngFor="let scale of room.scales; let scaleIndex = index"
-              [class.scale-one]="scaleIndex === 0"
-              [class.scale-two]="scaleIndex === 1"
-              [class.scale-three]="scaleIndex === 2"
-              [class.live]="scale.lastSignalTime"
-              [class.no-signal]="!scale.lastSignalTime"
-            >
-              <span class="scale-icon">S</span>
-              <span class="scale-name">{{ scale.scaleName }}</span>
-              <small>{{ getScaleStatusLabel(scale) }}</small>
-              <time>{{ getScaleLastSignal(scale) }}</time>
-            </div>
+          <div class="scale-pill" *ngFor="let scale of room.scales; let scaleIndex = index" [class.scale-one]="scaleIndex === 0"
+            [class.scale-two]="scaleIndex === 1" [class.scale-three]="scaleIndex === 2"
+            [class.live]="scale.lastSignalTime && !isScaleStale(scale)" [class.no-signal]="!scale.lastSignalTime"
+            [class.stale]="isScaleStale(scale)">
+            <span class="scale-icon">S</span>
+            <span class="scale-name">{{ scale.scaleName }}</span>
+            <small>{{ getScaleStatusLabel(scale) }}</small>
+            <time>{{ getScaleLastSignal(scale) }}</time>
+          </div>
           </div>
         </article>
       </div>
@@ -101,12 +83,10 @@
         <span>Production Lines - 2</span>
       </div>
       <div class="process-sections">
-        <ng-container
-          *ngTemplateOutlet="
+        <ng-container *ngTemplateOutlet="
             processGroup;
             context: { sections: getProductionSectionGroups()[1] }
-          "
-        >
+          ">
         </ng-container>
       </div>
     </div>
@@ -136,57 +116,38 @@
     </div>
 
     <div class="line-list">
-      <button
-        type="button"
-        class="line-card"
-        *ngFor="let line of section.machines"
-        [attr.data-line-id]="line.lineId"
-        [class.green]="getCssClass(line.lineId) === 'green'"
-        [class.pink]="getCssClass(line.lineId) === 'pink'"
+      <button type="button" class="line-card" *ngFor="let line of section.machines" [attr.data-line-id]="line.lineId"
+        [class.green]="getCssClass(line.lineId) === 'green'" [class.pink]="getCssClass(line.lineId) === 'pink'"
         [class.white]="getCssClass(line.lineId) === 'white'"
         [class.status-to-on]="getLineStatusEffect(line.lineId) === 'to-on'"
         [class.status-to-off]="getLineStatusEffect(line.lineId) === 'to-off'"
-        (click)="goToMachineDetails(line.lineId.toString())"
-      >
+        (click)="goToMachineDetails(line.lineId.toString())">
         <div class="production-cell">
           <div class="line-head">
             <div>
               <strong>{{ line.name }}</strong>
               <span>{{ getMachineCount(line.lineId) }}</span>
             </div>
-            <span
-              class="line-status"
-              [class.on]="isLineRunning(line.lineId)"
-              [class.off]="!isLineRunning(line.lineId)"
-            >
+            <span class="line-status" [class.on]="isLineRunning(line.lineId)" [class.off]="!isLineRunning(line.lineId)">
               {{ getLineStatusText(line.lineId) }}
             </span>
             <small *ngIf="getLastUpdate(line.lineId)">{{
               getLastUpdate(line.lineId)
-            }}</small>
+              }}</small>
           </div>
 
-          <div
-            class="line-machines"
-            *ngIf="getLineMachines(line.lineId).length; else noMachines"
-          >
-            <div
-              class="machine-chip"
-              *ngFor="let machine of getLineMachines(line.lineId)"
+          <div class="line-machines" *ngIf="getLineMachines(line.lineId).length; else noMachines">
+            <div class="machine-chip" *ngFor="let machine of getLineMachines(line.lineId)"
               [class.running]="getMachineStatusClass(machine) === 'running'"
               [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
-              [class.flash-running]="isMachineRunning(machine)"
-              [class.flash-stopped]="!isMachineRunning(machine)"
+              [class.flash-running]="isMachineRunning(machine)" [class.flash-stopped]="!isMachineRunning(machine)"
               [class.machine-to-on]="
                 getMachineStatusEffect(line.lineId, machine) === 'to-on'
-              "
-              [class.machine-to-off]="
+              " [class.machine-to-off]="
                 getMachineStatusEffect(line.lineId, machine) === 'to-off'
-              "
-              [title]="
+              " [title]="
                 machine.machineName + ' - Count: ' + getMachineCountValue(machine)
-              "
-            >
+              ">
               <span>{{ getMachineType(machine.machineName) }}</span>
               <strong>{{ machine.machineName }}</strong>
               <small class="machine-count">
@@ -212,11 +173,7 @@
       <button type="button" (click)="showDialog = false">Close</button>
     </header>
 
-    <app-machine-copy-details
-      [machines]="machines"
-      [filteredMachines]="machines"
-      [isVisible]="showDialog"
-    >
+    <app-machine-copy-details [machines]="machines" [filteredMachines]="machines" [isVisible]="showDialog">
     </app-machine-copy-details>
   </section>
 </div>
