@@ -110,7 +110,7 @@ export const EIPICO_TWO_SECTIONS: LayoutSection[] = [
   {
     label: 'Tablet',
     machines: [
-      { name: 'Ulman 300 (Standalone)', lineId: 44 },
+      { name: 'Ulman 300 (Standalone)', lineId: 71 },
       { name: 'IMA 1', lineId: 52 },
       { name: 'IMA 2', lineId: 53 },
     ],
