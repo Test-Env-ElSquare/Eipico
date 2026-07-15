@@ -4,81 +4,128 @@
       <div class="row flex-grow-1">
         <div class="">
           <div class="tw-flex tw-items-center tw-justify-between">
-            <p class="tw-font-bold">Total Number Of Batchs : {{ totalCount }}</p>
-
+            <p class="tw-font-bold">
+              Total Number Of Batchs : {{ totalCount }}
+            </p>
           </div>
           <div class="col-lg-4 tw-flex tw-justify-around mb-2">
             <div class="col-sm-10">
-              <input type="text" class="tw-mr-1 form-control" id="Search"
-                placeholder="BATCH NAME, SKU CODE, SKU NAME, JOB ORDER" [(ngModel)]="searchText">
+              <input
+                type="text"
+                class="tw-mr-1 form-control"
+                id="Search"
+                placeholder="BATCH NAME, SKU CODE, SKU NAME, JOB ORDER"
+                [(ngModel)]="searchText"
+              />
             </div>
-            <button for="Search" class="btn btn-danger  col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
-              (click)="search(searchText)">Search</button>
+            <button
+              for="Search"
+              class="btn btn-danger col-sm-2 col-form-label tw-font-bold tw-w-fit tw-ml-1"
+              (click)="search(searchText)"
+            >
+              Search
+            </button>
           </div>
         </div>
         <div class="col-md-12 grid-margin stretch-card">
-
           <div class="card">
             <div class="card-body table-responsive">
-
-              <div class="tw-text-center" *ngIf="batchArr?.length ==0">
-                <h3 class="text-danger">
-                  No Data Matches Your Search Word
-                </h3>
+              <div class="tw-text-center" *ngIf="batchArr?.length == 0">
+                <h3 class="text-danger">No Data Matches Your Search Word</h3>
               </div>
-              <table *ngIf="batchArr?.length !=0" class="table table-hover caption-top align-center" id="sku">
+              <table
+                *ngIf="batchArr?.length != 0"
+                class="table table-hover caption-top align-center"
+                id="sku"
+              >
                 <thead class="align-center">
                   <tr>
                     <th scope="col" sortable="batchname">
                       <span>
                         <p>Batch Name</p>
-                        <img (click)="
-                        onSort({ column: 'batchname', direction: directions });
-                        rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                        <img
+                          (click)="
+                            onSort({
+                              column: 'batchname',
+                              direction: directions
+                            });
+                            rotates()
+                          "
+                          src="assets/images/up-and-down-arrows.png"
+                          class="sortimage"
+                        />
                       </span>
                     </th>
                     <th scope="col" sortable="skucode">
                       <span>
                         <p>Sku Code</p>
-                        <img (click)="
-                        onSort({ column: 'skucode', direction: directions });
-                        rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                        <img
+                          (click)="
+                            onSort({
+                              column: 'skucode',
+                              direction: directions
+                            });
+                            rotates()
+                          "
+                          src="assets/images/up-and-down-arrows.png"
+                          class="sortimage"
+                        />
                       </span>
                     </th>
                     <th scope="col" sortable="skuname">
                       <span>
                         <p>Sku Name</p>
-                        <img (click)="
-                        onSort({ column: 'skuname', direction: directions });
-                        rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                        <img
+                          (click)="
+                            onSort({
+                              column: 'skuname',
+                              direction: directions
+                            });
+                            rotates()
+                          "
+                          src="assets/images/up-and-down-arrows.png"
+                          class="sortimage"
+                        />
                       </span>
                     </th>
                     <th scope="col" sortable="joborder">
                       <span>
                         <p>Job Order</p>
-                        <img (click)="
-                        onSort({ column: 'joborder', direction: directions });
-                        rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                        <img
+                          (click)="
+                            onSort({
+                              column: 'joborder',
+                              direction: directions
+                            });
+                            rotates()
+                          "
+                          src="assets/images/up-and-down-arrows.png"
+                          class="sortimage"
+                        />
                       </span>
                     </th>
                     <th scope="col" sortable="timestamp">
                       <span>
                         <p>Time Stamp</p>
-                        <img (click)="
-                        onSort({ column: 'timestamp', direction: directions });
-                        rotates()
-                      " src="assets/images/up-and-down-arrows.png" class="sortimage" />
+                        <img
+                          (click)="
+                            onSort({
+                              column: 'timestamp',
+                              direction: directions
+                            });
+                            rotates()
+                          "
+                          src="assets/images/up-and-down-arrows.png"
+                          class="sortimage"
+                        />
                       </span>
                     </th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody class="align-center">
-                  <tr *ngFor="
+                  <tr
+                    *ngFor="
                       let batch of batchArr
                         | paginate
                           : {
@@ -86,57 +133,78 @@
                               currentPage: page,
                               totalItems: totalCount
                             }
-                    ">
+                    "
+                  >
                     <td>{{ batch.batchname }}</td>
                     <td>{{ batch.skucode }}</td>
                     <td>{{ batch.skuname }}</td>
                     <td>{{ batch.joborder }}</td>
-                    <td>{{ batch.timestamp | date : "medium" }}</td>
+                    <td>{{ batch.timestamp | date: "medium" }}</td>
                     <td class="tw-flex tw-items-center tw-justify-between">
-                      <button (click)="openBasicModal(content,batch.joborder)"
-                        class="btn tw-text-blue-900 hover:tw-text-black">
+                      <button
+                        (click)="openBasicModal(content, batch.joborder)"
+                        class="btn tw-text-blue-900 hover:tw-text-black"
+                      >
                         <i data-feather="eye" appFeatherIcon></i>
                       </button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <div class="card-footer bg-white py-3" *ngIf="batchArr?.length != 0">
-                <pagination-template #p="paginationApi" (pageChange)="pageChange($event)">
-                  <div class="d-flex justify-content-between align-items-center w-100 px-2 py-3">
-
+              <div
+                class="card-footer bg-white py-3"
+                *ngIf="batchArr?.length != 0"
+              >
+                <pagination-template
+                  #p="paginationApi"
+                  (pageChange)="pageChange($event)"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-center w-100 px-2 py-3"
+                  >
                     <!-- LEFT: Prev -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="p.isFirstPage()"
-                        (click)="p.previous()" title="Previous Page">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        [disabled]="p.isFirstPage()"
+                        (click)="p.previous()"
+                        title="Previous Page"
+                      >
                         <i class="fas fa-chevron-left"></i> Prev
                       </button>
                     </div>
 
                     <!-- CENTER: Page Numbers -->
                     <div class="text-center">
-                      <span *ngFor="let page of p.pages" class="mx-1 px-2 py-1 rounded border"
+                      <span
+                        *ngFor="let page of p.pages"
+                        class="mx-1 px-2 py-1 rounded border"
                         [class.bg-primary]="p.getCurrent() === page.value"
                         [class.text-white]="p.getCurrent() === page.value"
-                        [class.border-secondary]="p.getCurrent() !== page.value" style="cursor: pointer;"
-                        (click)="p.setCurrent(page.value)">
+                        [class.border-secondary]="p.getCurrent() !== page.value"
+                        style="cursor: pointer"
+                        (click)="p.setCurrent(page.value)"
+                      >
                         {{ page.label }}
                       </span>
                     </div>
 
                     <!-- RIGHT: Next -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="p.isLastPage()"
-                        (click)="p.next()" title="Next Page">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        [disabled]="p.isLastPage()"
+                        (click)="p.next()"
+                        title="Next Page"
+                      >
                         Next <i class="fas fa-chevron-right"></i>
                       </button>
                     </div>
-
                   </div>
                 </pagination-template>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -148,7 +216,12 @@
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title">{{ batchName }}</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
   </div>
   <div class="modal-body table-responsive">
     <table class="table">
@@ -166,26 +239,35 @@
       </thead>
       <tbody *ngFor="let item of JobOrderMatairal">
         <tr>
-          <td>{{item?.materialName }}</td>
-          <td>{{item?.uid }}</td>
-          <td>{{item?.sapweight}}</td>
-          <td>{{item?.handheldweight != '-1' ? (item?.handheldweight ): 'N/A'}}</td>
-          <td>{{item?.deviation != -1 ? (item?.deviation) : 'N/A'}}</td>
-          <td class="timestamp-column">{{item?.timeStamp ? (item?.timeStamp | date : ( 'dd-MM-yyyy HH:mm a') ): 'N/A'}}</td>
+          <td>{{ item?.materialName }}</td>
+          <td>{{ item?.uid }}</td>
+          <td>{{ item?.sapweight }}</td>
           <td>
-            <span class="process-type-badge" [ngClass]="{
-              'process-type-split': item?.processType === 'Split',
-              'process-type-dispense': item?.processType === 'Dispense',
-              'process-type-pending': item?.processType === 'Pending'
-            }">
-              {{item?.processType || 'N/A'}}
+            {{ item?.handheldweight != "-1" ? item?.handheldweight : "N/A" }}
+          </td>
+          <td>{{ item?.deviation != -1 ? item?.deviation : "N/A" }}</td>
+          <td class="timestamp-column">
+            {{
+              item?.timeStamp
+                ? (item?.timeStamp | date: "dd-MM-yyyy HH:mm a")
+                : "N/A"
+            }}
+          </td>
+          <td>
+            <span
+              class="process-type-badge"
+              [ngClass]="{
+                'process-type-split': item?.processType === 'Split',
+                'process-type-dispense': item?.processType === 'Dispense',
+                'process-type-pending': item?.processType === 'Pending'
+              }"
+            >
+              {{ item?.processType || "N/A" }}
             </span>
           </td>
-          <td>{{item?.roomName || 'N/A'}}</td>
-
+          <td>{{ item?.roomName || "N/A" }}</td>
         </tr>
-        <tr style="border-bottom:solid 1px ;">
-        </tr>
+        <tr style="border-bottom: solid 1px"></tr>
       </tbody>
     </table>
   </div>
@@ -193,7 +275,11 @@
     <button type="button" class="btn btn-primary" (click)="exportPdf()">
       Download
     </button>
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">
+    <button
+      type="button"
+      class="btn btn-light"
+      (click)="modal.close('Close click')"
+    >
       Close
     </button>
   </div>
