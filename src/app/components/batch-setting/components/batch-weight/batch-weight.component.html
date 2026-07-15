@@ -159,7 +159,9 @@
           <th>SAP Weight</th>
           <th>Actual Weight</th>
           <th>DEVIATION %</th>
-          <th>Time Stamp</th>
+          <th class="timestamp-column">Time Stamp</th>
+          <th>Process Type</th>
+          <th>Room Name</th>
         </tr>
       </thead>
       <tbody *ngFor="let item of JobOrderMatairal">
@@ -169,7 +171,17 @@
           <td>{{item?.sapweight}}</td>
           <td>{{item?.handheldweight != '-1' ? (item?.handheldweight ): 'N/A'}}</td>
           <td>{{item?.deviation != -1 ? (item?.deviation) : 'N/A'}}</td>
-          <td>{{item?.timeStamp ? (item?.timeStamp | date : ( 'dd-MM-yyyy HH:mm a') ): 'N/A'}}</td>
+          <td class="timestamp-column">{{item?.timeStamp ? (item?.timeStamp | date : ( 'dd-MM-yyyy HH:mm a') ): 'N/A'}}</td>
+          <td>
+            <span class="process-type-badge" [ngClass]="{
+              'process-type-split': item?.processType === 'Split',
+              'process-type-dispense': item?.processType === 'Dispense',
+              'process-type-pending': item?.processType === 'Pending'
+            }">
+              {{item?.processType || 'N/A'}}
+            </span>
+          </td>
+          <td>{{item?.roomName || 'N/A'}}</td>
 
         </tr>
         <tr style="border-bottom:solid 1px ;">

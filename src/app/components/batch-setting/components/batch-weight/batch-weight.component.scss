@@ -10,3 +10,52 @@
     @apply tw-flex tw-items-center tw-justify-between;
   }
 }
+
+.timestamp-column {
+  min-width: 185px;
+  white-space: nowrap;
+}
+
+.process-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 96px;
+  padding: 6px 12px;
+  border: 1px solid #d7dee7;
+  border-radius: 999px;
+  background: #f4f6f8;
+  color: #5f6b7a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.process-type-badge::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  content: '';
+  box-shadow: 0 0 0 3px currentColor;
+  opacity: 0.75;
+}
+
+.process-type-split {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.process-type-dispense {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.process-type-pending {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #d97706;
+}

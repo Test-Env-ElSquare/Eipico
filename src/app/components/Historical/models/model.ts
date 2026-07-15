@@ -57,6 +57,8 @@ export interface JobOrderMatairal {
   sapweight: string;
   handheldweight: string;
   timeStamp: string;
+  processType: 'Split' | 'Dispense' | 'Pending';
+  roomName: string;
 }
 
 export interface JobOrderDetails {

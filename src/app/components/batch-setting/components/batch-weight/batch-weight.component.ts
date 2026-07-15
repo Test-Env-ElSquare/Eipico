@@ -102,7 +102,7 @@ export class BatchWeightComponent implements OnInit {
         this.batchId = jobOrderId;
         this.JobOrderMatairal = data;
         this._modalService
-          .open(content, { size: 'lg', centered: false })
+          .open(content, { size: 'xl', centered: false })
           .result.then((result) => {
             this.basicModalCloseResult = 'Modal closed' + result;
           })
