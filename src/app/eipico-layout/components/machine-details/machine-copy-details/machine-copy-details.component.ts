@@ -42,6 +42,7 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
     {};
   private offlineTimers: Record<string, any> = {};
   private chartRequestVersion = 0;
+  private readonly staleThresholdMs = 15 * 60 * 1000;
 
   constructor(private _machineService: MachinesService) {}
 
@@ -252,14 +253,25 @@ export class MachineCopyDetailsComponent implements OnChanges, OnDestroy {
         15 * 60 * 1000,
       );
 
-      const color = currentSpeed > 0 ? 'green' : 'red';
-      this.triggerFlash(id, color);
+      if (!this.isMachineStale(machine)) {
+        const color = currentSpeed > 0 ? 'green' : 'red';
+        this.triggerFlash(id, color);
+      }
 
       this.previousMachines[id] = {
         speed: currentSpeed,
         count: machine.totalCountDiff ?? 0,
       };
     });
+  }
+
+  isMachineStale(machine: any): boolean {
+    const timestamp = new Date(machine?.latestTimeStamp).getTime();
+
+    return (
+      !Number.isNaN(timestamp) &&
+      Date.now() - timestamp > this.staleThresholdMs
+    );
   }
 
   triggerFlash(machineId: string, color: 'green' | 'red'): void {

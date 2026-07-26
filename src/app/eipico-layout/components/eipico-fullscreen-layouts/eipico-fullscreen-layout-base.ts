@@ -12,6 +12,7 @@ import { LayoutLine, LayoutSection } from './eipico-layout-data';
 interface LineStats {
   machineCount: number;
   lastUpdate: string;
+  lastUpdateTimestamp: number | null;
   cssClass: string;
   isRunning: boolean;
   machines: any[];
@@ -53,6 +54,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private scalesByRoomAndName: Record<string, ScaleStatus> = {};
   private lineStatusEffectTimers: Record<number, any> = {};
   private machineStatusEffectTimers: Record<string, any> = {};
+  private staleLinesRefreshTimer: ReturnType<typeof setInterval> | null = null;
+  private readonly lineStaleThresholdMs = 15 * 60 * 1000;
   private readonly staleThresholdMs = 3 * 60 * 60 * 1000;
   protected constructor(
     protected layoutService: LayoutService,
@@ -63,6 +66,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.productionSectionGroups = this.buildProductionSectionGroups();
+    this.staleLinesRefreshTimer = setInterval(() => {
+      this.cdr.detectChanges();
+    }, 60 * 1000);
     this.onStartConnection();
   }
 
@@ -73,6 +79,9 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     Object.values(this.machineStatusEffectTimers).forEach((timer) =>
       clearTimeout(timer),
     );
+    if (this.staleLinesRefreshTimer) {
+      clearInterval(this.staleLinesRefreshTimer);
+    }
     this.layoutService.stopConnection();
     this.layoutService.stopScaleStatusConnection();
   }
@@ -177,15 +186,17 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
         cssClass = speeds.some((speed: number) => speed > 0) ? 'green' : 'pink';
       }
 
-      const lastTimestamp =
-        machines[machines.length - 1]?.latestTimeStamp ?? '';
+      const lastUpdateTimestamp = this.getLatestMachineTimestamp(machines);
       const previousStats = this.lineStats[line.lineId];
       const isRunning = cssClass === 'green';
       this.trackMachineStatusEffects(line.lineId, machines, previousStats);
 
       this.lineStats[line.lineId] = {
         machineCount: line.machineCount ?? 0,
-        lastUpdate: this.formatDateTime(lastTimestamp),
+        lastUpdate: lastUpdateTimestamp
+          ? this.formatDateTime(new Date(lastUpdateTimestamp))
+          : '',
+        lastUpdateTimestamp,
         cssClass,
         isRunning,
         machines: this.sortMachines(machines),
@@ -222,6 +233,10 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getCssClass(lineId: number): string {
+    if (this.isLineStale(lineId)) {
+      return 'gray';
+    }
+
     return this.lineStats[lineId]?.cssClass ?? 'white';
   }
 
@@ -236,6 +251,16 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   isLineRunning(lineId: number): boolean {
     return this.lineStats[lineId]?.isRunning ?? false;
+  }
+
+  isLineStale(lineId: number): boolean {
+    const lastUpdateTimestamp = this.lineStats[lineId]?.lastUpdateTimestamp;
+
+    return (
+      lastUpdateTimestamp !== null &&
+      lastUpdateTimestamp !== undefined &&
+      Date.now() - lastUpdateTimestamp > this.lineStaleThresholdMs
+    );
   }
 
   getLineStatusEffect(lineId: number): string {
@@ -253,7 +278,19 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       return 'NO DATA';
     }
 
+    if (this.isLineStale(lineId)) {
+      return 'STALE';
+    }
+
     return this.isLineRunning(lineId) ? 'ON' : 'OFF';
+  }
+
+  private getLatestMachineTimestamp(machines: any[]): number | null {
+    const validTimestamps = machines
+      .map((machine) => new Date(machine?.latestTimeStamp).getTime())
+      .filter((timestamp) => !Number.isNaN(timestamp));
+
+    return validTimestamps.length ? Math.max(...validTimestamps) : null;
   }
 
   getLineMachines(lineId: number): any[] {
@@ -261,7 +298,20 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   }
 
   getMachineStatusClass(machine: any): string {
+    if (this.isMachineStale(machine)) {
+      return 'stale';
+    }
+
     return (machine.latestSignal?.speed ?? 0) > 0 ? 'running' : 'stopped';
+  }
+
+  isMachineStale(machine: any): boolean {
+    const timestamp = new Date(machine?.latestTimeStamp).getTime();
+
+    return (
+      !Number.isNaN(timestamp) &&
+      Date.now() - timestamp > this.lineStaleThresholdMs
+    );
   }
 
   isMachineRunning(machine: any): boolean {

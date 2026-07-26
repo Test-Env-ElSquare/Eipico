@@ -467,6 +467,11 @@
     background: #ffffff;
   }
 
+  &.gray {
+    background: #eef1f4;
+    border-color: #aeb7c0;
+  }
+
   &.status-to-on {
     animation: lineTurnedOn 2.6s ease-out;
   }
@@ -604,6 +609,12 @@
     color: #ffffff !important;
     box-shadow: 0 0 0 2px rgba(214, 69, 107, 0.12);
   }
+
+  &.stale {
+    background: #77818b;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(119, 129, 139, 0.12);
+  }
 }
 
 .line-machines {
@@ -636,6 +647,11 @@
 
   &.stopped {
     background: linear-gradient(180deg, #fff0f5 0%, #fbd3df 100%);
+  }
+
+  &.stale {
+    border-color: #aeb7c0;
+    background: linear-gradient(180deg, #f1f3f5 0%, #d7dce1 100%);
   }
 
   &.flash-running {

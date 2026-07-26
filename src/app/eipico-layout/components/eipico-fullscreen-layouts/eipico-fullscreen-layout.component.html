@@ -119,6 +119,7 @@
       <button type="button" class="line-card" *ngFor="let line of section.machines" [attr.data-line-id]="line.lineId"
         [class.green]="getCssClass(line.lineId) === 'green'" [class.pink]="getCssClass(line.lineId) === 'pink'"
         [class.white]="getCssClass(line.lineId) === 'white'"
+        [class.gray]="getCssClass(line.lineId) === 'gray'"
         [class.status-to-on]="getLineStatusEffect(line.lineId) === 'to-on'"
         [class.status-to-off]="getLineStatusEffect(line.lineId) === 'to-off'"
         (click)="goToMachineDetails(line.lineId.toString())">
@@ -128,7 +129,9 @@
               <strong>{{ line.name }}</strong>
               <span>{{ getMachineCount(line.lineId) }}</span>
             </div>
-            <span class="line-status" [class.on]="isLineRunning(line.lineId)" [class.off]="!isLineRunning(line.lineId)">
+            <span class="line-status" [class.on]="!isLineStale(line.lineId) && isLineRunning(line.lineId)"
+              [class.off]="!isLineStale(line.lineId) && !isLineRunning(line.lineId)"
+              [class.stale]="isLineStale(line.lineId)">
               {{ getLineStatusText(line.lineId) }}
             </span>
             <small *ngIf="getLastUpdate(line.lineId)">{{
@@ -140,7 +143,9 @@
             <div class="machine-chip" *ngFor="let machine of getLineMachines(line.lineId)"
               [class.running]="getMachineStatusClass(machine) === 'running'"
               [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
-              [class.flash-running]="isMachineRunning(machine)" [class.flash-stopped]="!isMachineRunning(machine)"
+              [class.stale]="getMachineStatusClass(machine) === 'stale'"
+              [class.flash-running]="!isMachineStale(machine) && isMachineRunning(machine)"
+              [class.flash-stopped]="!isMachineStale(machine) && !isMachineRunning(machine)"
               [class.machine-to-on]="
                 getMachineStatusEffect(line.lineId, machine) === 'to-on'
               " [class.machine-to-off]="

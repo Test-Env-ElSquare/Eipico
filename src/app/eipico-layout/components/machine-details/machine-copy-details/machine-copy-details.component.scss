@@ -90,6 +90,17 @@
     border-color: #3b82f6;
     box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
   }
+
+  &.stale {
+    border-color: #94a3b8;
+    border-left: 4px solid #64748b;
+    background: #e2e8f0;
+
+    .status-dot {
+      background: #64748b;
+      box-shadow: 0 0 8px rgba(100, 116, 139, 0.55);
+    }
+  }
 }
 
 .machine-data {

@@ -8,13 +8,20 @@
         <div
           class="card"
           [ngClass]="{
-            running: (machine.latestSignal?.speed ?? 0) > 0,
-            stopped: (machine.latestSignal?.speed ?? 0) === 0,
+            running:
+              !isMachineStale(machine) &&
+              (machine.latestSignal?.speed ?? 0) > 0,
+            stopped:
+              !isMachineStale(machine) &&
+              (machine.latestSignal?.speed ?? 0) === 0,
+            stale: isMachineStale(machine),
             active: selectedMachineName === machine.machineName,
             'flashing-green':
+              !isMachineStale(machine) &&
               flashingMachines.has(machine.machineName) &&
               flashingColor[machine.machineName] === 'green',
             'flashing-red':
+              !isMachineStale(machine) &&
               flashingMachines.has(machine.machineName) &&
               flashingColor[machine.machineName] === 'red'
           }"
