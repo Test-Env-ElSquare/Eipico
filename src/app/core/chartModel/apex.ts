@@ -445,37 +445,127 @@ export function TimelineChartModel({ ...data }) {
   }
 }
 
+// API returns dates as "DD/MM/YYYY" — parsed manually because the native
+// Date constructor reads slash-separated strings as MM/DD/YYYY and silently
+// produces an Invalid Date (or the wrong day) for this format.
+function parseDayMonthYear(value: string): Date {
+  const [day, month, year] = value.split('/').map(Number);
+  return new Date(year, (month || 1) - 1, day || 1);
+}
+
+// The API repeats the same date once per line/shift (e.g. two "11/08/2026"
+// entries back to back). Group those repeats into one series per occurrence
+// — "Eipico 1" for the first entry of each day, "Eipico 2" for the second,
+// etc. — so the chart draws grouped columns per day instead of flattening
+// same-day bars into indistinguishable neighbours.
+function groupByDay(values: number[], dateLabels: string[]) {
+  const order: string[] = [];
+  const buckets: { [day: string]: number[] } = {};
+
+  dateLabels.forEach((day, i) => {
+    if (!buckets[day]) {
+      buckets[day] = [];
+      order.push(day);
+    }
+    buckets[day].push(values[i]);
+  });
+
+  const seriesCount = order.reduce((max, day) => Math.max(max, buckets[day].length), 1);
+  const series = Array.from({ length: seriesCount }, (_, i) => ({
+    name: `Eipico ${i + 1}`,
+    data: order.map((day) => buckets[day][i] ?? null),
+  }));
+
+  return { categories: order, series };
+}
+
 export function ConsumptionChartOptions({ ...data }) {
+  const rawValues: number[] = data.energySeries ? data.energySeries : [
+    1181539, 187554, 1044896, 213003, 939762, 102792, 340100, 54, 561781, 110741, 925130, 228020, 1083563, 298958
+  ];
+  const rawDates: string[] = data.energyTimeSeries ? data.energyTimeSeries : [
+    "11/08/2026", "11/08/2026", "12/08/2026", "12/08/2026", "13/08/2026", "13/08/2026", "14/08/2026", "14/08/2026",
+    "15/08/2026", "15/08/2026", "16/08/2026", "16/08/2026", "17/08/2026", "17/08/2026"
+  ];
+
+  const { categories, series } = groupByDay(rawValues, rawDates);
   return {
-    series: [{
-      name: '',
-      data: data.energySeries ? data.energySeries : [161686.65, 123604.87, 803956.96, 96497.26, 129445.11, 156498.37, 131155.63, 62.74]
-    }],
+    series,
     chart: {
       type: "bar",
-      height: 60,
-      sparkline: {
-        enabled: !0
+      height: 300,
+      toolbar: { show: false },
+      fontFamily: obj.fontFamily,
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: '55%',
+        borderRadius: 4,
+        // Keeps the label above the column instead of inside it, so a bar
+        // too short to hold text (a small value next to a huge one) still
+        // shows its number legibly.
+        dataLabels: {
+          position: 'top',
+        },
       }
     },
-    colors: [obj.primary],
+    // Axis stays linear (bar height = true proportion). A log scale would
+    // make far-apart values look close together, which is worse than a
+    // small bar — so instead every bar prints its exact value as text.
+    dataLabels: {
+      enabled: true,
+      offsetY: -18,
+      style: {
+        fontSize: "10px",
+        fontFamily: obj.fontFamily,
+        colors: [obj.secondary],
+      },
+      formatter: function (value: any) {
+        return value == null ? '' : value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+      },
+    },
+    legend: {
+      show: series.length > 1,
+      position: "top",
+      horizontalAlign: 'right',
+      fontFamily: obj.fontFamily,
+    },
+    // Categories are already de-duplicated to one entry per day — each
+    // series supplies its own value for that day, drawn as grouped columns.
     xaxis: {
-      type: 'datetime',
-      categories: data.energyTimeSeries ? data.energyTimeSeries : [
-        "3/15/2023",
-        "3/16/2023",
-        "3/17/2023",
-        "3/18/2023",
-        "3/19/2023",
-        "3/20/2023",
-        "3/21/2023",
-        "3/22/2023"
-      ]
-      ,
+      type: 'category',
+      categories,
+      labels: {
+        style: { colors: obj.secondary, fontSize: "11px", fontFamily: obj.fontFamily },
+        formatter: function (value: any) {
+          if (typeof value === 'string' && value.includes('/')) {
+            const [day, month] = value.split('/');
+            return `${day}/${month}`;
+          }
+          return value;
+        }
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    },
+    yaxis: {
+      labels: {
+        style: { colors: obj.secondary, fontSize: "11px", fontFamily: obj.fontFamily },
+        formatter: function (value: any) {
+          return Math.round(value)?.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        }
+      }
+    },
+    grid: {
+      borderColor: obj.gridBorder,
+      strokeDashArray: 4,
+    },
+    colors: [obj.primary, obj.warning, obj.info, obj.success],
+    fill: {
+      opacity: 1
     },
     stroke: {
-      width: 2,
-      curve: "smooth"
+      width: 0
     },
     markers: {
       size: 0
@@ -483,12 +573,16 @@ export function ConsumptionChartOptions({ ...data }) {
     tooltip: {
       x: {
         formatter: function (value: any) {
-          return new Date(value).toLocaleDateString() // The formatter function overrides format property
+          if (typeof value === 'string' && value.includes('/')) {
+            const parsed = parseDayMonthYear(value);
+            return isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString();
+          }
+          return value;
         },
       },
       y: {
         formatter: function (value: any) {
-          return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+          return value?.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
         }
       }
     }
@@ -541,6 +635,23 @@ export function getRadarChartOptions({ ...data }) {
       },
     },
     // labels: ['2011', '2012', '2013', '2014', '2015', '2016'],
+    dataLabels: {
+      enabled: true,
+      background: {
+        enabled: true,
+        borderRadius: 4,
+        padding: 3,
+        opacity: 0.9,
+      },
+      style: {
+        fontSize: "10px",
+        fontFamily: obj.fontFamily,
+        colors: [obj.primary]
+      },
+      formatter: function (value: any) {
+        return Math.round(value * 10) / 10 + '%';
+      }
+    },
     stroke: {
       width: 1,
     },
@@ -583,10 +694,12 @@ export function getRadarChartOptions({ ...data }) {
       radar: {
         polygons: {
           strokeColors: obj.gridBorder,
-          strokeWidth: 5,
+          strokeWidth: 1,
           connectorColors: obj.gridBorder,
           fill: {
-            colors: obj.secondary
+            // ApexCharts expects an array here (colors alternate ring by
+            // ring) — a bare string was silently breaking the radar render.
+            colors: [obj.light, obj.transparent]
           }
         }
       }

@@ -1,51 +1,72 @@
 <div class="row">
-  <div class="col-12 col-xl-12 stretch-card">
-    <div class="row flex-grow-1">
-      <!-- chart that shows Energy Consumption / Last 7 Days -->
-      <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-baseline">
-              <h6 class="card-title mb-0">Parts / Last 7 Days</h6>
-            </div>
-            <div class="row">
-              <div class="col-6 col-md-12 col-xl-5">
-                <h3 class="mb-2">
-                  {{ totalFillersCount| number: "1.0-1"}} (units)
-                </h3>
-                <div class="d-flex align-items-baseline">
-                </div>
+  <!-- chart that shows Parts / Last 7 Days -->
+  <div class="col-xl-8 grid-margin stretch-card">
+    <div class="card chart-card">
+      <div class="card-body">
+        <div class="chart-card__header">
+          <div>
+            <h6 class="chart-card__title">Parts <span class="chart-card__title-muted">/ Last 7 Days</span></h6>
+            <ng-container *ngIf="!isLoading && !loadError">
+              <div class="chart-card__metric">
+                {{ totalFillersCount| number: "1.0-1"}} <span class="chart-card__metric-unit">units</span>
               </div>
-              <div class="col-6 col-md-12 col-xl-7">
-                <div class="mt-md-3 mt-xl-0">
-                  <apx-chart [series]="EURChartOptions.series" [chart]="EURChartOptions.chart"
-                    [colors]="EURChartOptions.colors" [xaxis]="EURChartOptions.xaxis" [stroke]="EURChartOptions.stroke"
-                    [markers]="EURChartOptions.markers" [tooltip]="EURChartOptions.tooltip">
-                  </apx-chart>
-                </div>
-              </div>
+            </ng-container>
+            <p-skeleton *ngIf="isLoading" width="8rem" height="1.75rem" styleClass="tw-mt-2"></p-skeleton>
+          </div>
+        </div>
+
+        <div class="chart-card__chart-wrap" [ngSwitch]="true">
+          <div class="chart-card__chart">
+            <apx-chart *ngSwitchCase="!isLoading && !loadError" [series]="EURChartOptions.series"
+              [chart]="EURChartOptions.chart" [colors]="EURChartOptions.colors" [xaxis]="EURChartOptions.xaxis"
+              [yaxis]="EURChartOptions.yaxis" [grid]="EURChartOptions.grid" [plotOptions]="EURChartOptions.plotOptions"
+              [dataLabels]="EURChartOptions.dataLabels" [legend]="EURChartOptions.legend"
+              [fill]="EURChartOptions.fill" [stroke]="EURChartOptions.stroke" [markers]="EURChartOptions.markers"
+              [tooltip]="EURChartOptions.tooltip">
+            </apx-chart>
+          </div>
+          <div class="chart-loading" *ngSwitchCase="isLoading" aria-live="polite" aria-busy="true">
+            <p-skeleton width="100%" height="100%" borderRadius="12px"></p-skeleton>
+            <span class="chart-loading__label">Loading parts trend…</span>
+          </div>
+          <div class="chart-loading" *ngSwitchCase="loadError">
+            <div class="state-message state-message--error">
+              <i class="mdi mdi-alert-circle-outline"></i>
+              <span>Couldn't load the parts trend. Check the connection and try again.</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- card to show Eur-->
-      <div class="col-xl-4 stretch-card grid-margin">
-        <div class="card">
-          <div class="card-header tw-flex tw-items-center tw-justify-between">
-            <h4>EUR
-              <!-- &nbsp; (kWh/unit) -->
-            </h4>
-            <h4>(kWh/unit)</h4>
-          </div>
-          <div class="card-body">
-            <div class="col-lg-12 tw-flex tw-items-center tw-justify-between" *ngFor="let factory of eurValue">
+  <!-- card to show Eur-->
+  <div class="col-xl-4 grid-margin stretch-card">
+    <div class="stat-card stat-card--info">
+      <div class="stat-card__icon">
+        <i class="mdi mdi-gauge"></i>
+      </div>
+      <div class="stat-card__body">
+        <h6 class="stat-card__label">EUR <span class="stat-card__unit">(kWh/unit)</span></h6>
 
-              <h1>{{factory.name}}</h1>
-              <h1>{{factory.eur? (factory.eur | number):'N/A'}}</h1>
+        <ng-container [ngSwitch]="true">
+          <div class="stat-card__list" *ngSwitchCase="!isLoading && !loadError">
+            <div class="stat-card__row" *ngFor="let factory of eurValue">
+              <span class="stat-card__row-name">{{factory.name}}</span>
+              <span class="stat-card__row-value">{{factory.eur? (factory.eur | number):'N/A'}}</span>
             </div>
           </div>
-        </div>
+          <div class="stat-card__list" *ngSwitchCase="isLoading" aria-live="polite" aria-busy="true">
+            <div class="stat-card__row" *ngFor="let i of [1,2,3]">
+              <p-skeleton width="5rem" height="1rem"></p-skeleton>
+              <p-skeleton width="2.5rem" height="1.25rem"></p-skeleton>
+            </div>
+          </div>
+          <div class="state-message state-message--error" *ngSwitchCase="loadError">
+            <i class="mdi mdi-alert-circle-outline"></i>
+            <span>Couldn't load EUR data.</span>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

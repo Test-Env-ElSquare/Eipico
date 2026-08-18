@@ -11,32 +11,31 @@ import { factoryProduction } from '../../models/model';
 export class ConsumptionComponent implements OnInit {
   EURChartOptions: any = {};
   totalFillersCount: number;
+  isLoading = true;
+  loadError = false;
   @Input() eurValue: factoryProduction[];
   constructor(private _mainDashboard: MainDashboardService) {}
 
-  // GetEnergyConsumption(){
-  //   this._mainDashboard.GetEnergyConsumption().subscribe(
-  //     (res)=> {
-  //       this.totalFillersCount= res[0].totalFillersCount
-  //       this.EURChartOptions = ConsumptionChartOptions({
-  //         energySeries: res[0].fillersSeries,
-  //         energyTimeSeries :res[0].fillersTimeSeries
-  //       });
-
-  //     }
-  //   )
-  // }
   GetEnergyConsumption() {
-    this._mainDashboard.GetEnergyConsumption().subscribe((res) => {
-      this.totalFillersCount = res[0].totalFillersCount;
+    this.isLoading = true;
+    this.loadError = false;
+    this._mainDashboard.GetEnergyConsumption().subscribe({
+      next: (res) => {
+        this.totalFillersCount = res[0].totalFillersCount;
 
-      // FIX: assign the data here
-      this.eurValue = res[0].factoryProduction;
+        // FIX: assign the data here
+        this.eurValue = res[0].factoryProduction;
 
-      this.EURChartOptions = ConsumptionChartOptions({
-        energySeries: res[0].fillersSeries,
-        energyTimeSeries: res[0].fillersTimeSeries,
-      });
+        this.EURChartOptions = ConsumptionChartOptions({
+          energySeries: res[0].fillersSeries,
+          energyTimeSeries: res[0].fillersTimeSeries,
+        });
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.loadError = true;
+      },
     });
   }
 

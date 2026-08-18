@@ -1,6 +1,12 @@
-<app-consumption [eurValue]="eurValue"></app-consumption>
-<app-production (EUR)="eur($event)"></app-production>
+<div class="dash-page">
+  <div class="dash-page__header">
+    <div>
+      <span class="dash-page__eyebrow">Live overview</span>
+      <h1 class="dash-page__title">Production Dashboard</h1>
+      <p class="dash-page__subtitle">Real-time output, energy consumption and efficiency across factories</p>
+    </div>
+  </div>
 
-
-
-<!-- <app-production></app-production> -->
+  <app-consumption [eurValue]="eurValue"></app-consumption>
+  <app-production (EUR)="eur($event)"></app-production>
+</div>

@@ -1,245 +1,195 @@
-<div id="pdf-content" style="padding: 20px; font-family: Arial, sans-serif;">
+<div id="pdf-content" class="production-dash">
   <div class="row">
     <!-- card to show Total Pallets-->
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header">
-          <h4>Number Of Parts</h4>
+    <div class="col-xl-4 col-md-4 stretch-card grid-margin">
+      <div class="stat-card stat-card--primary">
+        <div class="stat-card__icon">
+          <i class="mdi mdi-package-variant-closed"></i>
         </div>
-        <div class="card-body row">
-          <div class="col-lg-12 tw-flex tw-items-center tw-justify-between"
-            *ngFor="let part of numOfPartsandtotalEnergy">
-            <h1>{{part.name}}</h1>
-            <h1>{{part.y? (part.y | number):"N/A"}}</h1>
-          </div>
+        <div class="stat-card__body">
+          <h6 class="stat-card__label">Number Of Parts</h6>
+
+          <ng-container [ngSwitch]="true">
+            <div class="stat-card__list" *ngSwitchCase="!isLoadingMain && !mainError">
+              <div class="stat-card__row" *ngFor="let part of numOfPartsandtotalEnergy">
+                <span class="stat-card__row-name">{{part.name}}</span>
+                <span class="stat-card__row-value">{{part.y? (part.y | number):"N/A"}}</span>
+              </div>
+            </div>
+            <div class="stat-card__list" *ngSwitchCase="isLoadingMain" aria-live="polite" aria-busy="true">
+              <div class="stat-card__row" *ngFor="let i of [1,2,3]">
+                <p-skeleton width="5rem" height="1rem"></p-skeleton>
+                <p-skeleton width="3rem" height="1.25rem"></p-skeleton>
+              </div>
+            </div>
+            <div class="state-message state-message--error" *ngSwitchCase="mainError">
+              <i class="mdi mdi-alert-circle-outline"></i>
+              <span>Couldn't load this data.</span>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
     <!-- card to show Total Packets-->
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header tw-flex tw-items-center tw-justify-between">
-          <h4>Total Energy Consumption
-            <!-- &nbsp; (kWh) -->
-          </h4>
-          <h4>
-            (kWh)
-          </h4>
+    <div class="col-xl-4 col-md-4 stretch-card grid-margin">
+      <div class="stat-card stat-card--success">
+        <div class="stat-card__icon">
+          <i class="mdi mdi-lightning-bolt"></i>
         </div>
-        <div class="card-body">
-          <div class="col-lg-12 tw-flex tw-items-center tw-justify-between"
-            *ngFor="let part of numOfPartsandtotalEnergy">
-            <h1>{{part.name}}</h1>
-            <h1>{{part.toalenergy? (part.toalenergy | number):"N/A"}}</h1>
-          </div>
+        <div class="stat-card__body">
+          <h6 class="stat-card__label">Total Energy Consumption <span class="stat-card__unit">(kWh)</span></h6>
+
+          <ng-container [ngSwitch]="true">
+            <div class="stat-card__list" *ngSwitchCase="!isLoadingMain && !mainError">
+              <div class="stat-card__row" *ngFor="let part of numOfPartsandtotalEnergy">
+                <span class="stat-card__row-name">{{part.name}}</span>
+                <span class="stat-card__row-value">{{part.toalenergy? (part.toalenergy | number):"N/A"}}</span>
+              </div>
+            </div>
+            <div class="stat-card__list" *ngSwitchCase="isLoadingMain" aria-live="polite" aria-busy="true">
+              <div class="stat-card__row" *ngFor="let i of [1,2,3]">
+                <p-skeleton width="5rem" height="1rem"></p-skeleton>
+                <p-skeleton width="3rem" height="1.25rem"></p-skeleton>
+              </div>
+            </div>
+            <div class="state-message state-message--error" *ngSwitchCase="mainError">
+              <i class="mdi mdi-alert-circle-outline"></i>
+              <span>Couldn't load this data.</span>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
     <!-- card to show Total Bottels-->
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header">
-          <h4>WUR</h4>
+    <div class="col-xl-4 col-md-4 stretch-card grid-margin">
+      <div class="stat-card stat-card--warning">
+        <div class="stat-card__icon">
+          <i class="mdi mdi-water-percent"></i>
         </div>
-        <div class="card-body">
-          <h1>N/A</h1>
+        <div class="stat-card__body">
+          <h6 class="stat-card__label">WUR</h6>
+          <div class="stat-card__list">
+            <div class="stat-card__row">
+              <span class="stat-card__row-value stat-card__row-value--single">N/A</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="row">
-    <div class="col-xl-8 ">
-      <div class="card text-left">
+    <div class="col-xl-8 grid-margin">
+      <div class="card chart-card text-left">
         <div class="card-body">
-          <div class="row g-3 align-items-start pb-5">
-            <div class="col-md-6 d-flex justify-content-md-start">
-              <!-- filtering by shift -->
-              <div>
-                <div
-                  class="btn-group text-nowrap 2xl:tw-flex-nowrap xl:tw-flex-nowrap lg:tw-flex-wrap md:tw-flex-wrap tw-flex-wrap"
-                  role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
-                    [checked]="shiftFilterid==0" autocomplete="off" [value]="0">
-                  <label class="btn btn-outline-primary" for="btnRadio3" (click)="GetMainDashobard(0)">Current
-                    Shift</label>
+          <div class="chart-card__toolbar">
+            <!-- filtering by shift -->
+            <div class="segmented-control" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
+                [checked]="shiftFilterid==0" autocomplete="off" [value]="0">
+              <label class="segmented-control__item" for="btnRadio3" (click)="GetMainDashobard(0)">Current
+                Shift</label>
 
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" [(ngModel)]="shiftFilterid"
-                    autocomplete="off" [checked]="shiftFilterid===1" [value]="1">
-                  <label class="btn btn-outline-primary" for="btnRadio1" (click)="GetMainDashobard(1)">Last
-                    Shift</label>
+              <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" [(ngModel)]="shiftFilterid"
+                autocomplete="off" [checked]="shiftFilterid===1" [value]="1">
+              <label class="segmented-control__item" for="btnRadio1" (click)="GetMainDashobard(1)">Last
+                Shift</label>
 
-                  <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio2"
-                    [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
-                  <label class="btn btn-outline-primary" for="btnRadio2" (click)="GetMainDashobard(2)">Last 2
-                    Shift</label>
+              <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio2"
+                [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
+              <label class="segmented-control__item" for="btnRadio2" (click)="GetMainDashobard(2)">Last 2
+                Shift</label>
 
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio5" [(ngModel)]="shiftFilterid"
-                    autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
-                  <label class="btn btn-outline-primary" for="btnRadio5" (click)="GetMainDashobard(3)">Last 7
-                    Days</label>
+              <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio5" [(ngModel)]="shiftFilterid"
+                autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
+              <label class="segmented-control__item" for="btnRadio5" (click)="GetMainDashobard(3)">Last 7
+                Days</label>
 
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio4" autocomplete="off"
-                    [checked]="shiftFilterid==4" [value]="4">
-                  <label class="btn btn-outline-primary" for="btnRadio4" (click)="GetMainDashobard(4)">Last 30
-                    Days</label>
-                </div>
-              </div>
+              <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio4" autocomplete="off"
+                [checked]="shiftFilterid==4" [value]="4">
+              <label class="segmented-control__item" for="btnRadio4" (click)="GetMainDashobard(4)">Last 30
+                Days</label>
             </div>
             <!-- filtering by type -->
-            <div class="col-md-6 d-flex justify-content-md-end">
-              <div>
-                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio41" autocomplete="off" checked
-                    value="0">
-                  <label class="btn btn-outline-success" for="btnRadio41">Parts</label>
-                </div>
+            <div class="segmented-control segmented-control--success" role="group"
+              aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio41" autocomplete="off" checked
+                value="0">
+              <label class="segmented-control__item" for="btnRadio41">Parts</label>
+            </div>
+          </div>
+
+          <!-- DrilDownChart div stays permanently mounted — Highcharts targets it by id -->
+          <div class="chart-card__chart-wrap">
+            <div id="DrilDownChart" class="chart-card__chart"></div>
+            <div class="chart-loading" *ngIf="isLoadingMain" aria-live="polite" aria-busy="true">
+              <p-skeleton width="100%" height="100%" borderRadius="12px"></p-skeleton>
+              <span class="chart-loading__label">Loading production data…</span>
+            </div>
+            <div class="chart-loading" *ngIf="mainError">
+              <div class="state-message state-message--error">
+                <i class="mdi mdi-alert-circle-outline"></i>
+                <span>Couldn't load production data. Check the connection and try again.</span>
               </div>
             </div>
           </div>
-          <!-- DrilDownChart div -->
-          <div id="DrilDownChart"></div>
         </div>
       </div>
     </div>
-    <!--chart that shows SLE / Last 7 Days  -->
-    <div class="col-xl-4 stretch-card ">
-      <div class="card text-left">
-        <div class="card-body ">
-          <h6 class="card-title mb-0 text-center">OEE / Last 7 Days</h6>
-          <div class="tw-mx-auto tw-flex tw-flex-col tw-h-full tw-align-middle  tw-my-auto tw-items-center tw-w-full">
-            <apx-chart class="tw-w-full tw-object-fit tw-my-auto" [series]="RadarChartOptions?.series"
-              [chart]="RadarChartOptions?.chart" [colors]="RadarChartOptions?.colors" [grid]="RadarChartOptions?.grid"
-              [legend]="RadarChartOptions?.legend" [labels]="RadarChartOptions?.labels"
-              [xaxis]="RadarChartOptions?.xaxis" [yaxis]="RadarChartOptions?.yaxis"></apx-chart>
-          </div>
+    <!--chart that shows OEE / Last 7 Days  -->
+    <div class="col-xl-4 stretch-card grid-margin">
+      <div class="card chart-card chart-card--compact text-left">
+        <div class="card-body">
+          <h6 class="chart-card__title">OEE <span class="chart-card__title-muted">/ Last 7 Days</span></h6>
 
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="!isLoadingOEE && !oeeError">
+              <div class="oee-summary">
+                <div class="oee-summary__stat">
+                  <span class="oee-summary__value">{{ oeeLatest | number: '1.0-1' }}%</span>
+                  <span class="oee-summary__caption">Latest</span>
+                </div>
+                <div class="oee-summary__stat">
+                  <span class="oee-summary__value">{{ oeeAverage | number: '1.0-1' }}%</span>
+                  <span class="oee-summary__caption">7-Day Avg</span>
+                </div>
+                <div class="oee-summary__stat">
+                  <span class="oee-summary__value" [ngClass]="oeeTrend >= 0 ? 'text-success' : 'text-danger'">
+                    <i class="mdi" [ngClass]="oeeTrend >= 0 ? 'mdi-trending-up' : 'mdi-trending-down'"></i>
+                    {{ oeeTrend | number: '1.0-1' }}
+                  </span>
+                  <span class="oee-summary__caption">vs Prev. Day</span>
+                </div>
+              </div>
+              <span class="oee-summary__badge" [ngClass]="oeeStatus.className">
+                <i class="mdi mdi-shield-check-outline"></i> {{ oeeStatus.label }}
+              </span>
+
+              <div class="chart-card__radar">
+                <apx-chart class="tw-w-full tw-object-fit tw-my-auto" [series]="RadarChartOptions?.series"
+                  [chart]="RadarChartOptions?.chart" [colors]="RadarChartOptions?.colors"
+                  [grid]="RadarChartOptions?.grid" [legend]="RadarChartOptions?.legend"
+                  [labels]="RadarChartOptions?.labels" [xaxis]="RadarChartOptions?.xaxis"
+                  [yaxis]="RadarChartOptions?.yaxis" [dataLabels]="RadarChartOptions?.dataLabels"
+                  [markers]="RadarChartOptions?.markers" [stroke]="RadarChartOptions?.stroke"
+                  [fill]="RadarChartOptions?.fill" [plotOptions]="RadarChartOptions?.plotOptions"></apx-chart>
+              </div>
+            </ng-container>
+
+            <div class="chart-card__chart-wrap chart-card__chart-wrap--radar" *ngSwitchCase="isLoadingOEE"
+              aria-live="polite" aria-busy="true">
+              <p-skeleton shape="circle" size="12rem" styleClass="tw-mx-auto"></p-skeleton>
+              <span class="chart-loading__label">Loading OEE…</span>
+            </div>
+
+            <div class="chart-card__chart-wrap chart-card__chart-wrap--radar" *ngSwitchCase="oeeError">
+              <div class="state-message state-message--error">
+                <i class="mdi mdi-alert-circle-outline"></i>
+                <span>Couldn't load OEE data. Check the connection and try again.</span>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- <button (click)="generatePDF()" class="btn btn-primary mt-4">Download PDF</button> -->
-
-<!-- <div id="pdf-content" style="padding: 20px; font-family: Arial, sans-serif;">
-  <div class="row">
-    card to show Total Pallets
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header">
-          <h4>Number Of Parts</h4>
-        </div>
-        <div class="card-body row">
-          <div class="col-lg-12 tw-flex tw-items-center tw-justify-between"
-            *ngFor="let part of numOfPartsandtotalEnergy">
-            <h1>{{part.name}}</h1>
-            <h1>{{part.y? (part.y | number):"N/A"}}</h1>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header tw-flex tw-items-center tw-justify-between">
-          <h4>Total Energy Consumption
-            &nbsp; (kWh)
-          </h4>
-          <h4>
-            (kWh)
-          </h4>
-        </div>
-        <div class="card-body">
-          <div class="col-lg-12 tw-flex tw-items-center tw-justify-between"
-            *ngFor="let part of numOfPartsandtotalEnergy">
-            <h1>{{part.name}}</h1>
-            <h1>{{part.toalenergy? (part.toalenergy | number):"N/A"}}</h1>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-4 stretch-card grid-margin">
-      <div class="card">
-        <div class="card-header">
-          <h4>WUR</h4>
-        </div>
-        <div class="card-body">
-          <h1>N/A</h1>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xl-8 ">
-      <div class="card text-left">
-        <div class="card-body">
-          <div class="row g-3 align-items-start pb-5">
-            <div class="col-md-6 d-flex justify-content-md-start">
-
-              <div>
-                <div
-                  class="btn-group text-nowrap 2xl:tw-flex-nowrap xl:tw-flex-nowrap lg:tw-flex-wrap md:tw-flex-wrap tw-flex-wrap"
-                  role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio3"
-                    [checked]="shiftFilterid==0" autocomplete="off" [value]="0">
-                  <label class="btn btn-outline-primary" for="btnRadio3" (click)="GetMainDashobard(0)">Current
-                    Shift</label>
-
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio1" [(ngModel)]="shiftFilterid"
-                    autocomplete="off" [checked]="shiftFilterid===1" [value]="1">
-                  <label class="btn btn-outline-primary" for="btnRadio1" (click)="GetMainDashobard(1)">Last
-                    Shift</label>
-
-                  <input type="radio" class="btn-check" name="btnGroupRadio" [(ngModel)]="shiftFilterid" id="btnRadio2"
-                    [checked]="shiftFilterid==2" autocomplete="off" [value]="2">
-                  <label class="btn btn-outline-primary" for="btnRadio2" (click)="GetMainDashobard(2)">Last 2
-                    Shift</label>
-
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio5" [(ngModel)]="shiftFilterid"
-                    autocomplete="off" [checked]="shiftFilterid==3" [value]="3">
-                  <label class="btn btn-outline-primary" for="btnRadio5" (click)="GetMainDashobard(3)">Last 7
-                    Days</label>
-
-                  <input type="radio" class="btn-check" name="btnGroupRadio" id="btnRadio4" autocomplete="off"
-                    [checked]="shiftFilterid==4" [value]="4">
-                  <label class="btn btn-outline-primary" for="btnRadio4" (click)="GetMainDashobard(4)">Last 30
-                    Days</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 d-flex justify-content-md-end">
-              <div>
-                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnGroupRadio2" id="btnRadio41" autocomplete="off" checked
-                    value="0">
-                  <label class="btn btn-outline-success" for="btnRadio41">Parts</label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="DrilDownChart"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-4 stretch-card ">
-      <div class="card text-left">
-        <div class="card-body ">
-          <h6 class="card-title mb-0 text-center">OEE / Last 7 Days</h6>
-          <div class="tw-mx-auto tw-flex tw-flex-col tw-h-full tw-align-middle  tw-my-auto tw-items-center tw-w-full">
-            <apx-chart class="tw-w-full tw-object-fit tw-my-auto" [series]="RadarChartOptions?.series"
-              [chart]="RadarChartOptions?.chart" [colors]="RadarChartOptions?.colors" [grid]="RadarChartOptions?.grid"
-              [legend]="RadarChartOptions?.legend" [labels]="RadarChartOptions?.labels"
-              [xaxis]="RadarChartOptions?.xaxis" [yaxis]="RadarChartOptions?.yaxis"></apx-chart>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- <button (click)="generatePDF()" class="btn btn-primary mt-4">Download PDF</button> -->
