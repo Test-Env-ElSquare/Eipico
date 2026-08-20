@@ -1,29 +1,265 @@
-::ng-deep {
-  .ngx-pagination .current {
-    background: #000 !important;
+.energy-report-page {
+  .report-filters,
+  .report-summary,
+  .chart-card,
+  .data-card {
+    margin-bottom: 18px;
   }
-  .p-paginator-page,
-  .p-paginator-next,
-  .p-paginator-last,
-  .p-paginator-first,
-  .p-paginator-prev,
-  .p-paginator-current {
-    padding: 0 1rem;
+
+  .filters-header,
+  .section-title,
+  .table-toolbar,
+  .mode-actions,
+  .custom-date-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .table > :not(:first-child) {
-    border-top: none;
+
+  .filters-header {
+    justify-content: space-between;
+    margin-bottom: 18px;
+
+    h4 {
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      color: #6c757d;
+    }
+  }
+
+  .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .mode-actions {
+    .btn {
+      min-width: 86px;
+    }
+  }
+
+  .custom-date-row {
+    flex-wrap: wrap;
+    margin-top: 16px;
+
+    > div {
+      min-width: 180px;
+    }
+
+    .btn {
+      align-self: end;
+      min-width: 110px;
+    }
+  }
+
+  .total-panel,
+  .summary-tile {
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    background: #fff;
+    padding: 14px 16px;
+  }
+
+  .total-panel {
+    span,
+    strong {
+      display: block;
+    }
+
+    span {
+      color: #6c757d;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    strong {
+      color: #198754;
+      font-size: 18px;
+    }
+  }
+
+  .summary-tile {
+    span {
+      display: block;
+      color: #6c757d;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  .section-title {
+    justify-content: space-between;
+    margin-bottom: 14px;
+
+    h5 {
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+
+    span {
+      color: #6c757d;
+      font-size: 13px;
+    }
+  }
+
+  .table-toolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .btn-search {
+    background-color: #2196f3 !important;
+    color: #fff !important;
+  }
+
+  .empty-state {
+    text-align: center;
+
+    .card-body {
+      padding: 42px 16px;
+    }
+
+    p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+  }
+
+  .metric-name {
+    font-weight: 600;
+    text-align: left !important;
+  }
+
+  .delta-pill {
+    display: inline-block;
+    min-width: 72px;
+    border-radius: 999px;
+    background: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    padding: 4px 10px;
+
+    &.up {
+      background: #e6f4ea;
+      color: #198754;
+    }
+
+    &.down {
+      background: #fdecec;
+      color: #dc3545;
+    }
+
+    &.flat {
+      background: #eef2f7;
+      color: #6c757d;
+    }
   }
 }
 
-p-table td,
-th {
-  padding: 10px;
-  text-align: center;
+::ng-deep {
+  .energy-report-page {
+    .ng-select .ng-select-container {
+      min-height: 38px;
+      border-color: #dfe3e8;
+    }
+
+    .p-selectbutton {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .p-selectbutton .p-button {
+      border: 1px solid #dfe3e8;
+      border-radius: 5px !important;
+      padding: 8px 12px;
+      background: #fff;
+      color: #495057;
+    }
+
+    .p-selectbutton .p-button.p-highlight {
+      background: #0d6efd;
+      border-color: #0d6efd;
+      color: #fff;
+    }
+
+    .p-datatable.energy-table {
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .p-datatable.energy-table .p-datatable-thead > tr > th {
+      background: #f8fafc;
+      border: 0;
+      border-bottom: 1px solid #e9ecef;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 11px 12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .p-datatable.energy-table .p-datatable-tbody > tr > td {
+      border: 0;
+      border-bottom: 1px solid #edf0f3;
+      color: #344054;
+      font-size: 13px;
+      padding: 10px 12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .p-datatable.energy-table .p-datatable-tbody > tr:nth-child(even) > td {
+      background: #fbfcfd;
+    }
+
+    .p-datatable.energy-table .p-datatable-tbody > tr:hover > td {
+      background: #f1f7ff;
+    }
+
+    .header-group {
+      background: #eef6ff !important;
+      color: #0d6efd !important;
+    }
+
+    .header-sticky {
+      background: #f8fafc !important;
+    }
+
+    .p-datatable-scrollable .p-datatable-thead > tr > th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+  }
 }
-.bg-success {
-  background-color: #198754 !important;
-}
-.btn-search {
-  background-color: #2196f3 !important;
-  color: white !important;
+
+@media (max-width: 767px) {
+  .energy-report-page {
+    .filters-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .export-btn,
+    .mode-actions {
+      width: 100%;
+    }
+
+    .mode-actions .btn {
+      flex: 1;
+    }
+  }
 }

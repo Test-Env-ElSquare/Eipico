@@ -14,6 +14,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { share } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { SharedModule } from 'src/app/views/shared/shared.module';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SharedModule } from 'src/app/views/shared/shared.module';
     TableModule,
     NgxPaginationModule,
     SharedModule,
+    NgApexchartsModule,
   ],
 })
 export class ReportsModule {}
