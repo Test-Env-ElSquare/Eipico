@@ -55,6 +55,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'alarms',
+        loadChildren: () =>
+          import('./views/pages/alarms/alarms.module').then(
+            (m) => m.AlarmsModule
+          ),
+      },
+      {
         path: 'Scada',
         loadChildren: () =>
           import('./components/scada/scada.module').then((m) => m.ScadaModule),

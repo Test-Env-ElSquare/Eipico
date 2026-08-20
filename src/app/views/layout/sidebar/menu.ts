@@ -156,6 +156,24 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
+    label: 'Alarms',
+    isTitle: true,
+  },
+  {
+    label: 'Alarms',
+    icon: 'alert-triangle',
+    subItems: [
+      {
+        label: 'Stoppage Alarms',
+        link: '/alarms',
+      },
+      {
+        label: 'Voltage',
+        link: '/alarms',
+      },
+    ],
+  },
+  {
     label: 'Scada',
     isTitle: true,
   },

@@ -1,82 +1,178 @@
 import { Component, OnInit } from '@angular/core';
-import * as Highcharts from 'highcharts';
-import HighchartsMore from 'highcharts/highcharts-more';
-import HighchartsSolidGauge from 'highcharts/modules/solid-gauge';
-import HC_timeLine from "highcharts/modules/timeline";
-import Drilldown  from "highcharts/modules/drilldown";
-import colorAxis from "highcharts/modules/coloraxis";
+import { finalize } from 'rxjs/operators';
+import { AppService } from 'src/app/core/services/app-Service.service';
+import { Lines } from 'src/app/core/models/lines';
+import { MachineService } from 'src/app/components/settings/services/machine.service';
+import { Machine } from 'src/app/components/settings/models/model';
+import {
+  AlarmsService,
+  StoppageAlarm,
+  StoppageAlarmFilters,
+} from './alarms.service';
 
-HighchartsMore(Highcharts);
-HighchartsSolidGauge(Highcharts);
-HC_timeLine(Highcharts);
-Drilldown(Highcharts);
-colorAxis(Highcharts);
 @Component({
   selector: 'app-alarms',
   templateUrl: './alarms.component.html',
   styleUrls: ['./alarms.component.scss']
 })
 export class AlarmsComponent implements OnInit {
+  activeTab: 'stoppage' | 'voltage' = 'stoppage';
+  lines: Lines[] = [];
+  machines: Machine[] = [];
+  stoppageAlarms: StoppageAlarm[] = [];
+  selectedAlarm: StoppageAlarm | null = null;
+  isLoading = false;
+  isMachinesLoading = false;
+  isAcknowledgingId: number | null = null;
+  errorMessage = '';
 
-  constructor() { }
+  filters: StoppageAlarmFilters = {
+    lineId: 68,
+    machineId: null,
+    isActive: true,
+    isAcknowledged: false,
+    from: null,
+    to: null,
+  };
+
+  get activeCount(): number {
+    return this.stoppageAlarms.filter((alarm) => alarm.isActive).length;
+  }
+
+  get notAcknowledgedCount(): number {
+    return this.stoppageAlarms.filter((alarm) => !alarm.isAcknowledged).length;
+  }
+
+  constructor(
+    private alarmsService: AlarmsService,
+    private appService: AppService,
+    private machineService: MachineService
+  ) { }
 
   ngOnInit(): void {
-    this.PiechartOptions("Piechart");
-    this.PiechartOptions("Piechart2");
+    this.loadLines();
+    this.loadMachines();
+    this.loadStoppageAlarms();
   }
-  private PiechartOptions(id:any)
-  {
-    Highcharts.chart(id, {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: 0,
-        plotShadow: false
-    },
-    title: {
-        text: 'Browser<br>shares<br>January<br>2022',
-        align: 'center',
-        verticalAlign: 'middle',
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
-    },
-    plotOptions: {
-        pie: {
-            dataLabels: {
-                enabled: true,
-                style: {
-                    fontWeight: 'bold',
-                    color: 'white'
-                }
-            },
-            size: '80%'
-        }
-    },
-    series: [{
-        type: 'pie',
-        name: 'Browser share',
-        innerSize: '50%',
-        data: [
-            ['Chrome', 73.86],
-            ['Edge', 11.97],
-            ['Firefox', 5.52],
-            ['Safari', 2.98],
-            ['Internet Explorer', 1.90],
-            {
-                name: 'Other',
-                y: 3.77,
-                dataLabels: {
-                    enabled: false
-                }
-            }
-        ]
-    }]
 
-  } as any );
+  loadLines(): void {
+    this.appService.getAllLines().subscribe({
+      next: (lines) => {
+        this.lines = lines || [];
+      },
+      error: () => {
+        this.lines = [];
+      },
+    });
+  }
+
+  loadMachines(): void {
+    this.machines = [];
+    this.filters.machineId = null;
+
+    if (!this.filters.lineId) {
+      return;
+    }
+
+    this.isMachinesLoading = true;
+    this.machineService.GetLineMachines(this.filters.lineId)
+      .pipe(finalize(() => this.isMachinesLoading = false))
+      .subscribe({
+        next: (machines) => {
+          this.machines = machines || [];
+        },
+        error: () => {
+          this.machines = [];
+        },
+      });
+  }
+
+  loadStoppageAlarms(): void {
+    this.errorMessage = '';
+    this.selectedAlarm = null;
+    this.isLoading = true;
+
+    this.alarmsService.getStoppageAlarms(this.filters)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (alarms) => {
+          this.stoppageAlarms = alarms || [];
+        },
+        error: () => {
+          this.stoppageAlarms = [];
+          this.errorMessage = 'Failed to load stoppage alarms.';
+        },
+      });
+  }
+
+  onLineChange(): void {
+    this.loadMachines();
+    this.loadStoppageAlarms();
+  }
+
+  resetFilters(): void {
+    this.filters = {
+      lineId: 68,
+      machineId: null,
+      isActive: true,
+      isAcknowledged: false,
+      from: null,
+      to: null,
+    };
+    this.loadMachines();
+    this.loadStoppageAlarms();
+  }
+
+  viewAlarm(alarm: StoppageAlarm): void {
+    this.alarmsService.getStoppageAlarmById(alarm.id).subscribe({
+      next: (data) => {
+        this.selectedAlarm = data;
+      },
+      error: () => {
+        this.selectedAlarm = alarm;
+      },
+    });
+  }
+
+  acknowledge(alarm: StoppageAlarm): void {
+    if (alarm.isAcknowledged || this.isAcknowledgingId) {
+      return;
+    }
+
+    this.isAcknowledgingId = alarm.id;
+    this.alarmsService.acknowledgeStoppageAlarm(alarm.id)
+      .pipe(finalize(() => this.isAcknowledgingId = null))
+      .subscribe({
+        next: (updatedAlarm) => {
+          this.stoppageAlarms = this.stoppageAlarms.map((item) =>
+            item.id === updatedAlarm.id ? updatedAlarm : item
+          );
+          if (this.selectedAlarm?.id === updatedAlarm.id) {
+            this.selectedAlarm = updatedAlarm;
+          }
+        },
+        error: () => {
+          this.errorMessage = 'Failed to acknowledge alarm.';
+        },
+      });
+  }
+
+  formatDuration(minutes: number | null | undefined): string {
+    if (minutes === null || minutes === undefined) {
+      return '-';
+    }
+
+    const totalMinutes = Math.round(minutes);
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const mins = totalMinutes % 60;
+
+    if (days > 0) {
+      return `${days}d ${hours}h ${mins}m`;
+    }
+    if (hours > 0) {
+      return `${hours}h ${mins}m`;
+    }
+    return `${mins}m`;
   }
 }

@@ -1,42 +1,209 @@
-<div class="row">
-  <div class="col-md-6 grid-margin">
-    <div id="Piechart"></div>
+<div class="alarms-page">
+  <div class="page-header">
+    <div>
+      <h4>Alarms</h4>
+      <p>Monitor active and acknowledged alarms across production lines.</p>
+    </div>
+    <button class="btn btn-outline-primary" type="button" (click)="loadStoppageAlarms()">
+      <i data-feather="refresh-cw"></i>
+      Refresh
+    </button>
   </div>
-  <div class="col-md-6 grid-margin">
-    <div id="Piechart2"></div>
-  </div>
-  <div class="col-md-12 grid-margin">
-    <div class="card text-left">
-      <div class="card-body">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
-          </tbody>
-        </table>      </div>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'stoppage'"
+        type="button"
+        (click)="activeTab = 'stoppage'"
+      >
+        Stoppage Alarms
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'voltage'"
+        type="button"
+        (click)="activeTab = 'voltage'"
+      >
+        Voltage
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content alarm-tab-content">
+    <div *ngIf="activeTab === 'stoppage'">
+      <div class="card filter-card">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">Line</label>
+              <select class="form-control" [(ngModel)]="filters.lineId" (change)="onLineChange()">
+                <option [ngValue]="null">Select line</option>
+                <option *ngFor="let line of lines" [ngValue]="line.id">{{ line.name }}</option>
+              </select>
+            </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">Machine</label>
+              <select class="form-control" [(ngModel)]="filters.machineId" (change)="loadStoppageAlarms()">
+                <option [ngValue]="null">{{ isMachinesLoading ? 'Loading...' : 'All machines' }}</option>
+                <option *ngFor="let machine of machines" [ngValue]="machine.id">{{ machine.name }}</option>
+              </select>
+            </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">Active</label>
+              <select class="form-control" [(ngModel)]="filters.isActive" (change)="loadStoppageAlarms()">
+                <option [ngValue]="null">All</option>
+                <option [ngValue]="true">Active</option>
+                <option [ngValue]="false">Closed</option>
+              </select>
+            </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">Acknowledged</label>
+              <select class="form-control" [(ngModel)]="filters.isAcknowledged" (change)="loadStoppageAlarms()">
+                <option [ngValue]="null">All</option>
+                <option [ngValue]="false">Not acknowledged</option>
+                <option [ngValue]="true">Acknowledged</option>
+              </select>
+            </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">From</label>
+              <input class="form-control" type="date" [(ngModel)]="filters.from" />
+            </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label">To</label>
+              <input class="form-control" type="date" [(ngModel)]="filters.to" />
+            </div>
+            <div class="col-12 filter-actions">
+              <button class="btn btn-primary" type="button" (click)="loadStoppageAlarms()">Apply</button>
+              <button class="btn btn-light" type="button" (click)="resetFilters()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row summary-row">
+        <div class="col-md-4">
+          <div class="summary-box">
+            <span>Total</span>
+            <strong>{{ stoppageAlarms.length }}</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="summary-box active">
+            <span>Active</span>
+            <strong>{{ activeCount }}</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="summary-box warning">
+            <span>Not acknowledged</span>
+            <strong>{{ notAcknowledgedCount }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover alarm-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Line</th>
+                  <th>Machine</th>
+                  <th>Reason</th>
+                  <th>From</th>
+                  <th>Raised At</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Acknowledgement</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="isLoading">
+                  <td colspan="10" class="text-center py-4">Loading stoppage alarms...</td>
+                </tr>
+                <tr *ngIf="!isLoading && stoppageAlarms.length === 0">
+                  <td colspan="10" class="text-center py-4">No stoppage alarms found.</td>
+                </tr>
+                <tr *ngFor="let alarm of stoppageAlarms" [class.selected-row]="selectedAlarm?.id === alarm.id">
+                  <td>{{ alarm.id }}</td>
+                  <td>{{ alarm.lineName }}</td>
+                  <td>{{ alarm.machineName || '-' }}</td>
+                  <td>
+                    <span class="reason">{{ alarm.reasonName }}</span>
+                    <small *ngIf="alarm.fault">{{ alarm.fault }}</small>
+                  </td>
+                  <td>{{ alarm.from | date:'short' }}</td>
+                  <td>{{ alarm.alarmRaisedAt | date:'short' }}</td>
+                  <td>{{ formatDuration(alarm.durationMinutes) }}</td>
+                  <td>
+                    <span class="badge" [class.bg-danger]="alarm.isActive" [class.bg-secondary]="!alarm.isActive">
+                      {{ alarm.isActive ? 'Active' : 'Closed' }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge" [class.bg-success]="alarm.isAcknowledged" [class.bg-warning]="!alarm.isAcknowledged">
+                      {{ alarm.isAcknowledged ? 'Acknowledged' : 'Pending' }}
+                    </span>
+                  </td>
+                  <td class="actions-cell">
+                    <button class="btn btn-sm btn-outline-info" type="button" (click)="viewAlarm(alarm)">View</button>
+                    <button
+                      class="btn btn-sm btn-outline-success"
+                      type="button"
+                      [disabled]="alarm.isAcknowledged || isAcknowledgingId === alarm.id"
+                      (click)="acknowledge(alarm)"
+                    >
+                      {{ isAcknowledgingId === alarm.id ? 'Saving...' : 'Ack' }}
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedAlarm" class="card details-card">
+        <div class="card-body">
+          <div class="details-header">
+            <h5>Alarm #{{ selectedAlarm.id }}</h5>
+            <button class="btn btn-sm btn-light" type="button" (click)="selectedAlarm = null">Close</button>
+          </div>
+          <div class="row">
+            <div class="col-md-3 detail-item">
+              <span>Scope</span>
+              <strong>{{ selectedAlarm.scopeName }}</strong>
+            </div>
+            <div class="col-md-3 detail-item">
+              <span>Line</span>
+              <strong>{{ selectedAlarm.lineName }}</strong>
+            </div>
+            <div class="col-md-3 detail-item">
+              <span>Machine</span>
+              <strong>{{ selectedAlarm.machineName || '-' }}</strong>
+            </div>
+            <div class="col-md-3 detail-item">
+              <span>Acknowledged By</span>
+              <strong>{{ selectedAlarm.acknowledgedByUserName || '-' }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'voltage'" class="card">
+      <div class="card-body empty-state">
+        <h5>Voltage alarms</h5>
+        <p>Voltage alarm API will be connected in this tab.</p>
+      </div>
     </div>
   </div>
 </div>

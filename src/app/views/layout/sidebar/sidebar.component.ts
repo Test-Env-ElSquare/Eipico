@@ -300,6 +300,27 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           },
         ],
       },
+      {
+        label: 'Alarms',
+        isTitle: true,
+      },
+      {
+        label: 'Alarms',
+        icon: 'alert-triangle',
+        showSubItems: fullAccess,
+        subItems: [
+          {
+            label: 'Stoppage Alarms',
+            link: '/alarms',
+            showSubItems: fullAccess,
+          },
+          {
+            label: 'Voltage',
+            link: '/alarms',
+            showSubItems: fullAccess,
+          },
+        ],
+      },
       // {
       //   label: 'Scada',
       //   isTitle: true,
