@@ -1,0 +1,17 @@
+.metrics-section { padding: 1.5rem; background: linear-gradient(145deg,#f7faff,#f3f7fb); border: 1px solid #e1e9f2; border-radius: 20px; }
+.metrics-heading { margin-bottom: 1.25rem; }
+.metrics-heading span { color: #6a94c6; font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.metrics-heading h3 { margin: .3rem 0 0; color: #172033; font-size: 1.4rem; font-weight: 700; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1.15rem; }
+.metric-card { min-width: 0; padding: 1rem .75rem .35rem; background: #fff; border: 1px solid #e5ebf2; border-radius: 16px; box-shadow: 0 10px 24px rgba(31,45,61,.07); overflow: hidden; transition: transform .2s ease,box-shadow .2s ease; }
+.metric-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(31,45,61,.11); }
+.metric-title { display: flex; align-items: center; gap: .6rem; padding: .15rem .6rem 0; }
+.metric-title span { width: .7rem; height: .7rem; background: var(--metric-color); border-radius: 50%; box-shadow: 0 0 0 5px color-mix(in srgb,var(--metric-color) 14%,transparent); }
+.metric-title h4 { margin: 0; color: #172033; font-size: 1.05rem; font-weight: 750; }
+.metric-quality { --metric-color: #16a34a; }
+.metric-availability { --metric-color: #8b5cf6; }
+.metric-performance { --metric-color: #f59e0b; }
+.metric-oee { --metric-color: #2563eb; }
+.metric-card apx-chart { display: block; width: 100%; }
+@media (max-width:991px) { .metrics-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:575px) { .metrics-grid { grid-template-columns: 1fr; } .metrics-section { padding: 1rem; } }

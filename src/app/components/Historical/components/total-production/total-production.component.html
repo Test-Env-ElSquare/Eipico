@@ -1,52 +1,23 @@
-<div class="row g-3 mb-4">
-  <div class="col-lg-3">
-    <app-filler-parts [filler]="filler"></app-filler-parts>
-  </div>
-  <div class="col-lg-4">
-    <div class="mb-3"><app-filler-speed [filler]="filler"></app-filler-speed></div>
-
-    <app-energy [energy]="energy"></app-energy>
-  </div>
-  <div class="col-lg-5 d-flex flex-column gap-3">
-
-
-    <div class="card shadow-sm" style="height: 220px;">
-
-      <div class="card-header fw-bold">
-        Activated SKUs
-      </div>
-
-      <div class="card-body p-2" style="overflow-y: auto;">
-
-        <!-- Loading -->
-        <div *ngIf="isLoading" class="text-center text-muted">
-          Loading...
-        </div>
-
-        <!-- Data -->
-        <ng-container *ngIf="!isLoading">
-
-          <div *ngIf="skusActivated.length > 0; else noSkus">
-
-            <div class="border rounded p-2 mb-2" *ngFor="let sku of skusActivated">
-              {{ sku.skuName }}
-            </div>
-
-          </div>
-
-          <ng-template #noSkus>
-            <p class="text-danger fw-bold text-center m-0">
-              No Skus
-            </p>
-          </ng-template>
-
-        </ng-container>
-
-      </div>
+<div class="summary-grid mb-4">
+  <div class="summary-cell"><app-filler-parts [filler]="filler"></app-filler-parts></div>
+  <div class="summary-cell"><app-filler-speed [filler]="filler"></app-filler-speed></div>
+  <div class="summary-cell"><app-energy [energy]="energy"></app-energy></div>
+  <div class="sku-card">
+    <div class="sku-header">
+      <div><span class="eyebrow">Production</span><h3>Activated SKUs</h3></div>
+      <span class="sku-count" *ngIf="!isLoading">{{ skusActivated.length }}</span>
     </div>
-
-
-    <app-waterfall [filterObj]="filterObj"></app-waterfall>
-
+    <div class="sku-body">
+      <p-skeleton *ngIf="isLoading" width="100%" height="132px"></p-skeleton>
+      <ng-container *ngIf="!isLoading">
+        <div *ngIf="skusActivated.length > 0; else noSkus">
+          <div class="sku-item" *ngFor="let sku of skusActivated">
+            <span class="sku-dot"></span>
+            <div><strong>{{ sku.skuName }}</strong><small>{{ sku.batchId || sku.jobOrderId }}</small></div>
+          </div>
+        </div>
+        <ng-template #noSkus><p class="text-danger fw-bold text-center m-0">No SKUs</p></ng-template>
+      </ng-container>
+    </div>
   </div>
 </div>

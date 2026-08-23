@@ -24,10 +24,10 @@ export function radialBarChartFunc({ ...data }) {
   return {
     series: [data.series],
     chart: {
-      height: 180,
+      height: data.height || 220,
       type: "radialBar"
     },
-    colors: [obj.circleBarValueColor],
+    colors: [data.color || obj.circleBarValueColor],
     plotOptions: {
       radialBar: {
         hollow: {
@@ -46,12 +46,12 @@ export function radialBarChartFunc({ ...data }) {
           name: {
             offsetY: -8,
             show: true,
-            color: obj.circleBarValueColor,
+            color: data.color || obj.circleBarValueColor,
             fontSize: "11px",
             fontWeight: "500"
           },
           value: {
-            color: obj.circleBarValueColor,
+            color: data.color || obj.circleBarValueColor,
             fontSize: "20px",
             show: true,
             fontWeight: "600",

@@ -70,9 +70,7 @@ export class TimelineComponent implements OnInit, OnChanges, AfterViewInit {
     this.TimeLineRefactor();
   }
 
-  ngOnInit(): void {
-    this.TimeLineRefactor();
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     // this._cdr.detectChanges();

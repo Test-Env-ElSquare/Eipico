@@ -52,21 +52,29 @@ export class WaterfallComponent implements OnInit, OnChanges, AfterViewInit {
           name: 'OEE',
           series: [(this.filler?.oee! * 100)?.toFixed(0)],
           symbole: ' % ',
+          color: '#2563EB',
+          height: 230,
         });
         this.radialChartOptions2 = radialBarChartFunc({
           name: 'Quality',
           series: [(this.filler?.quality! * 100)?.toFixed(0)],
           symbole: ' % ',
+          color: '#16A34A',
+          height: 230,
         });
         this.radialChartOptions1 = radialBarChartFunc({
           name: 'Performance',
           series: [(this.filler?.performance! * 100)?.toFixed(0)],
           symbole: ' % ',
+          color: '#F59E0B',
+          height: 230,
         });
         this.radialChartOptions3 = radialBarChartFunc({
           name: 'Availability',
           series: [(this.filler?.availability! * 100)?.toFixed(0)],
           symbole: ' % ',
+          color: '#8B5CF6',
+          height: 230,
         });
         this.loading = false;
       });

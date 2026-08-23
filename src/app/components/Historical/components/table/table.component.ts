@@ -33,9 +33,7 @@ export class TableComponent implements OnInit, OnChanges {
     private _cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.getFillerRefactor();
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(): void {
     this.getFillerRefactor();

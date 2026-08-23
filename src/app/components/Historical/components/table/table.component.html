@@ -1,88 +1,78 @@
-<div *ngIf="!loading; else skeleton">
+<div *ngIf="!loading; else skeleton" class="production-tables">
+  <section class="data-panel" *ngIf="dataMode === 'READS' || dataMode === 'ALL'">
+    <header class="panel-header">
+      <div class="panel-icon icon-blue">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg>
+      </div>
+      <div><h4>Production summary</h4><p>Overall line performance for the selected duration</p></div>
+    </header>
+    <div class="responsive-table">
+      <table class="production-table">
+        <thead><tr><th>Count</th><th>Q Reject</th><th>Total</th><th>Availability</th><th>Performance</th><th>Quality</th><th>OEE</th></tr></thead>
+        <tbody><tr>
+          <td><span class="value-pill count">{{ filler?.filerreads?.count | number }}</span></td>
+          <td><span class="value-pill reject">{{ filler?.filerreads?.qreject | number }}</span></td>
+          <td><strong class="total-value">{{ filler?.filerreads?.total | number }}</strong></td>
+          <td><span class="metric-pill availability">{{ (filler?.filerreads?.availability! * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill performance">{{ (filler?.filerreads?.performance! * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill quality">{{ (filler?.filerreads?.quality! * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill oee">{{ (filler?.filerreads?.oee! * 100).toFixed(2) }}%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
 
-  <!-- READS -->
-  <table class="table" *ngIf="dataMode === 'READS' || dataMode === 'ALL'">
-    <thead>
-      <tr>
-        <th>Count</th>
-        <th>Q Reject</th>
-        <th>Total</th>
-        <th>Availability</th>
-        <th>Performance</th>
-        <th>Quality</th>
-        <th>OEE</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ filler?.filerreads?.count }}</td>
-        <td>{{ filler?.filerreads?.qreject }}</td>
-        <td>{{ filler?.filerreads?.total }}</td>
-        <td>{{ (filler?.filerreads?.availability! * 100).toFixed(2) }}%</td>
-        <td>{{ (filler?.filerreads?.performance! * 100).toFixed(2) }}%</td>
-        <td>{{ (filler?.filerreads?.quality! * 100).toFixed(2) }}%</td>
-        <td>{{ (filler?.filerreads?.oee! * 100).toFixed(2) }}%</td>
-      </tr>
-    </tbody>
-  </table>
+  <section class="data-panel" *ngIf="dataMode === 'HOUR' || dataMode === 'ALL'">
+    <header class="panel-header">
+      <div class="panel-icon icon-purple">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
+      </div>
+      <div><h4>Hourly production</h4><p>Performance breakdown hour by hour</p></div>
+    </header>
+    <div class="responsive-table">
+      <table class="production-table striped">
+        <thead><tr><th>Hour</th><th>Count</th><th>Q Reject</th><th>Availability</th><th>Performance</th><th>Quality</th><th>OEE</th></tr></thead>
+        <tbody><tr *ngFor="let h of filler?.filler_per_Hour">
+          <td><span class="time-cell"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg>{{ h.hour }}:00</span></td>
+          <td><span class="value-pill count">{{ h.count | number }}</span></td>
+          <td><span class="value-pill reject">{{ h.qreject | number }}</span></td>
+          <td><span class="metric-pill availability">{{ (h.availability * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill performance">{{ (h.performance * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill quality">{{ (h.quality * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill oee">{{ (h.oee * 100).toFixed(2) }}%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
 
-  <!-- PER HOUR -->
-  <table class="table mt-4" *ngIf="dataMode === 'HOUR' || dataMode === 'ALL'">
-    <thead>
-      <tr>
-        <th>Hour</th>
-        <th>Count</th>
-        <th>Q Reject</th>
-        <th>Availability</th>
-        <th>Performance</th>
-        <th>Quality</th>
-        <th>OEE</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let h of filler?.filler_per_Hour">
-        <td>{{ h.hour }}:00</td>
-        <td>{{ h.count }}</td>
-        <td>{{ h.qreject }}</td>
-        <td>{{ (h.availability * 100).toFixed(2) }}%</td>
-        <td>{{ (h.performance * 100).toFixed(2) }}%</td>
-        <td>{{ (h.quality * 100).toFixed(2) }}%</td>
-        <td>{{ (h.oee * 100).toFixed(2) }}%</td>
-      </tr>
-    </tbody>
-  </table>
+  <section class="data-panel" *ngIf="dataMode === 'DAY' || dataMode === 'ALL'">
+    <header class="panel-header">
+      <div class="panel-icon icon-green">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16"/></svg>
+      </div>
+      <div><h4>Daily production</h4><p>Performance trends across production days</p></div>
+    </header>
+    <div class="responsive-table">
+      <table class="production-table striped">
+        <thead><tr><th>Day</th><th>Parts</th><th>Availability</th><th>Performance</th><th>Quality</th><th>OEE</th></tr></thead>
+        <tbody><tr *ngFor="let d of filler?.filerperday">
+          <td><span class="date-cell"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16"/></svg>{{ d.day | date:'mediumDate' }}</span></td>
+          <td><span class="value-pill count">{{ d.parts | number }}</span></td>
+          <td><span class="metric-pill availability">{{ (d.availability * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill performance">{{ (d.performance * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill quality">{{ (d.quality * 100).toFixed(2) }}%</span></td>
+          <td><span class="metric-pill oee">{{ (d.oee * 100).toFixed(2) }}%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
 
-  <!-- PER DAY -->
-  <table class="table mt-4" *ngIf="dataMode === 'DAY' || dataMode === 'ALL'">
-    <thead>
-      <tr>
-        <th>Day</th>
-        <th>Parts</th>
-        <th>Availability</th>
-        <th>Performance</th>
-        <th>Quality</th>
-        <th>OEE</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let d of filler?.filerperday">
-        <td>{{ d.day | date:'mediumDate' }}</td>
-        <td>{{ d.parts }}</td>
-        <td>{{ (d.availability * 100).toFixed(2) }}%</td>
-        <td>{{ (d.performance * 100).toFixed(2) }}%</td>
-        <td>{{ (d.quality * 100).toFixed(2) }}%</td>
-        <td>{{ (d.oee * 100).toFixed(2) }}%</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- NO DATA -->
-  <div *ngIf="dataMode === 'NONE'" class="text-center text-muted mt-4">
-    No data available
+  <div *ngIf="dataMode === 'NONE'" class="empty-state">
+    <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M3 3l18 18"/></svg></div>
+    <h4>No production data</h4><p>There are no records for the selected filters.</p>
   </div>
-
 </div>
 
 <ng-template #skeleton>
-  <p-skeleton width="100%" height="482px"></p-skeleton>
+  <div class="table-skeleton"><p-skeleton width="100%" height="72px"></p-skeleton><p-skeleton width="100%" height="310px"></p-skeleton></div>
 </ng-template>

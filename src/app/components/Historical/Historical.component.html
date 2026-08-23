@@ -1,25 +1,29 @@
-<!-- filter component to call api and pass it's response as output to historical component -->
-
+<!-- filter component to call api and pass its response to independent sections -->
 <app-filter (filterValues)="getFilterValues($event)" (parts)="parts($event)"></app-filter>
 
-
-<!-- check if filter returned-->
-<!-- then pass it to the children -->
 <ng-container *ngIf="filterObj">
-  <!-- skus todo -->
   <app-total-production [filterObj]="filterObj"></app-total-production>
-  <!-- <app-waterfall [filterObj]="filterObj"></app-waterfall> -->
+  <app-waterfall [filterObj]="filterObj"></app-waterfall>
 
-  <app-timeline [filterObj]="filterObj"></app-timeline>
-  <app-table [filterObj]="filterObj"></app-table>
+  <section class="historical-section">
+    <div class="section-heading">
+      <div><span class="section-kicker">Production events</span><h3>Machine timeline</h3></div>
+      <button type="button" class="show-more-btn" (click)="toggleTimeline()">{{ showTimeline ? 'Show less' : 'Show timeline' }}</button>
+    </div>
+    <app-timeline *ngIf="showTimeline" [filterObj]="filterObj"></app-timeline>
+    <p *ngIf="!showTimeline" class="section-hint">Load the timeline only when you need it.</p>
+  </section>
+
+  <section class="historical-section">
+    <div class="section-heading">
+      <div><span class="section-kicker">Detailed breakdown</span><h3>Production data</h3></div>
+      <button type="button" class="show-more-btn" (click)="toggleDetails()">{{ showDetails ? 'Show less' : 'Show more' }}</button>
+    </div>
+    <div class="table-shell" *ngIf="showDetails"><app-table [filterObj]="filterObj"></app-table></div>
+    <p *ngIf="!showDetails" class="section-hint">Detailed records are loaded on demand.</p>
+  </section>
 </ng-container>
 
-<!-- show the loader if the dashboard Data not returned-->
-
 <ng-container *ngIf="!filterObj">
-  <div class="row">
-    <div class="col-lg-12 bg-white">
-      <img class="d-block mx-auto" style="object-fit: contain;" src="./assets/images/75061-dashboard.gif" />
-    </div>
-  </div>
+  <div class="row"><div class="col-lg-12 bg-white"><img class="d-block mx-auto dashboard-loader" src="./assets/images/75061-dashboard.gif" /></div></div>
 </ng-container>

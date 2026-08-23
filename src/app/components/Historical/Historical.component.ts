@@ -11,6 +11,8 @@ export class HistoricalComponent implements OnInit {
   part: number | boolean;
 
   durations: number;
+  showTimeline = false;
+  showDetails = false;
   filterObj: {
     shiftFilterid: number;
     selectedFactory: number;
@@ -29,7 +31,13 @@ export class HistoricalComponent implements OnInit {
     to?: string | '';
   }) {
     this.filterObj = data;
+    this.showTimeline = false;
+    this.showDetails = false;
   }
+
+  toggleTimeline(): void { this.showTimeline = !this.showTimeline; }
+
+  toggleDetails(): void { this.showDetails = !this.showDetails; }
 
   parts(data: number | boolean) {
     return (this.part = data);

@@ -1,26 +1,10 @@
-<div *ngIf="!loading; else skeleton"
-  class="bg-white rounded-3 shadow-sm h-100 d-flex align-items-center justify-content-center">
-  <div class="row">
-
-    <div class="col-lg-6">
-      <apx-chart [series]="radialChartOptions2.series" [chart]="radialChartOptions2.chart"
-        [plotOptions]="radialChartOptions2.plotOptions" [labels]="radialChartOptions2.labels"></apx-chart>
-    </div>
-    <div class="col-lg-6">
-      <apx-chart [series]="radialChartOptions3.series" [chart]="radialChartOptions3.chart"
-        [plotOptions]="radialChartOptions3.plotOptions" [labels]="radialChartOptions3.labels"></apx-chart>
-    </div>
-    <div class="col-lg-6">
-      <apx-chart [series]="radialChartOptions1.series" [chart]="radialChartOptions1.chart"
-        [plotOptions]="radialChartOptions1.plotOptions" [labels]="radialChartOptions1.labels"></apx-chart>
-    </div>
-    <div class="col-lg-6">
-      <apx-chart [series]="radialChartOptions.series" [chart]="radialChartOptions.chart"
-        [plotOptions]="radialChartOptions.plotOptions" [labels]="radialChartOptions.labels"></apx-chart>
-    </div>
+<section class="metrics-section mb-4">
+  <div class="metrics-heading"><span>Performance overview</span><h3>Line efficiency</h3></div>
+  <div *ngIf="!loading; else skeleton" class="metrics-grid">
+    <article class="metric-card metric-quality"><div class="metric-title"><span></span><h4>Quality</h4></div><apx-chart [series]="radialChartOptions2.series" [chart]="radialChartOptions2.chart" [colors]="radialChartOptions2.colors" [plotOptions]="radialChartOptions2.plotOptions" [labels]="radialChartOptions2.labels"></apx-chart></article>
+    <article class="metric-card metric-availability"><div class="metric-title"><span></span><h4>Availability</h4></div><apx-chart [series]="radialChartOptions3.series" [chart]="radialChartOptions3.chart" [colors]="radialChartOptions3.colors" [plotOptions]="radialChartOptions3.plotOptions" [labels]="radialChartOptions3.labels"></apx-chart></article>
+    <article class="metric-card metric-performance"><div class="metric-title"><span></span><h4>Performance</h4></div><apx-chart [series]="radialChartOptions1.series" [chart]="radialChartOptions1.chart" [colors]="radialChartOptions1.colors" [plotOptions]="radialChartOptions1.plotOptions" [labels]="radialChartOptions1.labels"></apx-chart></article>
+    <article class="metric-card metric-oee"><div class="metric-title"><span></span><h4>OEE</h4></div><apx-chart [series]="radialChartOptions.series" [chart]="radialChartOptions.chart" [colors]="radialChartOptions.colors" [plotOptions]="radialChartOptions.plotOptions" [labels]="radialChartOptions.labels"></apx-chart></article>
   </div>
-</div>
-
-<ng-template #skeleton>
-  <p-skeleton width="100%" height="388px"></p-skeleton>
-</ng-template>
+  <ng-template #skeleton><p-skeleton width="100%" height="330px"></p-skeleton></ng-template>
+</section>

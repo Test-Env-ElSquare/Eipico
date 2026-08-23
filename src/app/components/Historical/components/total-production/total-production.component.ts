@@ -124,13 +124,16 @@ export class TotalProductionComponent implements OnChanges, OnDestroy {
   getSkus() {
     this.isLoading = true;
 
-    this._historicalDashboardService
-      .GetSkus(
-        this.filterObj.selectedLine,
-        this.filterObj.shiftFilterid,
-        this.filterObj.from,
-        this.filterObj.to,
-      )
+    const request$ = this.filterObj.shiftFilterid === 0
+      ? this._historicalDashboardService.GetSkusNew(this.filterObj.selectedLine)
+      : this._historicalDashboardService.GetSkus(
+          this.filterObj.selectedLine,
+          this.filterObj.shiftFilterid,
+          this.filterObj.from,
+          this.filterObj.to,
+        );
+
+    request$
       .pipe(takeUntil(this.filterChange$))
       .subscribe({
         next: (data) => {
@@ -228,7 +231,6 @@ export class TotalProductionComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // إلغاء كل الـ subscriptions
     this.destroy$.next();
     this.destroy$.complete();
     this.filterChange$.next();

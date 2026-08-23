@@ -22,8 +22,6 @@ export class HistoricalDashboardService {
   public duration: BehaviorSubject<number>;
   public currentDurationValue: Observable<number>;
   public hubConnection: signalR.HubConnection;
-
-  // BehaviorSubject للـ SignalR data — يبدأ بـ null
   public fillerData$ = new Subject<fillers>();
 
   private _factory: number;
@@ -302,6 +300,12 @@ export class HistoricalDashboardService {
         from: from,
         to: to,
       },
+    });
+  }
+
+  GetSkusNew(lineId: number): Observable<skus[]> {
+    return this._http.get<skus[]>(environment.url + 'api/Dashboards/GetSkusNew', {
+      params: { lineId: lineId },
     });
   }
 }

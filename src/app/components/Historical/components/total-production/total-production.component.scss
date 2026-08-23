@@ -1,30 +1,25 @@
-span {
-  font-size: x-large;
-}
+.summary-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1rem; align-items: stretch; }
+.summary-cell,.sku-card { min-width: 0; background: #fff; border: 1px solid #e8edf4; border-radius: 16px; box-shadow: 0 8px 24px rgba(31,45,61,.06); overflow: hidden; }
+.sku-card { padding: 1rem; }
+.sku-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+.sku-header h3 { margin: .15rem 0 0; color: #1f2d3d; font-size: 1rem; }
+.eyebrow { color: #6a94c6; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.sku-count { display: grid; place-items: center; min-width: 2rem; height: 2rem; color: #315f96; background: #eef5fc; border-radius: 50%; font-weight: 700; }
+.sku-body { max-height: 180px; overflow-y: auto; padding-right: .2rem; }
+.sku-item { display: flex; align-items: center; gap: .7rem; padding: .7rem; margin-bottom: .5rem; background: #f8fafc; border-radius: 10px; }
+.sku-item strong,.sku-item small { display: block; }
+.sku-item small { margin-top: .15rem; color: #8794a5; font-size: .72rem; }
+.sku-dot { flex: 0 0 auto; width: .55rem; height: .55rem; background: #39b980; border-radius: 50%; box-shadow: 0 0 0 4px #e5f7ef; }
+@media (max-width:1199px) { .summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:767px) { .summary-grid { grid-template-columns: 1fr; } }
 
-.bg-danger {
-  background-color: #e61d2b !important;
-}
-.btn-primary {
-  background-color: #6a94c6;
-  border: #6a94c6;
-}
-.pointer {
-  cursor: pointer;
-}
-
-#skus {
-  height: 200px;
-  overflow-y: scroll;
-}
-
-.modall {
-  margin-top: auto !important ;
-  margin-bottom: auto !important ;
-}
-.text-red-600 {
-  color: #e61d2b !important;
-  background-color: white;
-  padding: 20px 10px;
-  font-size: 25px;
-}
+.summary-cell { padding: .35rem; transition: transform .2s ease, box-shadow .2s ease; }
+.summary-cell:hover,.sku-card:hover { transform: translateY(-2px); box-shadow: 0 13px 30px rgba(31,45,61,.1); }
+.summary-cell ::ng-deep h3 { font-size: 1.18rem !important; font-weight: 750; color: #172033; }
+.summary-cell ::ng-deep h5 { font-size: .9rem !important; color: #64748b; font-weight: 600; }
+.summary-cell ::ng-deep strong { font-size: 1.35rem; color: #172033; }
+.sku-card { transition: transform .2s ease,box-shadow .2s ease; }
+.sku-header h3 { font-size: 1.2rem; font-weight: 750; }
+.eyebrow { font-size: .75rem; }
+.sku-item strong { font-size: 1rem; }
+.sku-item small { font-size: .8rem; }
