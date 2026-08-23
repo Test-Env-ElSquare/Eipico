@@ -79,15 +79,15 @@
         <div class="custom-date-row" *ngIf="customBtnClicked">
           <div>
             <label class="form-label">From</label>
-            <input type="date" class="form-control" max="{{ lastDay }}" formControlName="from" />
+            <input type="date" class="form-control" [max]="today" formControlName="from" (change)="onFromDateChange($any($event.target).value)" />
           </div>
           <div>
             <label class="form-label">To</label>
             <input
               type="date"
               class="form-control"
-              [min]="lastDay"
-              max="{{ nextDay | date : 'yyyy-MM-dd' }}"
+              [min]="form.get('from')?.value"
+              [max]="today"
               formControlName="to"
             />
           </div>
@@ -128,12 +128,22 @@
           <span>{{ customBtnClicked ? 'Avg values by day with total energy' : 'All metrics in the selected group' }}</span>
         </div>
         <p-selectButton
+          *ngIf="!customBtnClicked"
           [options]="metricGroups"
           [(ngModel)]="selectedMetricGroup"
           optionLabel="label"
           optionValue="value"
           class="custom-select-btn"
           (onChange)="onMetricGroupChange()"
+        ></p-selectButton>
+        <p-selectButton
+          *ngIf="customBtnClicked"
+          [options]="selectOptions"
+          [(ngModel)]="selectedName"
+          optionLabel="name"
+          optionValue="name"
+          class="custom-select-btn"
+          (onChange)="buildCustomChart()"
         ></p-selectButton>
       </div>
       <apx-chart
@@ -164,12 +174,22 @@
           </span>
         </div>
         <p-selectButton
+          *ngIf="!customBtnClicked"
           [options]="metricGroups"
           [(ngModel)]="selectedMetricGroup"
           optionLabel="label"
           optionValue="value"
           class="custom-select-btn"
           (onChange)="onMetricGroupChange()"
+        ></p-selectButton>
+        <p-selectButton
+          *ngIf="customBtnClicked"
+          [options]="selectOptions"
+          [(ngModel)]="selectedName"
+          optionLabel="name"
+          optionValue="name"
+          class="custom-select-btn"
+          (onChange)="buildCustomChart()"
         ></p-selectButton>
       </div>
       <p-table
@@ -225,26 +245,20 @@
         ></p-selectButton>
       </div>
 
+      <div class="custom-table-scroll">
       <p-table
         [value]="tranformerReadCustom"
         styleClass="energy-table custom-p-table p-datatable-sm"
-        [scrollable]="true"
-        scrollHeight="520px"
       >
         <ng-template pTemplate="header">
           <tr>
-            <th rowspan="2" class="text-center header-sticky">Plant</th>
-            <th rowspan="2" class="text-center header-sticky">Transformer</th>
-            <th colspan="3" class="text-center header-group">Min</th>
-            <th colspan="3" class="text-center header-group">Max</th>
-            <th colspan="3" class="text-center header-group">Avg</th>
-            <th rowspan="2" class="text-center header-sticky">Total Energy</th>
-            <th rowspan="2" class="text-center header-sticky">Day</th>
-          </tr>
-          <tr>
-            <th *ngFor="let e of selectedItem">{{ e | uppercase }}</th>
-            <th *ngFor="let e of selectedItem">{{ e | uppercase }}</th>
-            <th *ngFor="let e of selectedItem">{{ e | uppercase }}</th>
+            <th class="identity-column">Plant</th>
+            <th class="identity-column">Transformer</th>
+            <th *ngFor="let e of selectedItem" class="min-column">Min {{ e | uppercase }}</th>
+            <th *ngFor="let e of selectedItem" class="max-column">Max {{ e | uppercase }}</th>
+            <th *ngFor="let e of selectedItem" class="avg-column">Avg {{ e | uppercase }}</th>
+            <th class="energy-column">Total Energy</th>
+            <th class="date-column">Day</th>
           </tr>
         </ng-template>
 
@@ -252,14 +266,15 @@
           <tr>
             <td>{{ selectedFactoryName || '-' }}</td>
             <td>{{ selectedtransformer || '-' }}</td>
-            <td *ngFor="let e of selectedItem">{{ energy[selectedName]?.min?.[e] }}</td>
-            <td *ngFor="let e of selectedItem">{{ energy[selectedName]?.max?.[e] }}</td>
-            <td *ngFor="let e of selectedItem">{{ energy[selectedName]?.avg?.[e] }}</td>
-            <td>{{ energy.totalEnergyConsumption }}</td>
+            <td *ngFor="let e of selectedItem" class="min-value">{{ energy[selectedName]?.min?.[e] | number : '1.0-3' }}</td>
+            <td *ngFor="let e of selectedItem" class="max-value">{{ energy[selectedName]?.max?.[e] | number : '1.0-3' }}</td>
+            <td *ngFor="let e of selectedItem" class="avg-value">{{ energy[selectedName]?.avg?.[e] | number : '1.0-3' }}</td>
+            <td class="energy-value">{{ energy.totalEnergyConsumption | number : '1.0-3' }}</td>
             <td>{{ energy.startDay | date : 'yyyy-MM-dd' }}</td>
           </tr>
         </ng-template>
       </p-table>
+      </div>
     </div>
   </div>
 

@@ -188,8 +188,8 @@ export class EnergyReportComponent implements OnInit {
   initFrom() {
     this.form = this._fb.group({
       factoryId: [null, Validators.required],
-      from: new Date(),
-      to: new Date(),
+      from: [new Date().toISOString().split('T')[0], Validators.required],
+      to: [new Date().toISOString().split('T')[0], Validators.required],
     });
   }
   getAllFactories() {
@@ -422,54 +422,97 @@ export class EnergyReportComponent implements OnInit {
   buildCustomChart(): void {
     const rows = this.tranformerReadCustom || [];
     const selectedItems = this.selectedItem;
+    const palette = ['#2563EB', '#10B981', '#F59E0B'];
+    const totalColor = '#8B5CF6';
 
     this.energyChartOptions = {
       series: [
-        ...selectedItems.map((key: string) => ({
+        ...selectedItems.map((key: string, index: number) => ({
           name: `Avg ${key.toUpperCase()}`,
-          data: rows.map((item: any) => item[this.selectedName]?.avg?.[key] || 0),
+          type: 'line',
+          color: palette[index],
+          data: rows.map((item: any) =>
+            Number(item[this.selectedName]?.avg?.[key] ?? 0)
+          ),
         })),
         {
           name: 'Total Energy',
           type: 'column',
-          data: rows.map((item: any) => item.totalEnergyConsumption || 0),
+          color: totalColor,
+          data: rows.map((item: any) => Number(item.totalEnergyConsumption ?? 0)),
         },
       ],
       chart: {
         type: 'line',
-        height: 340,
+        height: 400,
         toolbar: { show: true },
         zoom: { enabled: true },
+        background: '#FFFFFF',
+        foreColor: '#475569',
+      },
+      theme: { mode: 'light', monochrome: { enabled: false } },
+      plotOptions: {
+        bar: { columnWidth: '38%', borderRadius: 5 },
       },
       dataLabels: { enabled: false },
       stroke: {
         curve: 'smooth',
-        width: 3,
+        width: [...selectedItems.map(() => 4), 0],
+        colors: [...palette.slice(0, selectedItems.length), totalColor],
+        lineCap: 'round',
+      },
+      markers: {
+        size: [...selectedItems.map(() => 5), 0],
+        strokeWidth: 2,
+        strokeColors: '#FFFFFF',
+        hover: { sizeOffset: 2 },
       },
       fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.28,
-          opacityTo: 0.04,
-          stops: [0, 90, 100],
-        },
+        type: 'solid',
+        opacity: [...selectedItems.map(() => 1), 0.3],
+        colors: [...palette.slice(0, selectedItems.length), totalColor],
       },
-      colors: ['#0d6efd', '#20c997', '#f59f00', '#198754'],
+      colors: [...palette.slice(0, selectedItems.length), totalColor],
+      legend: {
+        show: true,
+        position: 'top',
+        horizontalAlign: 'left',
+        fontSize: '13px',
+        labels: { colors: '#334155' },
+        markers: { width: 10, height: 10, radius: 10 },
+      },
+      grid: {
+        borderColor: '#E2E8F0',
+        strokeDashArray: 4,
+      },
       xaxis: {
         categories: rows.map((item: any) => this.formatDateForExcel(item.startDay)),
+        labels: { rotate: -35, style: { colors: '#64748B' } },
+        axisBorder: { color: '#CBD5E1' },
       },
-      yaxis: {
-        title: { text: this.selectedName },
-      },
+      yaxis: [
+        {
+          title: { text: this.selectedName, style: { color: '#2563EB' } },
+          labels: { style: { colors: '#64748B' } },
+        },
+        {
+          seriesName: 'Total Energy',
+          opposite: true,
+          title: { text: 'Total Energy (kWh)', style: { color: totalColor } },
+          labels: { style: { colors: totalColor } },
+        },
+      ],
       tooltip: {
+        shared: true,
+        intersect: false,
+        theme: 'light',
         y: {
-          formatter: (value: number) => `${value}`,
+          formatter: (value: number) =>
+            Number(value).toLocaleString(undefined, { maximumFractionDigits: 3 }),
         },
       },
     };
   }
-
   getMetricValue(item: any, key: string): number {
     const value = item?.[key];
     return value === null || value === undefined ? 0 : Number(value);

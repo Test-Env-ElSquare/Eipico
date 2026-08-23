@@ -263,3 +263,37 @@
     }
   }
 }
+
+::ng-deep .energy-report-page {
+  .custom-p-table .p-datatable-table { min-width: 1120px; table-layout: auto; }
+  .custom-p-table .p-datatable-thead > tr > th,
+  .custom-p-table .p-datatable-tbody > tr > td { min-width: 92px; vertical-align: middle; }
+  .custom-p-table .identity-column { min-width: 145px !important; background: #f4f7fb !important; }
+  .custom-p-table .min-column { color: #2563eb !important; background: #edf4ff !important; }
+  .custom-p-table .max-column { color: #dc2626 !important; background: #fff0f0 !important; }
+  .custom-p-table .avg-column { color: #15803d !important; background: #edf9f1 !important; }
+  .custom-p-table .energy-column { min-width: 125px !important; color: #7c3aed !important; background: #f4efff !important; }
+  .custom-p-table .date-column { min-width: 110px !important; background: #f4f7fb !important; }
+  .custom-p-table .min-value { color: #1d4ed8 !important; }
+  .custom-p-table .max-value { color: #b91c1c !important; }
+  .custom-p-table .avg-value { color: #15803d !important; font-weight: 650; }
+  .custom-p-table .energy-value { color: #7c3aed !important; font-weight: 750; }
+}
+.custom-table-scroll {
+  width: 100%;
+  max-height: 560px;
+  overflow: auto;
+  border: 1px solid #e5eaf0;
+  border-radius: 8px;
+}
+::ng-deep .energy-report-page .custom-table-scroll {
+  .p-datatable.energy-table { border: 0; border-radius: 0; overflow: visible; }
+  .custom-p-table .p-datatable-table { width: max-content; min-width: 100%; table-layout: fixed; }
+  .custom-p-table .p-datatable-thead > tr > th { position: sticky; top: 0; z-index: 3; }
+  .custom-p-table .p-datatable-thead > tr > th,
+  .custom-p-table .p-datatable-tbody > tr > td { width: 112px; min-width: 112px; max-width: 112px; box-sizing: border-box; }
+  .custom-p-table .p-datatable-thead > tr > th:nth-child(1),
+  .custom-p-table .p-datatable-tbody > tr > td:nth-child(1) { width: 145px; min-width: 145px; max-width: 145px; }
+  .custom-p-table .p-datatable-thead > tr > th:nth-child(2),
+  .custom-p-table .p-datatable-tbody > tr > td:nth-child(2) { width: 170px; min-width: 170px; max-width: 170px; }
+}

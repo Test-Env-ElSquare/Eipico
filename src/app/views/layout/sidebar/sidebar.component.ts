@@ -276,6 +276,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             link: '/reports/beconReports',
             showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
           },
+          {
+            label: 'Energy reports',
+            link: '/reports/energyReports',
+            showSubItems: fullAccess || this.perms.has(Permission.EnergyReport),
+          },
           // {
           //   label: 'Daily reports',
           //   link: '/reports/dailyReports',
@@ -286,18 +291,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           //   link: '/reports/dailyReports',
           //   showSubItems: fullAccess || this.perms.has(Permission.BeconReport),
           // },
-        ],
-      },
-      {
-        label: 'Utilities',
-        icon: 'cast',
-        showSubItems: fullAccess || this.perms.has(Permission.EnergyReport),
-        subItems: [
-          {
-            label: 'Energy',
-            link: '/reports/energyReports',
-            showSubItems: fullAccess || this.perms.has(Permission.EnergyReport),
-          },
         ],
       },
       {
