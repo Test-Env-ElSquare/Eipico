@@ -423,25 +423,20 @@ export class EnergyReportComponent implements OnInit {
     const rows = this.tranformerReadCustom || [];
     const selectedItems = this.selectedItem;
     const palette = ['#2563EB', '#10B981', '#F59E0B'];
-    const totalColor = '#8B5CF6';
+
+    if (!rows.length || !selectedItems.length) {
+      this.energyChartOptions = null;
+      return;
+    }
 
     this.energyChartOptions = {
-      series: [
-        ...selectedItems.map((key: string, index: number) => ({
-          name: `Avg ${key.toUpperCase()}`,
-          type: 'line',
-          color: palette[index],
-          data: rows.map((item: any) =>
-            Number(item[this.selectedName]?.avg?.[key] ?? 0)
-          ),
-        })),
-        {
-          name: 'Total Energy',
-          type: 'column',
-          color: totalColor,
-          data: rows.map((item: any) => Number(item.totalEnergyConsumption ?? 0)),
-        },
-      ],
+      series: selectedItems.map((key: string, index: number) => ({
+        name: `Avg ${key.toUpperCase()}`,
+        color: palette[index],
+        data: rows.map((item: any) =>
+          Number(item?.[this.selectedName]?.avg?.[key] ?? 0)
+        ),
+      })),
       chart: {
         type: 'line',
         height: 400,
@@ -450,66 +445,45 @@ export class EnergyReportComponent implements OnInit {
         background: '#FFFFFF',
         foreColor: '#475569',
       },
-      theme: { mode: 'light', monochrome: { enabled: false } },
-      plotOptions: {
-        bar: { columnWidth: '38%', borderRadius: 5 },
-      },
       dataLabels: { enabled: false },
-      stroke: {
-        curve: 'smooth',
-        width: [...selectedItems.map(() => 4), 0],
-        colors: [...palette.slice(0, selectedItems.length), totalColor],
-        lineCap: 'round',
-      },
+      stroke: { curve: 'smooth', width: 4, lineCap: 'round' },
       markers: {
-        size: [...selectedItems.map(() => 5), 0],
+        size: 5,
         strokeWidth: 2,
         strokeColors: '#FFFFFF',
-        hover: { sizeOffset: 2 },
+        hover: { size: 7 },
       },
-      fill: {
-        type: 'solid',
-        opacity: [...selectedItems.map(() => 1), 0.3],
-        colors: [...palette.slice(0, selectedItems.length), totalColor],
-      },
-      colors: [...palette.slice(0, selectedItems.length), totalColor],
+      fill: { type: 'solid', opacity: 1 },
+      colors: palette,
       legend: {
         show: true,
         position: 'top',
         horizontalAlign: 'left',
         fontSize: '13px',
-        labels: { colors: '#334155' },
-        markers: { width: 10, height: 10, radius: 10 },
       },
-      grid: {
-        borderColor: '#E2E8F0',
-        strokeDashArray: 4,
-      },
+      grid: { borderColor: '#E2E8F0', strokeDashArray: 4 },
       xaxis: {
-        categories: rows.map((item: any) => this.formatDateForExcel(item.startDay)),
+        categories: rows.map((item: any) =>
+          this.formatDateForExcel(item.startDay)
+        ),
         labels: { rotate: -35, style: { colors: '#64748B' } },
-        axisBorder: { color: '#CBD5E1' },
       },
-      yaxis: [
-        {
-          title: { text: this.selectedName, style: { color: '#2563EB' } },
-          labels: { style: { colors: '#64748B' } },
-        },
-        {
-          seriesName: 'Total Energy',
-          opposite: true,
-          title: { text: 'Total Energy (kWh)', style: { color: totalColor } },
-          labels: { style: { colors: totalColor } },
-        },
-      ],
+      yaxis: {
+        title: { text: this.selectedName },
+        labels: { style: { colors: '#64748B' } },
+      },
       tooltip: {
         shared: true,
         intersect: false,
-        theme: 'light',
         y: {
           formatter: (value: number) =>
             Number(value).toLocaleString(undefined, { maximumFractionDigits: 3 }),
         },
+      },
+      noData: {
+        text: 'No chart data available',
+        align: 'center',
+        verticalAlign: 'middle',
       },
     };
   }
