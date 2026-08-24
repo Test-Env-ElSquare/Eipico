@@ -543,7 +543,7 @@
 .production-cell {
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(82px, 112px) minmax(0, 1fr);
+  grid-template-columns: minmax(76px, 96px) minmax(0, 1fr) minmax(76px, 88px);
   align-items: center;
   gap: 5px;
   padding: 3px;
@@ -1035,4 +1035,80 @@
 }
 .scale-pill.stale .scale-icon {
   background-color:rgba(214, 69, 107, 0.2),;
+}
+
+.current-batch {
+  min-width: 0;
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  padding: 2px 5px;
+  border: 1px solid #b8d8f2;
+  border-radius: 5px;
+  background: #edf6ff;
+  color: #174f7a !important;
+  line-height: 1;
+
+  > i {
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #2186c4;
+    color: #fff;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 900;
+  }
+
+  > span {
+    min-width: 0;
+    display: block;
+  }
+
+  small,
+  b {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: #5881a0;
+    font-size: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  b {
+    color: #174f7a;
+    font-size: 8px;
+    line-height: 1.15;
+  }
+}
+.batch-box {
+  min-width: 0;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 3px 5px;
+  border: 1px dashed #c8d4df;
+  border-radius: 5px;
+  background: #f7f9fb;
+  overflow: hidden;
+
+  &.has-batch { border-style: solid; border-color: #8bc7ec; background: linear-gradient(135deg,#edf7ff,#dff1fd); box-shadow: inset 3px 0 0 #2186c4; }
+  .batch-box-label { display: flex; align-items: center; gap: 3px; color: #648096; font-size: 5px; font-weight: 900; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
+  .batch-box-label i { width: 10px; height: 10px; display: inline-flex; align-items: center; justify-content: center; border-radius: 3px; background: #2186c4; color: #fff; font-size: 6px; font-style: normal; }
+  strong, small, em { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  strong { color: #174f7a; font-size: 8px; font-weight: 900; line-height: 1.1; }
+  small { color: #3f6f91; font-size: 6px; font-weight: 700; line-height: 1.1; }
+  em { color: #8996a3; font-size: 6px; font-style: normal; font-weight: 700; }
 }

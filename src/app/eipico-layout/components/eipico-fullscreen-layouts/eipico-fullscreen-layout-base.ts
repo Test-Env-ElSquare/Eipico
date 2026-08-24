@@ -6,7 +6,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { LayoutService } from '../../layout.service';
+import { ActivatedLineSku, LayoutService } from '../../layout.service';
+import { EMPTY, Subscription, timer } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { LayoutLine, LayoutSection } from './eipico-layout-data';
 
 interface LineStats {
@@ -47,6 +49,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   receivedData: any[] = [];
   lineStats: Record<number, LineStats> = {};
   lineStatusEffects: Record<number, string> = {};
+  currentBatches: Record<number, ActivatedLineSku> = {};
   machineStatusEffects: Record<string, string> = {};
   scaleStatusText = 'Connecting scales...';
   dispensingRooms: DispensingRoom[] = [];
@@ -55,6 +58,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private lineStatusEffectTimers: Record<number, any> = {};
   private machineStatusEffectTimers: Record<string, any> = {};
   private staleLinesRefreshTimer: ReturnType<typeof setInterval> | null = null;
+  private activatedSkusSubscription: Subscription | null = null;
   private readonly lineStaleThresholdMs = 15 * 60 * 1000;
   private readonly staleThresholdMs = 3 * 60 * 60 * 1000;
   protected constructor(
@@ -69,6 +73,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     this.staleLinesRefreshTimer = setInterval(() => {
       this.cdr.detectChanges();
     }, 60 * 1000);
+    this.startActivatedSkusPolling();
     this.onStartConnection();
   }
 
@@ -82,10 +87,44 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     if (this.staleLinesRefreshTimer) {
       clearInterval(this.staleLinesRefreshTimer);
     }
+    this.activatedSkusSubscription?.unsubscribe();
+    this.activatedSkusSubscription = null;
     this.layoutService.stopConnection();
     this.layoutService.stopScaleStatusConnection();
   }
 
+  private startActivatedSkusPolling(): void {
+    this.activatedSkusSubscription = timer(0, 60 * 1000)
+      .pipe(
+        switchMap(() =>
+          this.layoutService.getAllLinesActivatedSkus(this.factoryId).pipe(
+            catchError((error) => {
+              console.error(
+                `[Current Batch][Factory ${this.factoryId}] Failed to load activated SKUs`,
+                error,
+              );
+              return EMPTY;
+            }),
+          ),
+        ),
+      )
+      .subscribe((skus) => {
+        this.ngZone.run(() => {
+          this.currentBatches = skus.reduce(
+            (result, sku) => {
+              result[sku.lineId] = sku;
+              return result;
+            },
+            {} as Record<number, ActivatedLineSku>,
+          );
+          this.cdr.detectChanges();
+        });
+      });
+  }
+
+  getCurrentBatch(lineId: number): ActivatedLineSku | null {
+    return this.currentBatches[lineId] ?? null;
+  }
   onStartConnection(): void {
     this.layoutService
       .startConnection()

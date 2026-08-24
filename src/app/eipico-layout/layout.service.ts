@@ -1,14 +1,28 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 import * as signalR from '@microsoft/signalr';
 
+
+export interface ActivatedLineSku {
+  lineId: number;
+  skuName: string;
+  jobOrderId: string;
+  batchId: string;
+  activationDate: string;
+  finishingDate: string | null;
+  count: number | null;
+  machineId: number;
+  machineName: string;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class LayoutService {
   public hubConnection!: signalR.HubConnection;
   public scaleHubConnection!: signalR.HubConnection;
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   public startConnection(): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -88,4 +102,10 @@ export class LayoutService {
         );
     }
   }
-}
+
+  public getAllLinesActivatedSkus(factoryId: number): Observable<ActivatedLineSku[]> {
+    return this.http.get<ActivatedLineSku[]>(
+      environment.url + 'api/Dashboards/GetAllLinesActivatedSkus',
+      { params: { factoryId: factoryId } },
+    );
+  }}

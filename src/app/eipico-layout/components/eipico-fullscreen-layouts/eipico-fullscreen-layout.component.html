@@ -161,7 +161,14 @@
               </small>
             </div>
           </div>
-        </div>
+          <aside class="batch-box" [class.has-batch]="getCurrentBatch(line.lineId)">
+            <span class="batch-box-label"><i aria-hidden="true">B</i>Current Batch</span>
+            <ng-container *ngIf="getCurrentBatch(line.lineId) as batch; else noActiveBatch">
+              <strong [title]="batch.batchId">{{ batch.batchId }}</strong>
+              <small [title]="batch.skuName">{{ batch.skuName }}</small>
+            </ng-container>
+            <ng-template #noActiveBatch><em>No active batch</em></ng-template>
+          </aside>        </div>
 
         <ng-template #noMachines>
           <div class="inline-empty">Waiting for machine signal</div>
