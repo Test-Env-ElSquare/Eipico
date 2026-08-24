@@ -484,7 +484,8 @@
   &.status-to-off::before {
     position: absolute;
     top: 4px;
-    right: 4px;
+    right: auto;
+  left: 4px;
     z-index: 2;
     min-width: 34px;
     padding: 2px 6px;
@@ -1146,7 +1147,8 @@
 .history-action {
   position: absolute;
   top: 4px;
-  right: 4px;
+  right: auto;
+  left: 4px;
   z-index: 5;
   width: 18px;
   height: 18px;
@@ -1184,3 +1186,15 @@
 .quick-history-footer button { min-width: 105px; padding: 8px 13px; border-radius: 7px; font-size: 11px; font-weight: 800; }.quick-history-footer .secondary { border: 1px solid #d7e0e8; background: #fff; color: #536477; }.quick-history-footer .primary { border: 1px solid #2186c4; background: #2186c4; color: #fff; }
 @keyframes quickHistorySpin { to { transform: rotate(360deg); } }
 @media(max-width:700px) { .history-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+.quick-history-modal { width: min(920px,calc(100vw - 28px)); max-height: calc(100vh - 34px); overflow: auto; }
+.quick-history-heading small { display: block; margin-top: 4px; color: #728294; font-size: 10px; }
+.history-eyebrow { color: #2186c4 !important; }
+.snapshot-strip { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(180px,.6fr); gap: 10px; margin-bottom: 17px; }
+.quick-batch,.snapshot-updated { min-width: 0; margin: 0; padding: 11px 13px; border: 1px solid #b8daf0; border-radius: 10px; background: linear-gradient(135deg,#edf7ff,#f8fcff); }
+.quick-batch { display: flex; align-items: center; gap: 10px; }.quick-batch .snapshot-icon { flex: 0 0 auto; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: #2186c4; color: #fff; font-size: 13px; font-weight: 900; }.quick-batch div,.snapshot-updated { min-width: 0; }.quick-batch small,.snapshot-updated small { display: block; color: #658097; font-size: 8px; font-weight: 800; text-transform: uppercase; }.quick-batch strong,.snapshot-updated strong { display: block; margin-top: 2px; color: #173f5d; font-size: 13px; }.quick-batch em,.snapshot-updated em { display: block; overflow: hidden; margin-top: 2px; color: #52738b; font-size: 9px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }.quick-batch.empty { border-style: dashed; background: #f8fafc; }
+.history-section-title { margin: 15px 0 8px; color: #324357; font-size: 10px; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
+.history-kpis { grid-template-columns: repeat(4,minmax(0,1fr)); }.history-kpis article { position: relative; overflow: hidden; padding: 14px 12px; text-align: left; }.history-kpis article strong { font-size: 22px; }.history-kpis article i { position: absolute; right: -15px; bottom: -22px; width: 65px; height: 65px; border: 12px solid currentColor; border-radius: 50%; opacity: .08; }.history-kpis .oee { color:#2563eb; }.history-kpis .quality { color:#16a34a; }.history-kpis .availability { color:#8b5cf6; }.history-kpis .performance { color:#f59e0b; }.history-kpis article span,.history-kpis article strong { color: inherit; }
+.production-history-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; }.production-history-grid article,.energy-history-grid article { padding: 11px 10px; border: 1px solid #e3eaf0; border-radius: 9px; background: #fafcfe; }.production-history-grid span,.energy-history-grid span { display: block; color: #718194; font-size: 8px; font-weight: 700; }.production-history-grid strong,.energy-history-grid strong { display: block; margin-top: 5px; color: #213246; font-size: 15px; }.production-history-grid .reject { background: #fff5f5; }.production-history-grid .reject strong { color: #d6455d; }
+.energy-history-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }.energy-history-grid article:first-child { border-color: #b8daf0; background: #edf7ff; }.energy-history-grid article:first-child strong { color: #176a9d; }.energy-history-grid strong small { display: inline; font-size: 8px; }.energy-state { padding: 14px; border: 1px dashed #ced9e2; border-radius: 9px; color: #7c8a98; font-size: 10px; text-align: center; }
+.quick-history-footer { align-items: center; justify-content: space-between; }.quick-history-footer > span { color: #7a8998; font-size: 9px; }.quick-history-footer > div { display: flex; gap: 8px; }.quick-history-footer .primary { min-width: 145px; }.quick-history-footer .primary b { margin-left: 5px; }
+@media(max-width:800px) { .production-history-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }.energy-history-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }

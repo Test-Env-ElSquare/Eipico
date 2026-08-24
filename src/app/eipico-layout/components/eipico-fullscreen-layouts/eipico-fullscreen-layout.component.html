@@ -221,8 +221,12 @@
 <div class="details-overlay history-overlay" *ngIf="showHistoryDialog" (click)="closeQuickHistory()">
   <section class="quick-history-modal" (click)="$event.stopPropagation()">
     <header class="quick-history-header">
-      <div><span>Current shift</span><h2>{{ quickHistoryTitle }}</h2></div>
-      <button type="button" (click)="closeQuickHistory()">×</button>
+      <div class="quick-history-heading">
+        <span class="history-eyebrow">Line snapshot · Current shift</span>
+        <h2>{{ quickHistoryTitle }}</h2>
+        <small>Live operational summary from the Historical dashboard</small>
+      </div>
+      <button type="button" aria-label="Close" (click)="closeQuickHistory()">×</button>
     </header>
 
     <div class="quick-history-body">
@@ -231,26 +235,49 @@
       </div>
 
       <ng-container *ngIf="!historyLoading && quickHistory">
-        <div class="quick-batch" *ngIf="getCurrentBatch(quickHistoryLineId!) as batch">
-          <span>Current Batch</span><strong>{{ batch.batchId }}</strong><small>{{ batch.skuName }}</small>
-        </div>
+        <section class="snapshot-strip">
+          <div class="quick-batch" *ngIf="getCurrentBatch(quickHistoryLineId!) as batch; else noQuickBatch">
+            <span class="snapshot-icon">B</span>
+            <div><small>Current Batch</small><strong>{{ batch.batchId }}</strong><em>{{ batch.skuName }}</em></div>
+          </div>
+          <ng-template #noQuickBatch><div class="quick-batch empty"><span class="snapshot-icon">B</span><div><small>Current Batch</small><strong>No active batch</strong></div></div></ng-template>
+          <div class="snapshot-updated"><small>Selected line</small><strong>{{ getLineName(quickHistoryLineId!) }}</strong><em>Factory {{ factoryId }}</em></div>
+        </section>
+
+        <h3 class="history-section-title">Efficiency</h3>
         <div class="history-kpis">
-          <article class="count"><span>Production Count</span><strong>{{ quickHistory.count | number }}</strong></article>
-          <article class="oee"><span>OEE</span><strong>{{ getQuickHistoryPercent('oee') }}</strong></article>
-          <article class="quality"><span>Quality</span><strong>{{ getQuickHistoryPercent('quality') }}</strong></article>
-          <article class="availability"><span>Availability</span><strong>{{ getQuickHistoryPercent('availability') }}</strong></article>
-          <article class="performance"><span>Performance</span><strong>{{ getQuickHistoryPercent('performance') }}</strong></article>
+          <article class="oee"><span>OEE</span><strong>{{ getQuickHistoryPercent('oee') }}</strong><i></i></article>
+          <article class="quality"><span>Quality</span><strong>{{ getQuickHistoryPercent('quality') }}</strong><i></i></article>
+          <article class="availability"><span>Availability</span><strong>{{ getQuickHistoryPercent('availability') }}</strong><i></i></article>
+          <article class="performance"><span>Performance</span><strong>{{ getQuickHistoryPercent('performance') }}</strong><i></i></article>
         </div>
+
+        <h3 class="history-section-title">Production & speed</h3>
+        <div class="production-history-grid">
+          <article><span>Good Count</span><strong>{{ quickHistory.count | number }}</strong></article>
+          <article><span>Total Count</span><strong>{{ quickHistory.total | number }}</strong></article>
+          <article class="reject"><span>Quality Reject</span><strong>{{ quickHistory.qreject | number }}</strong></article>
+          <article><span>Average Speed</span><strong>{{ quickHistory.avgSpeed | number:'1.0-1' }}</strong></article>
+          <article><span>Weighted Speed</span><strong>{{ quickHistory.weightedavgspeed | number:'1.0-1' }}</strong></article>
+          <article><span>Equivalent Speed</span><strong>{{ quickHistory.equevilantAVGSpeed | number:'1.0-1' }}</strong></article>
+        </div>
+
+        <h3 class="history-section-title">Energy</h3>
+        <div class="energy-history-grid" *ngIf="quickHistoryEnergy; else energyState">
+          <article><span>Total consumption</span><strong>{{ quickHistoryEnergy.totalEnergyConsumption | number:'1.0-1' }} <small>kWh</small></strong></article>
+          <article><span>Power factor</span><strong>{{ quickHistoryEnergy.avgPowerFactor | number:'1.0-2' }}</strong></article>
+          <article><span>Avg PTHDv</span><strong>{{ quickHistoryEnergy.avgPTHDv | number:'1.0-2' }}</strong></article>
+          <article><span>Avg THDi</span><strong>{{ quickHistoryEnergy.avgTHDi | number:'1.0-2' }}</strong></article>
+        </div>
+        <ng-template #energyState><div class="energy-state">{{ historyEnergyLoading ? 'Loading energy independently...' : 'No energy data available' }}</div></ng-template>
       </ng-container>
 
-      <div class="quick-history-error" *ngIf="!historyLoading && historyError">
-        No historical data is available for this line.
-      </div>
+      <div class="quick-history-error" *ngIf="!historyLoading && historyError">No historical data is available for this line.</div>
     </div>
 
     <footer class="quick-history-footer">
-      <button type="button" class="secondary" (click)="closeQuickHistory()">Close</button>
-      <button type="button" class="primary" (click)="openFullHistory()">Show more <span>→</span></button>
+      <span>Need timelines and detailed tables?</span>
+      <div><button type="button" class="secondary" (click)="closeQuickHistory()">Close</button><button type="button" class="primary" (click)="openFullHistory()">Open full history <b>→</b></button></div>
     </footer>
   </section>
 </div>

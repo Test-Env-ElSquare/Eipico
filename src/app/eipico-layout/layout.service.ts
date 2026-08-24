@@ -114,4 +114,10 @@ export class LayoutService {
       environment.url + 'api/Dashboards/GetFillerRefactor',
       { params: { factoryId: factoryId, lineId: lineId, duration: 0 } },
     );
+  }
+  public getLineEnergySummary(lineId: number): Observable<any> {
+    return this.http.get<any>(
+      environment.url + 'api/Dashboards/EnergyRefactor',
+      { params: { lineId: lineId, duration: 0 } },
+    );
   }}

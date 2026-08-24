@@ -47,6 +47,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   historyLoading = false;
   historyError = false;
   quickHistory: any = null;
+  quickHistoryEnergy: any = null;
+  historyEnergyLoading = false;
   quickHistoryLineId: number | null = null;
   quickHistoryTitle = '';
   dialogTitle = '';
@@ -66,6 +68,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private staleLinesRefreshTimer: ReturnType<typeof setInterval> | null = null;
   private activatedSkusSubscription: Subscription | null = null;
   private historicalSummarySubscription: Subscription | null = null;
+  private historicalEnergySubscription: Subscription | null = null;
   private readonly lineStaleThresholdMs = 15 * 60 * 1000;
   private readonly staleThresholdMs = 3 * 60 * 60 * 1000;
   protected constructor(
@@ -98,6 +101,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     this.activatedSkusSubscription = null;
     this.historicalSummarySubscription?.unsubscribe();
     this.historicalSummarySubscription = null;
+    this.historicalEnergySubscription?.unsubscribe();
+    this.historicalEnergySubscription = null;
     this.layoutService.stopConnection();
     this.layoutService.stopScaleStatusConnection();
   }
@@ -138,9 +143,12 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     this.historicalSummarySubscription?.unsubscribe();
+    this.historicalEnergySubscription?.unsubscribe();
     this.quickHistoryLineId = lineId;
     this.quickHistoryTitle = `${this.getLineName(lineId)} - Quick History`;
     this.quickHistory = null;
+    this.quickHistoryEnergy = null;
+    this.historyEnergyLoading = true;
     this.historyError = false;
     this.historyLoading = true;
     this.showDialog = false;
@@ -163,12 +171,30 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         },
       });
+
+    this.historicalEnergySubscription = this.layoutService
+      .getLineEnergySummary(lineId)
+      .subscribe({
+        next: (data) => {
+          this.quickHistoryEnergy = data;
+          this.historyEnergyLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error(`[Quick History Energy][Line ${lineId}] Failed to load`, error);
+          this.quickHistoryEnergy = null;
+          this.historyEnergyLoading = false;
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   closeQuickHistory(): void {
     this.showHistoryDialog = false;
     this.historicalSummarySubscription?.unsubscribe();
     this.historicalSummarySubscription = null;
+    this.historicalEnergySubscription?.unsubscribe();
+    this.historicalEnergySubscription = null;
   }
 
   openFullHistory(): void {
