@@ -331,27 +331,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       //   ],
       // },
       {
-        label: 'Layout',
-        isTitle: true,
-      },
-      {
-        label: 'Layout',
-        icon: 'bar-chart',
-        showSubItems: fullAccess || this.perms.has(Permission.Everything),
-        subItems: [
-          {
-            label: 'Eipico 1 Old Layout',
-            link: '/eipico-layout/layout-one-copy',
-            showSubItems: fullAccess || this.perms.has(Permission.Everything),
-          },
-          {
-            label: 'Eipico 2 Old Layout',
-            link: '/eipico-layout/layout-two',
-            showSubItems: fullAccess || this.perms.has(Permission.Everything),
-          },
-        ],
-      },
-      {
         label: 'Signage',
         isTitle: true,
       },

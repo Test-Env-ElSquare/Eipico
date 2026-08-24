@@ -13,7 +13,7 @@ export class EipicoOneLayoutTwoComponent extends EipicoFullscreenLayoutBase {
   factoryId = 2;
   title = 'Eipico 1';
   pageLabel = 'Layout - 2';
-  exitLink = '/eipico-layout/layout-one-copy';
+  exitLink = '/eipico-layout/eipico-one-layout-2';
   override dispensingRoomStartIndex = 3;
   override dispensingRoomEndIndex = 5;
   productionSections = EIPICO_ONE_SECTIONS.slice(6);

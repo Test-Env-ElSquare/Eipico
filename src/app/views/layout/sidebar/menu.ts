@@ -188,24 +188,6 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
-    label: 'Layout',
-    isTitle: true,
-  },
-  {
-    label: 'Layout',
-    icon: 'bar-chart',
-    subItems: [
-      {
-        label: 'Eipico 1 Layout',
-        link: '/eipico-layout/layout-one-copy',
-      },
-      {
-        label: 'Eipico 2 Layout',
-        link: '/eipico-layout/layout-two',
-      },
-    ],
-  },
-  {
     label: 'Signage',
     isTitle: true,
   },

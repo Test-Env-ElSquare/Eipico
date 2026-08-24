@@ -13,7 +13,7 @@ export class EipicoTwoFullscreenComponent extends EipicoFullscreenLayoutBase {
   factoryId = 3;
   title = 'Eipico 2';
   pageLabel = 'Layout';
-  exitLink = '/eipico-layout/layout-two';
+  exitLink = '/eipico-layout/eipico-two-fullscreen';
   productionSections = EIPICO_TWO_SECTIONS;
 
   constructor(
