@@ -161,13 +161,27 @@
               </small>
             </div>
           </div>
-          <aside class="batch-box" [class.has-batch]="getCurrentBatch(line.lineId)">
+          <aside class="batch-box" [class.has-batch]="getCurrentBatch(line.lineId)"
+            [ngbTooltip]="batchTooltip" container="body" placement="top" triggers="hover:blur"
+            tooltipClass="batch-tooltip-popup">
             <span class="batch-box-label"><i aria-hidden="true">B</i>Current Batch</span>
             <ng-container *ngIf="getCurrentBatch(line.lineId) as batch; else noActiveBatch">
-              <strong [title]="batch.batchId">{{ batch.batchId }}</strong>
-              <small [title]="batch.skuName">{{ batch.skuName }}</small>
+              <strong>{{ batch.batchId }}</strong>
+              <small>{{ batch.skuName }}</small>
             </ng-container>
             <ng-template #noActiveBatch><em>No active batch</em></ng-template>
+            <ng-template #batchTooltip>
+              <div class="batch-tooltip-content" *ngIf="getCurrentBatch(line.lineId) as tooltipBatch; else noBatchTooltip">
+                <span>Current Batch</span>
+                <strong>{{ tooltipBatch.batchId }}</strong>
+                <dl>
+                  <div><dt>SKU</dt><dd>{{ tooltipBatch.skuName }}</dd></div>
+                  <div><dt>Job Order</dt><dd>{{ tooltipBatch.jobOrderId }}</dd></div>
+                  <div><dt>Activated</dt><dd>{{ tooltipBatch.activationDate | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+                </dl>
+              </div>
+              <ng-template #noBatchTooltip><span>No active batch on this line</span></ng-template>
+            </ng-template>
           </aside>        </div>
 
         <ng-template #noMachines>
@@ -182,6 +196,15 @@
   <section class="details-modal">
     <header class="details-header">
       <h2>{{ dialogTitle }}</h2>
+      <div class="dialog-batch" *ngIf="getCurrentBatch(+currentOpenedLineId!) as dialogBatch; else noDialogBatch">
+        <span><i aria-hidden="true">B</i>Current Batch</span>
+        <strong>{{ dialogBatch.batchId }}</strong>
+        <small>{{ dialogBatch.skuName }}</small>
+        <small>Job: {{ dialogBatch.jobOrderId }}</small>
+      </div>
+      <ng-template #noDialogBatch>
+        <div class="dialog-batch empty"><span>Current Batch</span><em>No active batch</em></div>
+      </ng-template>
       <button type="button" (click)="showDialog = false">Close</button>
     </header>
 

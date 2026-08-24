@@ -1112,3 +1112,34 @@
   small { color: #3f6f91; font-size: 6px; font-weight: 700; line-height: 1.1; }
   em { color: #8996a3; font-size: 6px; font-style: normal; font-weight: 700; }
 }
+.dialog-batch {
+  min-width: 260px;
+  display: grid;
+  grid-template-columns: auto auto minmax(100px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #a8d5f0;
+  border-radius: 7px;
+  background: #edf7ff;
+  span { display: inline-flex; align-items: center; gap: 5px; color: #52758f; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+  span i { width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; background: #2186c4; color: #fff; font-size: 9px; font-style: normal; }
+  strong { color: #174f7a; font-size: 12px; }
+  small { overflow: hidden; color: #426985; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+  em { color: #8794a1; font-size: 10px; font-style: normal; }
+  &.empty { display: flex; justify-content: space-between; border-style: dashed; background: #f7f9fb; }
+}
+::ng-deep .batch-tooltip-popup {
+  .tooltip-inner { max-width: 330px; padding: 0; border-radius: 9px; background: #172b3d; text-align: left; box-shadow: 0 12px 30px rgba(8,24,38,.28); }
+  .arrow::before { border-top-color: #172b3d; }
+}
+.batch-tooltip-content {
+  min-width: 250px;
+  padding: 11px 13px;
+  span { display: block; color: #80c9f2; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  > strong { display: block; margin: 3px 0 8px; color: #fff; font-size: 15px; }
+  dl { margin: 0; }
+  dl div { display: grid; grid-template-columns: 70px minmax(0,1fr); gap: 8px; padding: 4px 0; border-top: 1px solid rgba(255,255,255,.09); }
+  dt { color: #8ba6b9; font-size: 9px; font-weight: 700; }
+  dd { margin: 0; color: #eef7fd; font-size: 10px; font-weight: 600; overflow-wrap: anywhere; }
+}

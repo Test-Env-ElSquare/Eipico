@@ -13,6 +13,7 @@ import { MachineStateDetailsComponent } from './components/machine-state-details
 import { EipicoOneLayoutOneComponent } from './components/eipico-fullscreen-layouts/eipico-one-layout-one.component';
 import { EipicoOneLayoutTwoComponent } from './components/eipico-fullscreen-layouts/eipico-one-layout-two.component';
 import { EipicoTwoFullscreenComponent } from './components/eipico-fullscreen-layouts/eipico-two-fullscreen.component';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     EipicoLayoutOneComponent,
@@ -31,6 +32,7 @@ import { EipicoTwoFullscreenComponent } from './components/eipico-fullscreen-lay
     EipicoLayoutRoutingModule,
     RouterModule,
     DialogModule,
+    NgbTooltipModule,
   ],
 })
 export class EipicoLayoutModule {}
