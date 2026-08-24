@@ -127,6 +127,11 @@
           <div class="line-head">
             <div>
               <strong>{{ line.name }}</strong>
+              <span class="history-action" role="button" tabindex="0" title="Quick history"
+                (click)="openQuickHistory($event, line.lineId)"
+                (keydown.enter)="openQuickHistory($event, line.lineId)">
+                <i aria-hidden="true">↺</i>
+              </span>
               <span>{{ getMachineCount(line.lineId) }}</span>
             </div>
             <span class="line-status" [class.on]="!isLineStale(line.lineId) && isLineRunning(line.lineId)"
@@ -210,5 +215,42 @@
 
     <app-machine-copy-details [machines]="machines" [filteredMachines]="machines" [isVisible]="showDialog">
     </app-machine-copy-details>
+  </section>
+</div>
+
+<div class="details-overlay history-overlay" *ngIf="showHistoryDialog" (click)="closeQuickHistory()">
+  <section class="quick-history-modal" (click)="$event.stopPropagation()">
+    <header class="quick-history-header">
+      <div><span>Current shift</span><h2>{{ quickHistoryTitle }}</h2></div>
+      <button type="button" (click)="closeQuickHistory()">×</button>
+    </header>
+
+    <div class="quick-history-body">
+      <div class="quick-history-loading" *ngIf="historyLoading">
+        <span></span><p>Loading line history...</p>
+      </div>
+
+      <ng-container *ngIf="!historyLoading && quickHistory">
+        <div class="quick-batch" *ngIf="getCurrentBatch(quickHistoryLineId!) as batch">
+          <span>Current Batch</span><strong>{{ batch.batchId }}</strong><small>{{ batch.skuName }}</small>
+        </div>
+        <div class="history-kpis">
+          <article class="count"><span>Production Count</span><strong>{{ quickHistory.count | number }}</strong></article>
+          <article class="oee"><span>OEE</span><strong>{{ getQuickHistoryPercent('oee') }}</strong></article>
+          <article class="quality"><span>Quality</span><strong>{{ getQuickHistoryPercent('quality') }}</strong></article>
+          <article class="availability"><span>Availability</span><strong>{{ getQuickHistoryPercent('availability') }}</strong></article>
+          <article class="performance"><span>Performance</span><strong>{{ getQuickHistoryPercent('performance') }}</strong></article>
+        </div>
+      </ng-container>
+
+      <div class="quick-history-error" *ngIf="!historyLoading && historyError">
+        No historical data is available for this line.
+      </div>
+    </div>
+
+    <footer class="quick-history-footer">
+      <button type="button" class="secondary" (click)="closeQuickHistory()">Close</button>
+      <button type="button" class="primary" (click)="openFullHistory()">Show more <span>→</span></button>
+    </footer>
   </section>
 </div>

@@ -14,6 +14,7 @@ import { AppService } from 'src/app/core/services/app-Service.service';
 import { ToastrService } from 'ngx-toastr';
 import { startWith } from 'rxjs';
 import { AuthService } from 'src/app/core/services/Auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-filter',
@@ -59,10 +60,12 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     private _appService: AppService,
     private _fb: FormBuilder,
     private _toastr: ToastrService,
-    private _cdr: ChangeDetectorRef
+    private _cdr: ChangeDetectorRef,
+    private _route: ActivatedRoute
   ) {}
   ngOnInit(): void {
     this.createForm();
+    this.applyRouteSelection();
 
     // this.onGetAllFactories();
     this.getAllFactories();
@@ -162,6 +165,17 @@ export class FilterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private applyRouteSelection(): void {
+    const factoryId = Number(this._route.snapshot.queryParamMap.get('factoryId'));
+    const lineId = Number(this._route.snapshot.queryParamMap.get('lineId'));
+
+    if (factoryId > 0) {
+      this.selectedFactory = factoryId;
+    }
+    if (lineId > 0) {
+      this.selectedLine = lineId;
+    }
+  }
   //to set default value to the user
   setDefault() {
     this.GetFactoryLines(this.selectedFactory);

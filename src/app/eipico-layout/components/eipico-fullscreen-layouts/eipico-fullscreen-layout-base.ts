@@ -43,6 +43,12 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   dispensingRoomEndIndex = Number.MAX_SAFE_INTEGER;
 
   showDialog = false;
+  showHistoryDialog = false;
+  historyLoading = false;
+  historyError = false;
+  quickHistory: any = null;
+  quickHistoryLineId: number | null = null;
+  quickHistoryTitle = '';
   dialogTitle = '';
   machines: any[] = [];
   currentOpenedLineId: string | null = null;
@@ -59,6 +65,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private machineStatusEffectTimers: Record<string, any> = {};
   private staleLinesRefreshTimer: ReturnType<typeof setInterval> | null = null;
   private activatedSkusSubscription: Subscription | null = null;
+  private historicalSummarySubscription: Subscription | null = null;
   private readonly lineStaleThresholdMs = 15 * 60 * 1000;
   private readonly staleThresholdMs = 3 * 60 * 60 * 1000;
   protected constructor(
@@ -89,6 +96,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     }
     this.activatedSkusSubscription?.unsubscribe();
     this.activatedSkusSubscription = null;
+    this.historicalSummarySubscription?.unsubscribe();
+    this.historicalSummarySubscription = null;
     this.layoutService.stopConnection();
     this.layoutService.stopScaleStatusConnection();
   }
@@ -124,6 +133,60 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
 
   getCurrentBatch(lineId: number): ActivatedLineSku | null {
     return this.currentBatches[lineId] ?? null;
+  }
+  openQuickHistory(event: Event, lineId: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.historicalSummarySubscription?.unsubscribe();
+    this.quickHistoryLineId = lineId;
+    this.quickHistoryTitle = `${this.getLineName(lineId)} - Quick History`;
+    this.quickHistory = null;
+    this.historyError = false;
+    this.historyLoading = true;
+    this.showDialog = false;
+    this.showHistoryDialog = true;
+
+    this.historicalSummarySubscription = this.layoutService
+      .getLineHistoricalSummary(this.factoryId, lineId)
+      .subscribe({
+        next: (data) => {
+          this.quickHistory = data?.[0]?.filerreads ?? null;
+          this.historyLoading = false;
+          this.historyError = !this.quickHistory;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error(`[Quick History][Line ${lineId}] Failed to load`, error);
+          this.quickHistory = null;
+          this.historyLoading = false;
+          this.historyError = true;
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  closeQuickHistory(): void {
+    this.showHistoryDialog = false;
+    this.historicalSummarySubscription?.unsubscribe();
+    this.historicalSummarySubscription = null;
+  }
+
+  openFullHistory(): void {
+    if (this.quickHistoryLineId === null) {
+      return;
+    }
+
+    this.router.navigate(['/Historical'], {
+      queryParams: {
+        factoryId: this.factoryId,
+        lineId: this.quickHistoryLineId,
+      },
+    });
+  }
+
+  getQuickHistoryPercent(key: string): string {
+    const value = Number(this.quickHistory?.[key] ?? 0) * 100;
+    return `${value.toFixed(1)}%`;
   }
   onStartConnection(): void {
     this.layoutService

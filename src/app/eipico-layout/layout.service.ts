@@ -108,4 +108,10 @@ export class LayoutService {
       environment.url + 'api/Dashboards/GetAllLinesActivatedSkus',
       { params: { factoryId: factoryId } },
     );
+  }
+  public getLineHistoricalSummary(factoryId: number, lineId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      environment.url + 'api/Dashboards/GetFillerRefactor',
+      { params: { factoryId: factoryId, lineId: lineId, duration: 0 } },
+    );
   }}
