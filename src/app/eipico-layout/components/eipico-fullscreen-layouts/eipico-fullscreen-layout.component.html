@@ -245,11 +245,19 @@
         </section>
 
         <h3 class="history-section-title">Efficiency</h3>
-        <div class="history-kpis">
-          <article class="oee"><span>OEE</span><strong>{{ getQuickHistoryPercent('oee') }}</strong><i></i></article>
-          <article class="quality"><span>Quality</span><strong>{{ getQuickHistoryPercent('quality') }}</strong><i></i></article>
-          <article class="availability"><span>Availability</span><strong>{{ getQuickHistoryPercent('availability') }}</strong><i></i></article>
-          <article class="performance"><span>Performance</span><strong>{{ getQuickHistoryPercent('performance') }}</strong><i></i></article>
+        <div class="efficiency-charts">
+          <article class="mini-radial oee">
+            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.oee * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('oee') }}</strong></div><span>OEE</span>
+          </article>
+          <article class="mini-radial quality">
+            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.quality * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('quality') }}</strong></div><span>Quality</span>
+          </article>
+          <article class="mini-radial availability">
+            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.availability * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('availability') }}</strong></div><span>Availability</span>
+          </article>
+          <article class="mini-radial performance">
+            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.performance * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('performance') }}</strong></div><span>Performance</span>
+          </article>
         </div>
 
         <h3 class="history-section-title">Production & speed</h3>
