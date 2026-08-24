@@ -111,65 +111,127 @@ export class BatchWeightComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    const dataToExport = this.JobOrderMatairal.map((item) => ({
-      'Material Name': item.materialName,
-      'Material Code': item.uid,
-      // 'SAP Weight': item.sapweight,
-      'Actual Weight':
-        item.handheldweight !== '-1' ? item.handheldweight : 'N/A',
-      // 'Deviation %': item.deviation !== -1 ? item.deviation : 'N/A',
+    const datePipe = new DatePipe('en-US');
+    const dataToExport = (this.JobOrderMatairal || []).map((item) => ({
+      'Material Name': item.materialName || 'N/A',
+      'Material Code': item.uid || 'N/A',
+      'SAP Weight': this.getSapWeight(item),
+      'Actual Weight': this.getSapWeight(item),
+      'Deviation %': item.deviation !== -1 ? item.deviation : 'N/A',
+      'Time Stamp':
+        datePipe.transform(item.timeStamp, 'dd-MM-yyyy HH:mm a') || 'N/A',
+      'Process Type': item.processType || 'N/A',
+      'Room Name': item.roomName || 'N/A',
     }));
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport, {
       skipHeader: false,
     });
+    worksheet['!cols'] = [
+      { wch: 28 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
+      { wch: 14 }, { wch: 22 }, { wch: 16 }, { wch: 20 },
+    ];
 
     const workbook: XLSX.WorkBook = {
-      Sheets: { JobOrderMatairal: worksheet },
-      SheetNames: ['JobOrderMatairal'],
+      Sheets: { Materials: worksheet },
+      SheetNames: ['Materials'],
     };
 
     const excelBuffer: any = XLSX.write(workbook, {
       bookType: 'xlsx',
       type: 'array',
     });
-    this.saveAsExcelFile(excelBuffer, 'JobOrderMatairal');
+    this.saveAsExcelFile(excelBuffer, 'JobOrderMaterials');
   }
 
-  exportPdf() {
+  exportPdf(): void {
     const datePipe = new DatePipe('en-US');
     import('jspdf').then((jsPDF) => {
       import('jspdf-autotable').then((autoTable) => {
-        const doc = new jsPDF.default();
-        // Add header text
-        doc.setFontSize(16); // Set font size
-        doc.setTextColor(40); // Set text color
-        doc.setFontSize(12);
-        doc.text(`Batch Number : ${this.batchId}`, 105, 10, {
+        const doc = new jsPDF.default({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4',
+        });
+
+        doc.setFontSize(15);
+        doc.setTextColor(32, 48, 66);
+        doc.text(`Batch Weight Report`, 148.5, 12, { align: 'center' });
+        doc.setFontSize(10);
+        doc.setTextColor(80, 96, 112);
+        doc.text(`Batch Number: ${this.batchId || 'N/A'}`, 148.5, 19, {
           align: 'center',
         });
 
-        // Table data
-        const tableData = this.JobOrderMatairal.map((item) => [
+        const tableData = (this.JobOrderMatairal || []).map((item) => [
           item.materialName || 'N/A',
           item.uid || 'N/A',
-          // item.sapWeight || 'N/A',
-          item.handheldweight || 'N/A',
+          this.getSapWeight(item),
+          this.getSapWeight(item),
+          item.deviation !== -1 ? item.deviation : 'N/A',
           datePipe.transform(item.timeStamp, 'dd-MM-yyyy HH:mm a') || 'N/A',
+          item.processType || 'N/A',
+          item.roomName || 'N/A',
         ]);
 
         autoTable.default(doc, {
-          head: [
-            ['Material Name', 'Material Code', 'Actual Weight', 'Time Stamp'],
-          ],
+          startY: 25,
+          head: [[
+            'Material Name',
+            'Material Code',
+            'SAP Weight',
+            'Actual Weight',
+            'Deviation %',
+            'Time Stamp',
+            'Process Type',
+            'Room Name',
+          ]],
           body: tableData,
+          theme: 'grid',
+          styles: {
+            fontSize: 8,
+            cellPadding: 2.2,
+            overflow: 'linebreak',
+            valign: 'middle',
+          },
+          headStyles: {
+            fillColor: [33, 134, 196],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+          },
+          alternateRowStyles: { fillColor: [246, 249, 252] },
+          columnStyles: {
+            0: { cellWidth: 48 },
+            1: { cellWidth: 32 },
+            2: { cellWidth: 24 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 22 },
+            5: { cellWidth: 38 },
+            6: { cellWidth: 27 },
+            7: { cellWidth: 32 },
+          },
+          margin: { left: 8, right: 8 },
+          didDrawPage: (data: any) => {
+            const pageCount = doc.getNumberOfPages();
+            doc.setFontSize(8);
+            doc.setTextColor(120);
+            doc.text(
+              `Page ${pageCount}`,
+              doc.internal.pageSize.getWidth() - 10,
+              doc.internal.pageSize.getHeight() - 6,
+              { align: 'right' },
+            );
+          },
         });
 
-        doc.save('materials-report.pdf');
+        doc.save(`Batch_Weight_${this.batchId || 'report'}.pdf`);
       });
     });
   }
 
+  private getSapWeight(item: JobOrderMatairal): string {
+    return item.sapweight && item.sapweight !== '-1' ? item.sapweight : 'N/A';
+  }
   private saveAsExcelFile(buffer: any, fileName: string): void {
     const data: Blob = new Blob([buffer], { type: 'application/octet-stream' });
     saveAs(data, `${fileName}_${this.batchId}.xlsx`);
