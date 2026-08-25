@@ -5,6 +5,12 @@ import { environment } from 'src/environments/environment';
 import * as signalR from '@microsoft/signalr';
 
 
+export interface DominantMachine {
+  machineName: string;
+  lineId: number;
+  isDominant: boolean;
+  faunctionality: string;
+}
 export interface ActivatedLineSku {
   lineId: number;
   skuName: string;
@@ -103,6 +109,11 @@ export class LayoutService {
     }
   }
 
+  public getDominantMachines(): Observable<DominantMachine[]> {
+    return this.http.get<DominantMachine[]>(
+      environment.url + 'api/Machines/dominant',
+    );
+  }
   public getAllLinesActivatedSkus(factoryId: number): Observable<ActivatedLineSku[]> {
     return this.http.get<ActivatedLineSku[]>(
       environment.url + 'api/Dashboards/GetAllLinesActivatedSkus',

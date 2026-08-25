@@ -146,6 +146,7 @@
 
           <div class="line-machines" *ngIf="getLineMachines(line.lineId).length; else noMachines">
             <div class="machine-chip" *ngFor="let machine of getLineMachines(line.lineId)"
+              [class.dominant-machine]="isDominantMachine(line.lineId, machine)"
               [class.running]="getMachineStatusClass(machine) === 'running'"
               [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
               [class.stale]="getMachineStatusClass(machine) === 'stale'"
@@ -159,6 +160,9 @@
                 machine.machineName + ' - Count: ' + getMachineCountValue(machine)
               ">
               <span>{{ getMachineType(machine.machineName) }}</span>
+              <span class="dominant-badge" *ngIf="isDominantMachine(line.lineId, machine)" title="Dominant machine">
+                <i aria-hidden="true">&#9733;</i> Dominant
+              </span>
               <strong>{{ machine.machineName }}</strong>
               <small class="machine-count">
                 <i aria-hidden="true">#</i>

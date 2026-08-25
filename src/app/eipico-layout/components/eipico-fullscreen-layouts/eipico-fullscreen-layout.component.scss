@@ -102,9 +102,8 @@
 
 .layout-board {
   display: grid;
-  grid-template-columns: 126px minmax(360px, 1fr) 126px minmax(360px, 1fr) 48px;
+  grid-template-columns: 69px minmax(360px, 1fr) 72px minmax(390px, 1fr) 27px;
   gap: 6px;
-  min-height: calc(100vh - 72px);
 }
 
 .process-group {
@@ -250,8 +249,8 @@
   min-height: 44px;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 4px;
-  padding: 6px;
+  gap: 3px;
+  padding: 4px 3px;
   border: 1px dashed #91a9bb;
   border-radius: 8px;
   background: #f9fcfe;
@@ -281,15 +280,16 @@
   min-width: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  grid-template-areas: "icon name" "icon status" "icon time";
-  column-gap: 5px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "icon" "name" "status" "time";
+  justify-items: center;
+  row-gap: 2px;
   align-items: center;
-  padding: 5px 6px;
+  padding: 5px 3px;
   border: 1px solid #d8e3ea;
   border-radius: 7px;
   background: #ffffff;
-  text-align: left;
+  text-align: center;
   box-shadow: 0 4px 10px rgba(19, 39, 63, 0.08);
 
   &.live {
@@ -306,8 +306,8 @@
 
 .scale-icon {
   grid-area: icon;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,6 +326,7 @@
   font-size: 9px !important;
   font-weight: 700;
   line-height: 1.1;
+  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -333,9 +334,10 @@
 .scale-pill small {
   grid-area: status;
   color: #64748b;
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
   line-height: 1.1;
+  text-align: center;
 }
 
 .scale-pill time {
@@ -345,6 +347,7 @@
   font-size: 7px;
   font-weight: 700;
   line-height: 1.1;
+  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -433,7 +436,7 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  height: 66px;
+  height: 75px;
   display: block;
   padding: 4px;
   border: 1px solid #d9e3ea;
@@ -1005,13 +1008,6 @@
   }
 }
 
-@media (max-width: 1200px) {
-  .layout-board {
-    grid-template-columns:
-      112px minmax(320px, 1fr) 112px minmax(320px, 1fr)
-      46px;
-  }
-}
 
 @media (max-width: 800px) {
   .layout-header,

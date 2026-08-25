@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActivatedLineSku, LayoutService } from '../../layout.service';
+import { ActivatedLineSku, DominantMachine, LayoutService } from '../../layout.service';
 import { EMPTY, Subscription, timer } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { LayoutLine, LayoutSection } from './eipico-layout-data';
@@ -58,6 +58,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   lineStats: Record<number, LineStats> = {};
   lineStatusEffects: Record<number, string> = {};
   currentBatches: Record<number, ActivatedLineSku> = {};
+  dominantMachines = new Set<string>();
   machineStatusEffects: Record<string, string> = {};
   scaleStatusText = 'Connecting scales...';
   dispensingRooms: DispensingRoom[] = [];
@@ -67,6 +68,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
   private machineStatusEffectTimers: Record<string, any> = {};
   private staleLinesRefreshTimer: ReturnType<typeof setInterval> | null = null;
   private activatedSkusSubscription: Subscription | null = null;
+  private dominantMachinesSubscription: Subscription | null = null;
   private historicalSummarySubscription: Subscription | null = null;
   private historicalEnergySubscription: Subscription | null = null;
   private readonly lineStaleThresholdMs = 15 * 60 * 1000;
@@ -84,6 +86,7 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     }, 60 * 1000);
     this.startActivatedSkusPolling();
+    this.startDominantMachinesPolling();
     this.onStartConnection();
   }
 
@@ -99,6 +102,8 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     }
     this.activatedSkusSubscription?.unsubscribe();
     this.activatedSkusSubscription = null;
+    this.dominantMachinesSubscription?.unsubscribe();
+    this.dominantMachinesSubscription = null;
     this.historicalSummarySubscription?.unsubscribe();
     this.historicalSummarySubscription = null;
     this.historicalEnergySubscription?.unsubscribe();
@@ -107,6 +112,39 @@ export abstract class EipicoFullscreenLayoutBase implements OnInit, OnDestroy {
     this.layoutService.stopScaleStatusConnection();
   }
 
+  private startDominantMachinesPolling(): void {
+    this.dominantMachinesSubscription = timer(0, 60 * 1000)
+      .pipe(
+        switchMap(() =>
+          this.layoutService.getDominantMachines().pipe(
+            catchError((error) => {
+              console.error('[Dominant Machines] Failed to load dominant machines', error);
+              return EMPTY;
+            }),
+          ),
+        ),
+      )
+      .subscribe((machines: DominantMachine[]) => {
+        this.ngZone.run(() => {
+          this.dominantMachines = new Set(
+            machines
+              .filter((machine) => machine.isDominant)
+              .map((machine) => this.getDominantMachineKey(machine.lineId, machine.machineName)),
+          );
+          this.cdr.detectChanges();
+        });
+      });
+  }
+
+  isDominantMachine(lineId: number, machine: any): boolean {
+    return this.dominantMachines.has(
+      this.getDominantMachineKey(lineId, machine?.machineName),
+    );
+  }
+
+  private getDominantMachineKey(lineId: number, machineName: string): string {
+    return lineId + '|' + (machineName || '').trim().toLowerCase();
+  }
   private startActivatedSkusPolling(): void {
     this.activatedSkusSubscription = timer(0, 60 * 1000)
       .pipe(
