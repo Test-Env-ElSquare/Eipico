@@ -243,7 +243,11 @@
           <td>{{ item?.uid }}</td>
           <td>{{ item?.sapweight }}</td>
           <td>
-            {{ item?.sapweight && item?.sapweight !== "-1" ? item?.sapweight : "N/A" }}
+            {{
+              item?.handheldweight && item?.handheldweight !== "-1"
+                ? item?.handheldweight
+                : "N/A"
+            }}
           </td>
           <td>{{ item?.deviation != -1 ? item?.deviation : "N/A" }}</td>
           <td class="timestamp-column">
