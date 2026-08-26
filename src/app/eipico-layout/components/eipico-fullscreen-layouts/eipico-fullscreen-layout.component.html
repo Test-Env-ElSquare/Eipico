@@ -21,18 +21,27 @@
         <div class="scale-empty" *ngIf="!getFirstDispensingRooms().length">
           {{ scaleStatusText }}
         </div>
-        <article class="room-card" *ngFor="let room of getFirstDispensingRooms()">
+        <article
+          class="room-card"
+          *ngFor="let room of getFirstDispensingRooms()"
+        >
           <strong>{{ room.name }}</strong>
           <div class="scale-grid">
-          <div class="scale-pill" *ngFor="let scale of room.scales; let scaleIndex = index" [class.scale-one]="scaleIndex === 0"
-            [class.scale-two]="scaleIndex === 1" [class.scale-three]="scaleIndex === 2"
-            [class.live]="scale.lastSignalTime && !isScaleStale(scale)" [class.no-signal]="!scale.lastSignalTime"
-            [class.stale]="isScaleStale(scale)">
-            <span class="scale-icon">S</span>
-            <span class="scale-name">{{ scale.scaleName }}</span>
-            <small>{{ getScaleStatusLabel(scale) }}</small>
-            <time>{{ getScaleLastSignal(scale) }}</time>
-          </div>
+            <div
+              class="scale-pill"
+              *ngFor="let scale of room.scales; let scaleIndex = index"
+              [class.scale-one]="scaleIndex === 0"
+              [class.scale-two]="scaleIndex === 1"
+              [class.scale-three]="scaleIndex === 2"
+              [class.live]="scale.lastSignalTime && !isScaleStale(scale)"
+              [class.no-signal]="!scale.lastSignalTime"
+              [class.stale]="isScaleStale(scale)"
+            >
+              <span class="scale-icon">S</span>
+              <span class="scale-name">{{ scale.scaleName }}</span>
+              <small>{{ getScaleStatusLabel(scale) }}</small>
+              <time>{{ getScaleLastSignal(scale) }}</time>
+            </div>
           </div>
         </article>
       </div>
@@ -45,10 +54,12 @@
         <span>Production Lines - 1</span>
       </div>
       <div class="process-sections">
-        <ng-container *ngTemplateOutlet="
+        <ng-container
+          *ngTemplateOutlet="
             processGroup;
             context: { sections: getProductionSectionGroups()[0] }
-          ">
+          "
+        >
         </ng-container>
       </div>
     </div>
@@ -59,18 +70,27 @@
         <div class="scale-empty" *ngIf="!getSecondDispensingRooms().length">
           {{ scaleStatusText }}
         </div>
-        <article class="room-card" *ngFor="let room of getSecondDispensingRooms()">
+        <article
+          class="room-card"
+          *ngFor="let room of getSecondDispensingRooms()"
+        >
           <strong>{{ room.name }}</strong>
           <div class="scale-grid">
-          <div class="scale-pill" *ngFor="let scale of room.scales; let scaleIndex = index" [class.scale-one]="scaleIndex === 0"
-            [class.scale-two]="scaleIndex === 1" [class.scale-three]="scaleIndex === 2"
-            [class.live]="scale.lastSignalTime && !isScaleStale(scale)" [class.no-signal]="!scale.lastSignalTime"
-            [class.stale]="isScaleStale(scale)">
-            <span class="scale-icon">S</span>
-            <span class="scale-name">{{ scale.scaleName }}</span>
-            <small>{{ getScaleStatusLabel(scale) }}</small>
-            <time>{{ getScaleLastSignal(scale) }}</time>
-          </div>
+            <div
+              class="scale-pill"
+              *ngFor="let scale of room.scales; let scaleIndex = index"
+              [class.scale-one]="scaleIndex === 0"
+              [class.scale-two]="scaleIndex === 1"
+              [class.scale-three]="scaleIndex === 2"
+              [class.live]="scale.lastSignalTime && !isScaleStale(scale)"
+              [class.no-signal]="!scale.lastSignalTime"
+              [class.stale]="isScaleStale(scale)"
+            >
+              <span class="scale-icon">S</span>
+              <span class="scale-name">{{ scale.scaleName }}</span>
+              <small>{{ getScaleStatusLabel(scale) }}</small>
+              <time>{{ getScaleLastSignal(scale) }}</time>
+            </div>
           </div>
         </article>
       </div>
@@ -83,10 +103,12 @@
         <span>Production Lines - 2</span>
       </div>
       <div class="process-sections">
-        <ng-container *ngTemplateOutlet="
+        <ng-container
+          *ngTemplateOutlet="
             processGroup;
             context: { sections: getProductionSectionGroups()[1] }
-          ">
+          "
+        >
         </ng-container>
       </div>
     </div>
@@ -116,52 +138,87 @@
     </div>
 
     <div class="line-list">
-      <button type="button" class="line-card" *ngFor="let line of section.machines" [attr.data-line-id]="line.lineId"
-        [class.green]="getCssClass(line.lineId) === 'green'" [class.pink]="getCssClass(line.lineId) === 'pink'"
+      <button
+        type="button"
+        class="line-card"
+        *ngFor="let line of section.machines"
+        [attr.data-line-id]="line.lineId"
+        [class.green]="getCssClass(line.lineId) === 'green'"
+        [class.pink]="getCssClass(line.lineId) === 'pink'"
         [class.white]="getCssClass(line.lineId) === 'white'"
         [class.gray]="getCssClass(line.lineId) === 'gray'"
         [class.status-to-on]="getLineStatusEffect(line.lineId) === 'to-on'"
         [class.status-to-off]="getLineStatusEffect(line.lineId) === 'to-off'"
-        (click)="goToMachineDetails(line.lineId.toString())">
+        (click)="goToMachineDetails(line.lineId.toString())"
+      >
         <div class="production-cell">
           <div class="line-head">
             <div>
               <strong>{{ line.name }}</strong>
-              <span class="history-action" role="button" tabindex="0" title="Quick history"
+              <span
+                class="history-action"
+                role="button"
+                tabindex="0"
+                title="Quick history"
                 (click)="openQuickHistory($event, line.lineId)"
-                (keydown.enter)="openQuickHistory($event, line.lineId)">
+                (keydown.enter)="openQuickHistory($event, line.lineId)"
+              >
                 <i aria-hidden="true">↺</i>
               </span>
               <span>{{ getMachineCount(line.lineId) }}</span>
             </div>
-            <span class="line-status" [class.on]="!isLineStale(line.lineId) && isLineRunning(line.lineId)"
-              [class.off]="!isLineStale(line.lineId) && !isLineRunning(line.lineId)"
-              [class.stale]="isLineStale(line.lineId)">
+            <span
+              class="line-status"
+              [class.on]="
+                !isLineStale(line.lineId) && isLineRunning(line.lineId)
+              "
+              [class.off]="
+                !isLineStale(line.lineId) && !isLineRunning(line.lineId)
+              "
+              [class.stale]="isLineStale(line.lineId)"
+            >
               {{ getLineStatusText(line.lineId) }}
             </span>
             <small *ngIf="getLastUpdate(line.lineId)">{{
               getLastUpdate(line.lineId)
-              }}</small>
+            }}</small>
           </div>
 
-          <div class="line-machines" *ngIf="getLineMachines(line.lineId).length; else noMachines">
-            <div class="machine-chip" *ngFor="let machine of getLineMachines(line.lineId)"
+          <div
+            class="line-machines"
+            *ngIf="getLineMachines(line.lineId).length; else noMachines"
+          >
+            <div
+              class="machine-chip"
+              *ngFor="let machine of getLineMachines(line.lineId)"
               [class.dominant-machine]="isDominantMachine(line.lineId, machine)"
               [class.running]="getMachineStatusClass(machine) === 'running'"
               [class.stopped]="getMachineStatusClass(machine) === 'stopped'"
               [class.stale]="getMachineStatusClass(machine) === 'stale'"
-              [class.flash-running]="!isMachineStale(machine) && isMachineRunning(machine)"
-              [class.flash-stopped]="!isMachineStale(machine) && !isMachineRunning(machine)"
+              [class.flash-running]="
+                !isMachineStale(machine) && isMachineRunning(machine)
+              "
+              [class.flash-stopped]="
+                !isMachineStale(machine) && !isMachineRunning(machine)
+              "
               [class.machine-to-on]="
                 getMachineStatusEffect(line.lineId, machine) === 'to-on'
-              " [class.machine-to-off]="
+              "
+              [class.machine-to-off]="
                 getMachineStatusEffect(line.lineId, machine) === 'to-off'
-              " [title]="
-                machine.machineName + ' - Count: ' + getMachineCountValue(machine)
-              ">
+              "
+              [title]="
+                machine.machineName +
+                ' - Count: ' +
+                getMachineCountValue(machine)
+              "
+            >
               <span>{{ getMachineType(machine.machineName) }}</span>
-              <span class="dominant-badge" *ngIf="isDominantMachine(line.lineId, machine)" title="Dominant machine">
-                <i aria-hidden="true">&#9733;</i> Dominant
+              <span
+                class="dominant-badge"
+                *ngIf="isDominantMachine(line.lineId, machine)"
+              >
+                <i aria-hidden="true">&#9733;</i>
               </span>
               <strong>{{ machine.machineName }}</strong>
               <small class="machine-count">
@@ -170,28 +227,60 @@
               </small>
             </div>
           </div>
-          <aside class="batch-box" [class.has-batch]="getCurrentBatch(line.lineId)"
-            [ngbTooltip]="batchTooltip" container="body" placement="top" triggers="hover:blur"
-            tooltipClass="batch-tooltip-popup">
-            <span class="batch-box-label"><i aria-hidden="true">B</i>Current Batch</span>
-            <ng-container *ngIf="getCurrentBatch(line.lineId) as batch; else noActiveBatch">
+          <aside
+            class="batch-box"
+            [class.has-batch]="getCurrentBatch(line.lineId)"
+            [ngbTooltip]="batchTooltip"
+            container="body"
+            placement="top"
+            triggers="hover:blur"
+            tooltipClass="batch-tooltip-popup"
+          >
+            <span class="batch-box-label"
+              ><i aria-hidden="true">B</i>Current Batch</span
+            >
+            <ng-container
+              *ngIf="getCurrentBatch(line.lineId) as batch; else noActiveBatch"
+            >
               <strong>{{ batch.batchId }}</strong>
               <small>{{ batch.skuName }}</small>
             </ng-container>
             <ng-template #noActiveBatch><em>No active batch</em></ng-template>
             <ng-template #batchTooltip>
-              <div class="batch-tooltip-content" *ngIf="getCurrentBatch(line.lineId) as tooltipBatch; else noBatchTooltip">
+              <div
+                class="batch-tooltip-content"
+                *ngIf="
+                  getCurrentBatch(line.lineId) as tooltipBatch;
+                  else noBatchTooltip
+                "
+              >
                 <span>Current Batch</span>
                 <strong>{{ tooltipBatch.batchId }}</strong>
                 <dl>
-                  <div><dt>SKU</dt><dd>{{ tooltipBatch.skuName }}</dd></div>
-                  <div><dt>Job Order</dt><dd>{{ tooltipBatch.jobOrderId }}</dd></div>
-                  <div><dt>Activated</dt><dd>{{ tooltipBatch.activationDate | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+                  <div>
+                    <dt>SKU</dt>
+                    <dd>{{ tooltipBatch.skuName }}</dd>
+                  </div>
+                  <div>
+                    <dt>Job Order</dt>
+                    <dd>{{ tooltipBatch.jobOrderId }}</dd>
+                  </div>
+                  <div>
+                    <dt>Activated</dt>
+                    <dd>
+                      {{
+                        tooltipBatch.activationDate | date: "dd/MM/yyyy HH:mm"
+                      }}
+                    </dd>
+                  </div>
                 </dl>
               </div>
-              <ng-template #noBatchTooltip><span>No active batch on this line</span></ng-template>
+              <ng-template #noBatchTooltip
+                ><span>No active batch on this line</span></ng-template
+              >
             </ng-template>
-          </aside>        </div>
+          </aside>
+        </div>
 
         <ng-template #noMachines>
           <div class="inline-empty">Waiting for machine signal</div>
@@ -205,24 +294,40 @@
   <section class="details-modal">
     <header class="details-header">
       <h2>{{ dialogTitle }}</h2>
-      <div class="dialog-batch" *ngIf="getCurrentBatch(+currentOpenedLineId!) as dialogBatch; else noDialogBatch">
+      <div
+        class="dialog-batch"
+        *ngIf="
+          getCurrentBatch(+currentOpenedLineId!) as dialogBatch;
+          else noDialogBatch
+        "
+      >
         <span><i aria-hidden="true">B</i>Current Batch</span>
         <strong>{{ dialogBatch.batchId }}</strong>
         <small>{{ dialogBatch.skuName }}</small>
         <small>Job: {{ dialogBatch.jobOrderId }}</small>
       </div>
       <ng-template #noDialogBatch>
-        <div class="dialog-batch empty"><span>Current Batch</span><em>No active batch</em></div>
+        <div class="dialog-batch empty">
+          <span>Current Batch</span><em>No active batch</em>
+        </div>
       </ng-template>
       <button type="button" (click)="showDialog = false">Close</button>
     </header>
 
-    <app-machine-copy-details [machines]="machines" [filteredMachines]="machines" [isVisible]="showDialog">
+    <app-machine-copy-details
+      [machines]="machines"
+      [filteredMachines]="machines"
+      [isVisible]="showDialog"
+    >
     </app-machine-copy-details>
   </section>
 </div>
 
-<div class="details-overlay history-overlay" *ngIf="showHistoryDialog" (click)="closeQuickHistory()">
+<div
+  class="details-overlay history-overlay"
+  *ngIf="showHistoryDialog"
+  (click)="closeQuickHistory()"
+>
   <section class="quick-history-modal" (click)="$event.stopPropagation()">
     <header class="quick-history-header">
       <div class="quick-history-heading">
@@ -230,66 +335,229 @@
         <h2>{{ quickHistoryTitle }}</h2>
         <small>Live operational summary from the Historical dashboard</small>
       </div>
-      <button type="button" aria-label="Close" (click)="closeQuickHistory()">×</button>
+      <button type="button" aria-label="Close" (click)="closeQuickHistory()">
+        ×
+      </button>
     </header>
 
     <div class="quick-history-body">
       <div class="quick-history-loading" *ngIf="historyLoading">
-        <span></span><p>Loading line history...</p>
+        <span></span>
+        <p>Loading line history...</p>
       </div>
 
       <ng-container *ngIf="!historyLoading && quickHistory">
         <section class="snapshot-strip">
-          <div class="quick-batch" *ngIf="getCurrentBatch(quickHistoryLineId!) as batch; else noQuickBatch">
+          <div
+            class="quick-batch"
+            *ngIf="
+              getCurrentBatch(quickHistoryLineId!) as batch;
+              else noQuickBatch
+            "
+          >
             <span class="snapshot-icon">B</span>
-            <div><small>Current Batch</small><strong>{{ batch.batchId }}</strong><em>{{ batch.skuName }}</em></div>
+            <div>
+              <small>Current Batch</small><strong>{{ batch.batchId }}</strong
+              ><em>{{ batch.skuName }}</em>
+            </div>
           </div>
-          <ng-template #noQuickBatch><div class="quick-batch empty"><span class="snapshot-icon">B</span><div><small>Current Batch</small><strong>No active batch</strong></div></div></ng-template>
-          <div class="snapshot-updated"><small>Selected line</small><strong>{{ getLineName(quickHistoryLineId!) }}</strong><em>Factory {{ factoryId }}</em></div>
+          <ng-template #noQuickBatch
+            ><div class="quick-batch empty">
+              <span class="snapshot-icon">B</span>
+              <div>
+                <small>Current Batch</small><strong>No active batch</strong>
+              </div>
+            </div></ng-template
+          >
+          <div class="snapshot-updated">
+            <small>Selected line</small
+            ><strong>{{ getLineName(quickHistoryLineId!) }}</strong
+            ><em>Factory {{ factoryId }}</em>
+          </div>
         </section>
 
         <h3 class="history-section-title">Efficiency</h3>
         <div class="efficiency-charts">
           <article class="mini-radial oee">
-            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.oee * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('oee') }}</strong></div><span>OEE</span>
+            <div class="radial-visual">
+              <svg viewBox="0 0 42 42">
+                <circle
+                  class="track"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                ></circle>
+                <circle
+                  class="progress"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                  [attr.stroke-dashoffset]="100 - quickHistory.oee * 100"
+                ></circle></svg
+              ><strong>{{ getQuickHistoryPercent("oee") }}</strong>
+            </div>
+            <span>OEE</span>
           </article>
           <article class="mini-radial quality">
-            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.quality * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('quality') }}</strong></div><span>Quality</span>
+            <div class="radial-visual">
+              <svg viewBox="0 0 42 42">
+                <circle
+                  class="track"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                ></circle>
+                <circle
+                  class="progress"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                  [attr.stroke-dashoffset]="100 - quickHistory.quality * 100"
+                ></circle></svg
+              ><strong>{{ getQuickHistoryPercent("quality") }}</strong>
+            </div>
+            <span>Quality</span>
           </article>
           <article class="mini-radial availability">
-            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.availability * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('availability') }}</strong></div><span>Availability</span>
+            <div class="radial-visual">
+              <svg viewBox="0 0 42 42">
+                <circle
+                  class="track"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                ></circle>
+                <circle
+                  class="progress"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                  [attr.stroke-dashoffset]="
+                    100 - quickHistory.availability * 100
+                  "
+                ></circle></svg
+              ><strong>{{ getQuickHistoryPercent("availability") }}</strong>
+            </div>
+            <span>Availability</span>
           </article>
           <article class="mini-radial performance">
-            <div class="radial-visual"><svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="16" pathLength="100"></circle><circle class="progress" cx="21" cy="21" r="16" pathLength="100" [attr.stroke-dashoffset]="100 - (quickHistory.performance * 100)"></circle></svg><strong>{{ getQuickHistoryPercent('performance') }}</strong></div><span>Performance</span>
+            <div class="radial-visual">
+              <svg viewBox="0 0 42 42">
+                <circle
+                  class="track"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                ></circle>
+                <circle
+                  class="progress"
+                  cx="21"
+                  cy="21"
+                  r="16"
+                  pathLength="100"
+                  [attr.stroke-dashoffset]="
+                    100 - quickHistory.performance * 100
+                  "
+                ></circle></svg
+              ><strong>{{ getQuickHistoryPercent("performance") }}</strong>
+            </div>
+            <span>Performance</span>
           </article>
         </div>
 
         <h3 class="history-section-title">Production & speed</h3>
         <div class="production-history-grid">
-          <article><span>Good Count</span><strong>{{ quickHistory.count | number }}</strong></article>
-          <article><span>Total Count</span><strong>{{ quickHistory.total | number }}</strong></article>
-          <article class="reject"><span>Quality Reject</span><strong>{{ quickHistory.qreject | number }}</strong></article>
-          <article><span>Average Speed</span><strong>{{ quickHistory.avgSpeed | number:'1.0-1' }}</strong></article>
-          <article><span>Weighted Speed</span><strong>{{ quickHistory.weightedavgspeed | number:'1.0-1' }}</strong></article>
-          <article><span>Equivalent Speed</span><strong>{{ quickHistory.equevilantAVGSpeed | number:'1.0-1' }}</strong></article>
+          <article>
+            <span>Good Count</span
+            ><strong>{{ quickHistory.count | number }}</strong>
+          </article>
+          <article>
+            <span>Total Count</span
+            ><strong>{{ quickHistory.total | number }}</strong>
+          </article>
+          <article class="reject">
+            <span>Quality Reject</span
+            ><strong>{{ quickHistory.qreject | number }}</strong>
+          </article>
+          <article>
+            <span>Average Speed</span
+            ><strong>{{ quickHistory.avgSpeed | number: "1.0-1" }}</strong>
+          </article>
+          <article>
+            <span>Weighted Speed</span
+            ><strong>{{
+              quickHistory.weightedavgspeed | number: "1.0-1"
+            }}</strong>
+          </article>
+          <article>
+            <span>Equivalent Speed</span
+            ><strong>{{
+              quickHistory.equevilantAVGSpeed | number: "1.0-1"
+            }}</strong>
+          </article>
         </div>
 
         <h3 class="history-section-title">Energy</h3>
-        <div class="energy-history-grid" *ngIf="quickHistoryEnergy; else energyState">
-          <article><span>Total consumption</span><strong>{{ quickHistoryEnergy.totalEnergyConsumption | number:'1.0-1' }} <small>kWh</small></strong></article>
-          <article><span>Power factor</span><strong>{{ quickHistoryEnergy.avgPowerFactor | number:'1.0-2' }}</strong></article>
-          <article><span>Avg PTHDv</span><strong>{{ quickHistoryEnergy.avgPTHDv | number:'1.0-2' }}</strong></article>
-          <article><span>Avg THDi</span><strong>{{ quickHistoryEnergy.avgTHDi | number:'1.0-2' }}</strong></article>
+        <div
+          class="energy-history-grid"
+          *ngIf="quickHistoryEnergy; else energyState"
+        >
+          <article>
+            <span>Total consumption</span
+            ><strong
+              >{{ quickHistoryEnergy.totalEnergyConsumption | number: "1.0-1" }}
+              <small>kWh</small></strong
+            >
+          </article>
+          <article>
+            <span>Power factor</span
+            ><strong>{{
+              quickHistoryEnergy.avgPowerFactor | number: "1.0-2"
+            }}</strong>
+          </article>
+          <article>
+            <span>Avg PTHDv</span
+            ><strong>{{
+              quickHistoryEnergy.avgPTHDv | number: "1.0-2"
+            }}</strong>
+          </article>
+          <article>
+            <span>Avg THDi</span
+            ><strong>{{ quickHistoryEnergy.avgTHDi | number: "1.0-2" }}</strong>
+          </article>
         </div>
-        <ng-template #energyState><div class="energy-state">{{ historyEnergyLoading ? 'Loading energy independently...' : 'No energy data available' }}</div></ng-template>
+        <ng-template #energyState
+          ><div class="energy-state">
+            {{
+              historyEnergyLoading
+                ? "Loading energy independently..."
+                : "No energy data available"
+            }}
+          </div></ng-template
+        >
       </ng-container>
 
-      <div class="quick-history-error" *ngIf="!historyLoading && historyError">No historical data is available for this line.</div>
+      <div class="quick-history-error" *ngIf="!historyLoading && historyError">
+        No historical data is available for this line.
+      </div>
     </div>
 
     <footer class="quick-history-footer">
       <span>Need timelines and detailed tables?</span>
-      <div><button type="button" class="secondary" (click)="closeQuickHistory()">Close</button><button type="button" class="primary" (click)="openFullHistory()">Open full history <b>→</b></button></div>
+      <div>
+        <button type="button" class="secondary" (click)="closeQuickHistory()">
+          Close</button
+        ><button type="button" class="primary" (click)="openFullHistory()">
+          Open full history <b>→</b>
+        </button>
+      </div>
     </footer>
   </section>
 </div>
