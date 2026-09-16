@@ -6,6 +6,7 @@ import { AppService } from 'src/app/core/services/app-Service.service';
 import { IArea, Iclamis, IRole } from 'src/app/views/pages/auth/models/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
+import { factory } from 'src/app/core/models/filter';
 @Component({
   selector: 'app-add-role',
   templateUrl: './add-role.component.html',
@@ -29,27 +30,35 @@ export class AddRoleComponent implements OnInit {
   visible: boolean = false;
   addForm!: FormGroup;
   editForm!: FormGroup;
+  allFactories: factory[] = [];
   constructor(
     private userManagementService: UserManagementService,
     private toastr: ToastrService,
     private _appService: AppService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     this.initForm();
     this.onGetAllCalims();
     this.onGetAllRoles();
-    this.onGetAreas();
+    this.onGetFactories();
+    this.onGetAreas(); 
+
+    this.addForm.get('FactoryId')?.valueChanges.subscribe((factoryId: number | null) => {
+      console.log('Factory changed to:', factoryId);
+      this.onGetAreas(factoryId || undefined);
+      this.addForm.patchValue({ AreaIds: [] }, { emitEvent: false });
+    });
   }
 
   initForm() {
     this.addForm = this.fb.group({
       RoleName: [''],
+      FactoryId: [null],
       Claims: [[]],
       AreaIds: [[]],
     });
-
     this.editForm = this.fb.group({
       RoleName: [''],
       Claims: [[]],
@@ -90,16 +99,26 @@ export class AddRoleComponent implements OnInit {
         },
       });
   }
+  onGetFactories() {
+    this._appService.GetAllFactories().subscribe({
+      next: (res) => {
+        this.allFactories = res;
+         console.log('Factories response:', res);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-  onGetAreas() {
-    this._appService.getAllAreasAndRoles().subscribe({
+  onGetAreas(factoryId?: number) {
+    this._appService.getAllAreasAndRoles(factoryId).subscribe({
       next: (res) => {
         this.allAreas = res.areas;
         console.log(this.allAreas);
       },
     });
   }
-
   onGetAllRoles(roleName?: string, claims?: string) {
     this.userManagementService.getRolesDetails(roleName, claims).subscribe({
       next: (res) => {
@@ -122,7 +141,7 @@ export class AddRoleComponent implements OnInit {
       this.allRolesDetails = [...this.originalRolesDetails];
     } else {
       this.allRolesDetails = this.originalRolesDetails.filter(
-        (role) => role.roleName.toLowerCase() === roleName.toLowerCase()
+        (role) => role.roleName.toLowerCase() === roleName.toLowerCase(),
       );
     }
   }
@@ -140,8 +159,8 @@ export class AddRoleComponent implements OnInit {
         role.claims?.some(
           (claim: { value: string; type: string }) =>
             claim.value.toLowerCase() === claimName.toLowerCase() ||
-            claim.type.toLowerCase() === claimName.toLowerCase()
-        )
+            claim.type.toLowerCase() === claimName.toLowerCase(),
+        ),
       );
     }
   }
@@ -163,12 +182,18 @@ export class AddRoleComponent implements OnInit {
     });
 
     this.userManagementService
-      .addRole(formValue.RoleName, formattedClaims, formValue.AreaIds)
+      .addRole(
+        formValue.RoleName,
+        formattedClaims,
+        formValue.AreaIds,
+        formValue.FactoryId ?? null,
+      )
       .subscribe({
         next: (data) => {
           this.toastr.success(data.message || 'Role added successfully');
           this.addForm.reset({
             RoleName: '',
+            FactoryId: null,
             Claims: [],
             AreaIds: [],
           });

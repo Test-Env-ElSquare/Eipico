@@ -96,9 +96,14 @@ export class AppService {
   getAllClaims(): Observable<Iclamis[]> {
     return this._http.get<Iclamis[]>(environment.url + 'api/Auth/GetAllClaims');
   }
-  getAllAreasAndRoles(): Observable<IRoleAreaResponse> {
+  getAllAreasAndRoles(factoryId?: number): Observable<IRoleAreaResponse> {
+    let params: any = {};
+    if (factoryId) {
+      params.factoryId = factoryId;
+    }
     return this._http.get<IRoleAreaResponse>(
-      environment.url + 'api/Auth/RoleAndAreaList'
+      environment.url + 'api/Auth/RoleAndAreaList',
+      { params }
     );
   }
 }

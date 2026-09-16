@@ -64,7 +64,7 @@ export class BatchWeightComponent implements OnInit {
     private _modalService: NgbModal,
     private _historicalDashboardService: HistoricalDashboardService,
 
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
   ) {}
 
   getAll(page: number = 1, searchtext: string | null = null) {
@@ -92,7 +92,7 @@ export class BatchWeightComponent implements OnInit {
 
   openBasicModal(
     content: TemplateRef<any>,
-    jobOrderId: string
+    jobOrderId: string,
     // machaineId: number
   ) {
     // const options: NgbModalOptions ={ centered: true}
@@ -109,7 +109,136 @@ export class BatchWeightComponent implements OnInit {
           .catch((res) => {});
       });
   }
+  printBatchRow(jobOrderId: string): void {
+    this._historicalDashboardService
+      .JobOrderMatairal(jobOrderId)
+      .subscribe((data) => {
+        const content = `
+        <h1>Batch Weight Report</h1>
+        <h2>Batch Number: ${this.escapeHtml(jobOrderId || 'N/A')}</h2>
+        ${this.renderMaterialTable(data || [])}
+      `;
 
+        this.printDocument(`Batch Weight - ${jobOrderId || ''}`, content);
+      });
+  }
+
+  private renderMaterialTable(materials: JobOrderMatairal[]): string {
+    const datePipe = new DatePipe('en-US');
+    const rows = materials
+      .map(
+        (item) => `
+          <tr>
+            <td>${this.escapeHtml(item.materialName || 'N/A')}</td>
+            <td>${this.escapeHtml(item.uid || 'N/A')}</td>
+            <td>${this.escapeHtml(this.getSapWeight(item))}</td>
+            <td>${this.escapeHtml(this.getSapWeight(item))}</td>
+            <td>${this.escapeHtml(
+              item.deviation !== -1 ? item.deviation : 'N/A',
+            )}</td>
+            <td>${this.escapeHtml(
+              datePipe.transform(item.timeStamp, 'dd-MM-yyyy HH:mm a') || 'N/A',
+            )}</td>
+            <td>${this.escapeHtml(item.processType || 'N/A')}</td>
+            <td>${this.escapeHtml(item.roomName || 'N/A')}</td>
+          </tr>
+        `,
+      )
+      .join('');
+
+    return `
+      <table>
+        <thead>
+          <tr>
+            <th>Material Name</th>
+            <th>Material Code</th>
+            <th>SAP Weight</th>
+            <th>Actual Weight</th>
+            <th>Deviation %</th>
+            <th>Time Stamp</th>
+            <th>Process Type</th>
+            <th>Room Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows || '<tr><td colspan="8" class="empty-row">No materials found</td></tr>'}
+        </tbody>
+      </table>
+    `;
+  }
+
+  private printDocument(title: string, content: string) {
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+
+    if (!printWindow) {
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(`
+      <!doctype html>
+      <html>
+        <head>
+          <title>${this.escapeHtml(title)}</title>
+          <style>
+            body {
+              color: #111827;
+              font-family: Arial, sans-serif;
+              margin: 24px;
+            }
+            h1 {
+              font-size: 22px;
+              margin: 0 0 18px;
+            }
+            h2 {
+              font-size: 18px;
+              margin: 24px 0 12px;
+            }
+            table {
+              border-collapse: collapse;
+              margin-bottom: 18px;
+              width: 100%;
+            }
+            th,
+            td {
+              border: 1px solid #d1d5db;
+              padding: 10px;
+              text-align: left;
+              vertical-align: top;
+            }
+            th {
+              background: #f3f4f6;
+              font-weight: 700;
+            }
+            .empty-row {
+              text-align: center;
+            }
+          </style>
+        </head>
+        <body>
+          ${content}
+          <script>
+            window.onload = function () {
+              window.print();
+              window.onafterprint = function () {
+                window.close();
+              };
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
+  private escapeHtml(value: string | number | undefined | null): string {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
   exportToExcel(): void {
     const datePipe = new DatePipe('en-US');
     const dataToExport = (this.JobOrderMatairal || []).map((item) => ({
@@ -128,8 +257,14 @@ export class BatchWeightComponent implements OnInit {
       skipHeader: false,
     });
     worksheet['!cols'] = [
-      { wch: 28 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
-      { wch: 14 }, { wch: 22 }, { wch: 16 }, { wch: 20 },
+      { wch: 28 },
+      { wch: 20 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 22 },
+      { wch: 16 },
+      { wch: 20 },
     ];
 
     const workbook: XLSX.WorkBook = {
@@ -176,16 +311,18 @@ export class BatchWeightComponent implements OnInit {
 
         autoTable.default(doc, {
           startY: 25,
-          head: [[
-            'Material Name',
-            'Material Code',
-            'SAP Weight',
-            'Actual Weight',
-            'Deviation %',
-            'Time Stamp',
-            'Process Type',
-            'Room Name',
-          ]],
+          head: [
+            [
+              'Material Name',
+              'Material Code',
+              'SAP Weight',
+              'Actual Weight',
+              'Deviation %',
+              'Time Stamp',
+              'Process Type',
+              'Room Name',
+            ],
+          ],
           body: tableData,
           theme: 'grid',
           styles: {
@@ -240,7 +377,7 @@ export class BatchWeightComponent implements OnInit {
   GetMachineLoadDetails(
     content: any,
     machineUid: string,
-    materialName: string
+    materialName: string,
   ) {
     this.materialName = materialName;
     this._batchService.GetMachineLoadDetails(machineUid).subscribe((data) => {
@@ -253,7 +390,7 @@ export class BatchWeightComponent implements OnInit {
     content: any,
     machineUid: string,
     materialName: string,
-    isSplited: number
+    isSplited: number,
   ) {
     this.materialName = materialName;
     this.splited = isSplited;

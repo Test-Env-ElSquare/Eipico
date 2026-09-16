@@ -13,7 +13,7 @@ export class UserManagementService {
   addUser(userForm: any): Observable<any[]> {
     return this._http.post<any[]>(
       environment.url + 'api/Auth/register',
-      userForm
+      userForm,
     );
   }
 
@@ -23,9 +23,15 @@ export class UserManagementService {
     });
   }
 
-  addRole(role: string, claims: any[], areaIds: number[]): Observable<any> {
+  addRole(
+    role: string,
+    claims: any[],
+    areaIds: number[],
+    factoryId?: number | null,
+  ): Observable<any> {
     return this._http.post<any>(environment.url + 'api/Auth/AddRole', {
       roleName: role,
+      factoryId: factoryId ?? null,
       claims: claims,
       areaIds: areaIds,
     });
